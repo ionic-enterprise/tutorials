@@ -4,4 +4,6 @@ slug: /
 sidebar_position: 1
 ---
 
-Hello world!
+```python hello.py
+print("Hello, world!")
+```

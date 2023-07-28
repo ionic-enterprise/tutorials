@@ -4,6 +4,8 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const { remarkCodeHike } = require("@code-hike/mdx");
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Ionic Enterprise Tutorials',
@@ -27,16 +29,20 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          beforeDefaultRemarkPlugins: [[remarkCodeHike, { lineNumbers: true }]],
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [
+            require.resolve("@code-hike/mdx/styles.css"),
+            require.resolve('./src/css/custom.css')
+          ]
         },
       }),
     ],
   ],
-
+  themes: ['mdx-v2'],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
