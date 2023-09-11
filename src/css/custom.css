@@ -3,6 +3,10 @@ body {
   --ch-scrollycoding-code-min-height: 72vh;
 }
 
+.sidebar_hidden {
+  display: none !important;
+}
+
 .ch-scrollycoding {
   gap: 0;
 }
