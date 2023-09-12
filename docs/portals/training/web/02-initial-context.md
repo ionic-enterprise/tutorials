@@ -122,7 +122,10 @@ export const publishNavigateBackMessage = async () => {};
 /**
  * TODO: See "Implementing a Capacitor Plugin"
  */
-export const Analytics = {};
+export const Analytics = {
+  logAction: () => {},
+  logScreenView: () => {},
+};
 ```
 
 </CH.Code>
