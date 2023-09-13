@@ -13,7 +13,7 @@ Before we explore the use of Auth Connect, we need to scaffold an application. I
 <CH.Code>
 
 ```bash Terminal
-ionic start getting-started-ac-angular tabs --type=angular-standalone
+ionic start getting-started-ac tabs --type=angular-standalone
 ```
 
 </CH.Code>
@@ -25,7 +25,7 @@ Use the Ionic CLI to generate the application.
 <CH.Code>
 
 ```bash Terminal focus=2
-ionic start getting-started-ac-angular tabs --type=angular-standalone
+ionic start getting-started-ac tabs --type=angular-standalone
 cd getting-started-ac-angular
 ```
 
@@ -41,7 +41,7 @@ Change directory into the newly generated project.
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.gettingstartedacangular',
+  appId: 'io.ionic.gettingstartedac',
   appName: 'getting-started-ac-angular',
   webDir: 'www',
   server: {
@@ -729,10 +729,10 @@ For Android, modify the `android` section of the `android/app/build.gradle` file
 apply plugin: 'com.android.application'
 
 android {
-    namespace "io.ionic.gettingstartedacangular"
+    namespace "io.ionic.gettingstartedac"
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.ionic.gettingstartedacangular"
+        applicationId "io.ionic.gettingstartedac"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
