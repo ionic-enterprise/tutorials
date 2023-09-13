@@ -383,7 +383,7 @@ export class AuthenticationService {
     ...
   }
 
-  public async login(): Promise<void> {
+  async login(): Promise<void> {
     await this.isReady;
     this.authResult = await AuthConnect.login(this.provider, this.authOptions);
   }
@@ -421,12 +421,12 @@ export class AuthenticationService {
     ...
   }
 
-  public async login(): Promise<void> {
+  async login(): Promise<void> {
     await this.isReady;
     this.authResult = await AuthConnect.login(this.provider, this.authOptions);
   }
 
-  public async logout(): Promise<void> {
+  async logout(): Promise<void> {
     await this.isReady;
     if (this.authResult) {
         await AuthConnect.logout(this.provider, this.authResult);
@@ -552,12 +552,12 @@ import { AuthenticationService } from '../core/authentication.service';
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  async login(): Promise<void> {
+    await this.authentication.login();
   }
 
-  logout() {
-    this.authentication.logout();
+  async logout(): Promise<void> {
+    await this.authentication.logout();
   }
 }
 ```
@@ -622,12 +622,12 @@ import { AuthenticationService } from '../core/authentication.service';
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  async login(): Promise<void> {
+    await this.authentication.login();
   }
 
-  logout() {
-    this.authentication.logout();
+  async logout(): Promise<void> {
+    await this.authentication.logout();
   }
 }
 ```
@@ -674,12 +674,12 @@ import { AuthenticationService } from '../core/authentication.service';
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  async login(): Promise<void> {
+    await this.authentication.login();
   }
 
-  logout() {
-    this.authentication.logout();
+  async logout(): Promise<void> {
+    await this.authentication.logout();
   }
 }
 ```
@@ -837,7 +837,7 @@ We can log in and we can log out, but it is hard to tell what our current authen
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=9,20:21,24:25
+```typescript authentication.service.ts focus=45:47
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -846,7 +846,6 @@ import {
   ProviderOptions,
 } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -857,21 +856,42 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
   constructor(platform: Platform) {
-    this.authenticationChange = new BehaviorSubject(false);
-    this.authenticationChange$ = this.authenticationChange.asObservable();
-    ...
+    const isNative = platform.is('hybrid');
+    this.provider = new Auth0Provider();
+    this.authOptions = {
+      audience: 'https://io.ionic.demo.ac',
+      clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
+      discoveryUrl:
+        'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+      logoutUrl: isNative ? 'msauth://login' : 'http://localhost:8100/login',
+      redirectUri: isNative ? 'msauth://login' : 'http://localhost:8100/login',
+      scope: 'openid offline_access email picture profile',
+    };
+
+    this.isReady = AuthConnect.setup({
+      platform: isNative ? 'capacitor' : 'web',
+      logLevel: 'DEBUG',
+      ios: {
+        webView: 'private',
+      },
+      web: {
+        uiMode: 'popup',
+        authFlow: 'implicit',
+      },
+    });
   }
 
-  public async login(): Promise<void> {
+  isAuthenticated(): boolean {
+    return !!this.authResult;
+  }
+
+  async login(): Promise<void> {
     await this.isReady;
     this.authResult = await AuthConnect.login(this.provider, this.authOptions);
   }
 
-  public async logout(): Promise<void> {
+  async logout(): Promise<void> {
     await this.isReady;
     if (this.authResult) {
       await AuthConnect.logout(this.provider, this.authResult);
@@ -896,12 +916,12 @@ import { AuthenticationService } from '../core/authentication.service';
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  async login(): Promise<void> {
+    await this.authentication.login();
   }
 
-  logout() {
-    this.authentication.logout();
+  async logout(): Promise<void> {
+    await this.authentication.logout();
   }
 }
 ```
@@ -927,134 +947,15 @@ export class Tab1Page {
 
 </CH.Code>
 
-One way to handle this is to create an `Observable` by the use of a [BehaviorSubject](https://rxjs.dev/api/index/class/BehaviorSubject).
+If we have an `AuthResult` we will assume that we are authenticated. The authentication session _could_ be expired or otherwise invalid, but we will work on handling that in other tutorials.
 
 ---
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=1[22:27],23[35:56],42:46
-import { Injectable, NgZone } from '@angular/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthenticationService {
-  private authOptions: ProviderOptions;
-  private authResult: AuthResult | null = null;
-  private provider: Auth0Provider;
-  private isReady: Promise<void>;
-
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
-  constructor(platform: Platform, private ngZone: NgZone) {
-    this.authenticationChange = new BehaviorSubject(false);
-    this.authenticationChange$ = this.authenticationChange.asObservable();
-    ...
-  }
-
-  public async login(): Promise<void> {
-    await this.isReady;
-    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
-  }
-
-  public async logout(): Promise<void> {
-    await this.isReady;
-    if (this.authResult) {
-      await AuthConnect.logout(this.provider, this.authResult);
-      this.authResult = null;
-    }
-  }
-
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
-  }
-}
-```
-
-</CH.Code>
-
-Emit changes within Angular's `NgZone`.
-
----
-
-<CH.Code>
-
-```typescript authentication.service.ts focus=32,40
-import { Injectable, NgZone } from '@angular/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthenticationService {
-  private authOptions: ProviderOptions;
-  private authResult: AuthResult | null = null;
-  private provider: Auth0Provider;
-  private isReady: Promise<void>;
-
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
-  constructor(platform: Platform, private ngZone: NgZone) {
-    this.authenticationChange = new BehaviorSubject(false);
-    this.authenticationChange$ = this.authenticationChange.asObservable();
-    ...
-  }
-
-  public async login(): Promise<void> {
-    await this.isReady;
-    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
-    this.onAuthChange(!!this.authResult);
-  }
-
-  public async logout(): Promise<void> {
-    await this.isReady;
-    if (this.authResult) {
-      await AuthConnect.logout(this.provider, this.authResult);
-      this.authResult = null;
-      this.onAuthChange(false);
-    }
-  }
-
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
-  }
-}
-```
-
-</CH.Code>
-
-Call the emit from the `login()` and `logout()` methods.
-
----
-
-<CH.Code>
-
-```typescript tab1.page.ts focus=3,14:15
+```typescript tab1.page.ts focus=19,24,27:29
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from '../core/authentication.service';
 
 @Component({
@@ -1065,34 +966,83 @@ import { AuthenticationService } from '../core/authentication.service';
   imports: [IonicModule],
 })
 export class Tab1Page {
-  authenticated$: Observable<boolean> =
-    this.authentication.authenticationChange$;
+  authenticated = false;
 
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  async login(): Promise<void> {
+    await this.authentication.login();
+    this.checkAuthentication();
   }
 
-  logout() {
-    this.authentication.logout();
+  async logout(): Promise<void> {
+    await this.authentication.logout();
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication(): void {
+    this.authenticated = this.authentication.isAuthenticated();
   }
 }
 ```
 
 </CH.Code>
 
-Use the `authenticationChange$` observable to control which button is shown in `Tab1Page`.
+Create an `authenticated` property in the `Tab1Page` class. Recheck the status after a login and logout actions complete.
 
 ---
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=1,12[13:25]
+```typescript tab1.page.ts focus=1[21:26],12[23:39],17:19
+import { Component, OnInit } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { AuthenticationService } from '../core/authentication.service';
+
+@Component({
+  selector: 'app-tab1',
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss'],
+  standalone: true,
+  imports: [IonicModule],
+})
+export class Tab1Page implements OnInit {
+  authenticated = false;
+
+  constructor(private authentication: AuthenticationService) {}
+
+  ngOnInit() {
+    this.checkAuthentication();
+  }
+
+  async login(): Promise<void> {
+    await this.authentication.login();
+    this.checkAuthentication();
+  }
+
+  async logout(): Promise<void> {
+    await this.authentication.logout();
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication(): void {
+    this.authenticated = this.authentication.isAuthenticated();
+  }
+}
+```
+
+</CH.Code>
+
+To ensure that the value is initialized properly, the page should also check on initialization.
+
+---
+
+<CH.Code>
+
+```typescript tab1.page.ts focus=1,11[13:25]
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from '../core/authentication.service';
 
 @Component({
@@ -1102,18 +1052,27 @@ import { AuthenticationService } from '../core/authentication.service';
   standalone: true,
   imports: [CommonModule, IonicModule],
 })
-export class Tab1Page {
-  authenticated$: Observable<boolean> =
-    this.authentication.authenticationChange$;
+export class Tab1Page implements OnInit {
+  authenticated = false;
 
   constructor(private authentication: AuthenticationService) {}
 
-  login() {
-    this.authentication.login();
+  ngOnInit() {
+    this.checkAuthentication();
   }
 
-  logout() {
-    this.authentication.logout();
+  async login(): Promise<void> {
+    await this.authentication.login();
+    this.checkAuthentication();
+  }
+
+  async logout(): Promise<void> {
+    await this.authentication.logout();
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication(): void {
+    this.authenticated = this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1126,7 +1085,7 @@ Import the `CommonModule` so `ngIf` can be used in the page's template.
 
 <CH.Code>
 
-```html tab1.page.html focus=14:20
+```html tab1.page.html focus=14:15
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -1140,13 +1099,8 @@ Import the `CommonModule` so `ngIf` can be used in the page's template.
     </ion-toolbar>
   </ion-header>
 
-  <ion-button *ngIf="authenticated$ | async; else loggedOut" (click)="logout()"
-    >Logout</ion-button
-  >
-
-  <ng-template #loggedOut>
-    <ion-button (click)="login()">Login</ion-button>
-  </ng-template>
+  <ion-button *ngIf="!authenticated" (click)="login()">Login</ion-button>
+  <ion-button *ngIf="authenticated" (click)="logout()">Logout</ion-button>
 </ion-content>
 ```
 
@@ -1184,7 +1138,7 @@ export class SessionService {
 ```
 
 ```typescript authentication.service.ts
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
   AuthConnect,
@@ -1192,37 +1146,73 @@ import {
   ProviderOptions,
 } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  // existing declarations cut for brevity, do not remove in your code
+  private authOptions: ProviderOptions;
+  private authResult: AuthResult | null = null;
+  private provider: Auth0Provider;
+  private isReady: Promise<void>;
 
-  constructor(platform: Platform, private ngZone: NgZone) {
+  constructor(platform: Platform) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  public async login(): Promise<void> {
-    await this.isReady;
-    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
-    this.onAuthChange(!!this.authResult);
+  isAuthenticated(): boolean {
+    return !!this.authResult;
   }
 
-  public async logout(): Promise<void> {
+  async login(): Promise<void> {
+    await this.isReady;
+    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
+  }
+
+  async logout(): Promise<void> {
     await this.isReady;
     if (this.authResult) {
       await AuthConnect.logout(this.provider, this.authResult);
       this.authResult = null;
-      this.onAuthChange(false);
     }
   }
+}
+```
 
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
+```typescript tab1.page.ts
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { AuthenticationService } from '../core/authentication.service';
+
+@Component({
+  selector: 'app-tab1',
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss'],
+  standalone: true,
+  imports: [CommonModule, IonicModule],
+})
+export class Tab1Page implements OnInit {
+  authenticated = false;
+
+  constructor(private authentication: AuthenticationService) {}
+
+  ngOnInit() {
+    this.checkAuthentication();
+  }
+
+  async login(): Promise<void> {
+    await this.authentication.login();
+    this.checkAuthentication();
+  }
+
+  async logout(): Promise<void> {
+    await this.authentication.logout();
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication(): void {
+    this.authenticated = this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1290,7 +1280,7 @@ Create methods to get, set, and clear the session.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=10,27
+```typescript authentication.service.ts focus=9,20[35:65]
 import { Injectable, NgZone } from '@angular/core';
 import {
   Auth0Provider,
@@ -1299,7 +1289,6 @@ import {
   ProviderOptions,
 } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1311,36 +1300,25 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
-  constructor(
-    platform: Platform,
-    private ngZone: NgZone,
-    private session: SessionService
-  ) {
+  constructor(platform: Platform, private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  public async login(): Promise<void> {
-    await this.isReady;
-    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
-    this.onAuthChange(!!this.authResult);
+  isAuthenticated(): boolean {
+    return !!this.authResult;
   }
 
-  public async logout(): Promise<void> {
+  async login(): Promise<void> {
+    await this.isReady;
+    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
+  }
+
+  async logout(): Promise<void> {
     await this.isReady;
     if (this.authResult) {
       await AuthConnect.logout(this.provider, this.authResult);
       this.authResult = null;
-      this.onAuthChange(false);
     }
-  }
-
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
   }
 }
 ```
@@ -1353,7 +1331,7 @@ Inject the `SessionService` into the `AuthenticationService`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=47:59
+```typescript authentication.service.ts focus=41:51
 import { Injectable, NgZone } from '@angular/core';
 import {
   Auth0Provider,
@@ -1362,7 +1340,6 @@ import {
   ProviderOptions,
 } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1374,34 +1351,28 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
-  constructor(
-    platform: Platform,
-    private ngZone: NgZone,
-    private session: SessionService
-  ) {
+  constructor(platform: Platform, private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  public async login(): Promise<void> {
-    await this.isReady;
-    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
-    this.onAuthChange(!!this.authResult);
+  isAuthenticated(): boolean {
+    return !!this.authResult;
   }
 
-  public async logout(): Promise<void> {
+  async login(): Promise<void> {
+    await this.isReady;
+    this.authResult = await AuthConnect.login(this.provider, this.authOptions);
+  }
+
+  async logout(): Promise<void> {
     await this.isReady;
     if (this.authResult) {
       await AuthConnect.logout(this.provider, this.authResult);
       this.authResult = null;
-      this.onAuthChange(false);
     }
   }
 
   private async getAuthResult(): Promise<AuthResult | null> {
-    await this.isReady;
     return this.session.getSession();
   }
 
@@ -1411,13 +1382,6 @@ export class AuthenticationService {
     } else {
       await this.session.clear();
     }
-    this.onAuthChange(!!authResult);
-  }
-
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
   }
 }
 ```
@@ -1430,8 +1394,8 @@ Create methods to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=29:31,36:37,42:46
-import { Injectable, NgZone } from '@angular/core';
+```typescript authentication.service.ts focus=23:26,30:31,36:37
+import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
   AuthConnect,
@@ -1439,7 +1403,6 @@ import {
   ProviderOptions,
 } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1450,27 +1413,22 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  private authenticationChange: BehaviorSubject<boolean>;
-  public authenticationChange$: Observable<boolean>;
-
-  constructor(
-    platform: Platform,
-    private ngZone: NgZone,
-    private session: SessionService
-  ) {
+  constructor(platform: Platform, private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
-    this.getAuthResult().then((authResult) => {
-      this.onAuthChange(!!authResult);
-    });
   }
 
-  public async login(): Promise<void> {
+  async isAuthenticated(): Promise<boolean> {
+    const authResult = await this.getAuthResult();
+    return !!authResult;
+  }
+
+  async login(): Promise<void> {
     await this.isReady;
     const authResult = await AuthConnect.login(this.provider, this.authOptions);
     this.saveAuthResult(authResult);
   }
 
-  public async logout(): Promise<void> {
+  async logout(): Promise<void> {
     await this.isReady;
     const authResult = await this.getAuthResult();
     if (authResult) {
@@ -1490,24 +1448,63 @@ export class AuthenticationService {
     } else {
       await this.session.clear();
     }
-    this.onAuthChange(!!authResult);
-  }
-
-  private onAuthChange(isAuthenticated: boolean): void {
-    this.ngZone.run(() => {
-      this.authenticationChange.next(isAuthenticated);
-    });
   }
 }
 ```
 
 </CH.Code>
 
-Use the new methods in instead of the `authResult` class property, which can be removed now. In the `constructor()`, use a call to `getAuthResult()` to initialize the `authenticationChange$` observable based on the value that is saved.
+Use the new methods in instead of the `authResult` class property, which can be removed now.
+
+---
+
+<CH.Code>
+
+```typescript tab1.page.ts focus=32:34
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { AuthenticationService } from '../core/authentication.service';
+
+@Component({
+  selector: 'app-tab1',
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss'],
+  standalone: true,
+  imports: [CommonModule, IonicModule],
+})
+export class Tab1Page implements OnInit {
+  authenticated = false;
+
+  constructor(private authentication: AuthenticationService) {}
+
+  ngOnInit() {
+    this.checkAuthentication();
+  }
+
+  async login(): Promise<void> {
+    await this.authentication.login();
+    this.checkAuthentication();
+  }
+
+  async logout(): Promise<void> {
+    await this.authentication.logout();
+    this.checkAuthentication();
+  }
+
+  private async checkAuthentication(): Promise<void> {
+    this.authenticated = await this.authentication.isAuthenticated();
+  }
+}
+```
+
+</CH.Code>
+
+Since `isAuthenticated()` is now `async`, minor adjustments need to be made to the `Tab1Page`.
 
 </CH.Scrollycoding>
 
-If the user logs in and refreshes the browser or restart the application the authentication state is preserved.
+If the user logs in and refreshes the browser or restarts the application the authentication state is preserved.
 
 ## Next Steps
 
