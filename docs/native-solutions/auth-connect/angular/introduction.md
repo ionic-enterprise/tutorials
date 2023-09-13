@@ -59,7 +59,7 @@ cd getting-started-ac-angular
 
 </CH.Code>
 
-In the `capacitor.config.ts` file, change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that unique to your organization and application. We will use `io.ionic.gettingstartedangular` for this application.
+Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that unique to your organization and application. We will use `io.ionic.gettingstartedangular` for this application.
 
 It is best to do this before adding the `iOS` and `Android` platforms to ensure they are setup properly from the start.
 
@@ -723,7 +723,11 @@ The problem is that on mobile we are deep-linking back into our application usin
 
 For Android, modify the `android` section of the `android/app/build.gradle` file to include the `AUTH_URL_SCHEME`:
 
-```groovy app/build.gradle focus=16:18
+<CH.Code rows={10}>
+
+```groovy app/build.gradle focus=18:20
+apply plugin: 'com.android.application'
+
 android {
     namespace "io.ionic.gettingstartedacangular"
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -752,30 +756,74 @@ android {
 }
 ```
 
+</CH.Code>
+
 For iOS, add a `CFBundleURLTypes` section to the `ios/App/App/Info.plist` file:
 
-```xml App/App/Info.plist  focus=10:18
+<CH.Code rows={10}>
+
+```xml App/App/Info.plist  focus=48:56
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-  ...
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>msauth</string>
-			</array>
-		</dict>
-	</array>
-</dict>
+  <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleDisplayName</key>
+    <string>getting-started-ac-angular</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+      <string>armv7</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+      <string>UIInterfaceOrientationLandscapeLeft</string>
+      <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+      <string>UIInterfaceOrientationPortraitUpsideDown</string>
+      <string>UIInterfaceOrientationLandscapeLeft</string>
+      <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>msauth</string>
+        </array>
+      </dict>
+    </array>
+  </dict>
 </plist>
 ```
+
+</CH.Code>
 
 Re-run the application from Xcode and Android Studio. You should now be able to perform the authentication properly on the mobile applications.
 
