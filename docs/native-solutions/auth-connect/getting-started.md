@@ -64,6 +64,6 @@ The `AuthResult` object contains the tokens provided by the authentication vendo
 
 ## Next Steps
 
-Start with the `Let's Get Coding` tutorial for your favorite application framework. This guide will walk you through building a simple application that allows the user to log in and log out. It also stores the authentication session between invocations of the application. After that, use the other tutorials to build upon that base and learn how to use Auth Connect to perform various tasks within your application.
+Start with the `Introduction` tutorial for your favorite application framework. This guide will walk you through building a simple application that allows the user to log in and log out. It also stores the authentication session between invocations of the application. After that, use the other tutorials to build upon that base and learn how to use Auth Connect to perform various tasks within your application.
 
 Happy Coding!! 🤓
