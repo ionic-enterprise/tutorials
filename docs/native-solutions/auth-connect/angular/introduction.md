@@ -59,7 +59,7 @@ cd getting-started-ac-angular
 
 </CH.Code>
 
-Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that is unique to your organization and application. We will use `io.ionic.gettingstartedangular` for this application.
+Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that is unique to your organization and application. We will use `io.ionic.gettingstartedac` for this application.
 
 It is best to do this before adding the `iOS` and `Android` platforms to ensure they are setup properly from the start.
 
@@ -256,7 +256,7 @@ export class AuthenticationService {
 
 </CH.Code>
 
-Auth Connect needs to know how to communicate with our Authentication vendor. You will likely need to get this information from the team that manages your cloud infrastructure.
+Auth Connect needs to know how to communicate with our authentication vendor. You will likely need to get this information from the team that manages your cloud infrastructure.
 
 ---
 
@@ -309,7 +309,7 @@ export class AuthenticationService {
 
 </CH.Code>
 
-We need to perform a one-time setup with AuthConnect. Please refer to the [documentation](https://ionic.io/docs/auth-connect/interfaces/AuthConnectConfig) if you have any questions about the individual properties. We will start here with a simple set up that is good for development.
+We need to perform a one-time setup with Auth Connect. Please refer to the [documentation](https://ionic.io/docs/auth-connect/interfaces/AuthConnectConfig) if you have any questions about the individual properties. We will start here with a simple set up that is good for development.
 
 The promise returned by `AuthConnect.setup()` is stored in our service so we can ensure the setup has completed before we execute code in methods we will add later.
 
@@ -703,7 +703,7 @@ Note that if you press the Login button while already logged in the login tab is
 
 ### Configure the Native Projects
 
-This login and logout are working on the web. Build your application for mobile and try to run them there. You can use an emulator or an actual device for this test.
+Login and logout are working in your web browser. Build your application for mobile and try to run them there. You can use an emulator or an actual device for this test.
 
 ```bash Terminal
 npm run build
@@ -953,7 +953,7 @@ If we have an `AuthResult` we will assume that we are authenticated. The authent
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=19,24,27:29
+```typescript tab1.page.ts focus=13,19,24,27:29
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthenticationService } from '../core/authentication.service';
