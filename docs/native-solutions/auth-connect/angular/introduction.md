@@ -59,7 +59,7 @@ cd getting-started-ac-angular
 
 </CH.Code>
 
-Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that unique to your organization and application. We will use `io.ionic.gettingstartedangular` for this application.
+Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that is unique to your organization and application. We will use `io.ionic.gettingstartedangular` for this application.
 
 It is best to do this before adding the `iOS` and `Android` platforms to ensure they are setup properly from the start.
 
@@ -317,7 +317,7 @@ The promise returned by `AuthConnect.setup()` is stored in our service so we can
 
 ## Handling the Authentication Flow
 
-Auth Connect is now properly set up and initialized. We can move on to creating the basic log in and log out flow. Within this flow, and `AuthResult` is obtained during log in that represents our authentication session. So long as we have an `AuthResult` object, we have an authentication session. The `AuthResult` is no longer valid after the user logs out.
+Auth Connect is now properly set up and initialized. We can move on to creating the basic log in and log out flow. Within this flow, an `AuthResult` is obtained during log in that represents our authentication session. So long as we have an `AuthResult` object, we have an authentication session. The `AuthResult` is no longer valid after the user logs out.
 
 ### Login and Logout
 
@@ -392,7 +392,7 @@ export class AuthenticationService {
 
 </CH.Code>
 
-For the `login()`, we need to pass both the `provider` and the `options` we established earlier. Note that we for the `setup()` call to resolve and that we store the result in our session variable.
+For the `login()`, we need to pass both the `provider` and the `options` we established earlier. Note that we wait for the `setup()` call to resolve and that we store the result in our session variable.
 
 ---
 
@@ -699,11 +699,11 @@ Test this in the web using the following credentials:
 
 At this point if we press the Login button, a tab should open where we can log in using Auth0. This tab will close after we log in. When we press the logout button a tab will briefly open to perform the logout and then automatically close.
 
-Note that if you press the Login button while already logged in the login tag is closed immediately. This is expected behavior.
+Note that if you press the Login button while already logged in the login tab is closed immediately. This is expected behavior.
 
 ### Configure the Native Projects
 
-This login and logout are working on the web. Build your application for mobile and try to run them there. You can an emulator or an actual device for this test.
+This login and logout are working on the web. Build your application for mobile and try to run them there. You can use an emulator or an actual device for this test.
 
 ```bash Terminal
 npm run build
@@ -1454,7 +1454,7 @@ export class AuthenticationService {
 
 </CH.Code>
 
-Use the new methods in instead of the `authResult` class property, which can be removed now.
+Use the new methods instead of the `authResult` class property, which can be removed now.
 
 ---
 
