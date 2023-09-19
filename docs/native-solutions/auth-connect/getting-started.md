@@ -16,8 +16,8 @@ In these tutorials, you will learn how to:
 
 - Configure Auth Connect based on the configuration of your Authentication vendor.
 - Set up and initialize Auth Connect within an application.
-- Create a basic authentication from from log in to log out.
-- Manage the authentication session that is represented in Auth Connect via a `AuthResult` object.
+- Create a basic authentication from log in to log out.
+- Manage the authentication session that is represented in Auth Connect via an `AuthResult` object.
 - Use the data encapsulated in the `AuthResult` to provide authentication data to the application.
 - Refresh the access token in the `AuthResult` when needed.
 
@@ -41,7 +41,7 @@ You can also create your own custom provider, though doing so is beyond the scop
 
 ### The `ProviderOptions` Data
 
-When an authentication vendor, such as AWS Cognito, is configured, and application is created. This application includes several pieces of data that Auth Connect needs in order to communicate with it. These are specified via a `ProviderOptions` object. They include:
+When an authentication vendor such as AWS Cognito is configured an application is created. This application includes several pieces of data that Auth Connect needs in order to communicate with it. These are specified via a `ProviderOptions` object. They include:
 
 - `clientId`: The ID of the authentication application that was created.
 - `discoveryUrl`: A publicly available URL that points to a JSON object containing metadata that is required to use the authentication application.
