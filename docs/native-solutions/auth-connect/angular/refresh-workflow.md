@@ -18,7 +18,7 @@ We will build upon the application we created in the [introduction tutorial](int
 
 ## Let's Code
 
-As mentioned previously, this tutorial builds upon the application created when doing the [introduction tutorial](instroduction). If you have the code from when you performed that tutorial, then you are good to go. If you need the code you can make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
+As mentioned previously, this tutorial builds upon the application created when doing the [introduction tutorial](introduction). If you have the code from when you performed that tutorial, then you are good to go. If you need the code you can make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
 
 The refresh strategy used in this tutorial is:
 
