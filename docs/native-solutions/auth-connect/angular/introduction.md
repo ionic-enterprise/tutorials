@@ -115,24 +115,24 @@ cd getting-started-ac-angular
 npm run build
 ionic cap add android
 ionic cap add ios
-ionic g page login
+ionic generate page auth-action-complete
 ```
 
 </CH.Code>
 
-We are going to update our routes to better conform to what our OIDC provider requires. A typical app has a Login page with a route like `/login` and our OIDC provider expects that we do too. We will get around this by adding a blank login page, which will add `/login` as a route. We will never _actually_ navigate to the page within _this_ app, though a more typical application probably would.
+When we set up the callback URLs we will see that they use a `/auth-action-complete` path, so add a page for that path.
 
 ---
 
 <CH.Code>
 
-```html login.page.html
+```html auth-action-complete.page.html
 <ion-content></ion-content>
 ```
 
 </CH.Code>
 
-Since this page _may_ display for a short time in the OIDC provider popup tab, it is best to modify the HTML for it to only contain an `ion-content` tag. Open `src/app/login/login.page.html` and remove everything other than the empty `ion-content`.
+Since this page _may_ display for a short time in the OIDC provider popup tab on the web, it is best to modify the HTML for it to only contain an `ion-content` tag. Open `src/app/auth-action-complete/auth-action-complete.page.html` and remove everything other than the empty `ion-content`.
 
 </CH.Scrollycoding>
 
@@ -246,8 +246,12 @@ export class AuthenticationService {
       clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-      logoutUrl: isNative ? 'msauth://login' : 'http://localhost:8100/login',
-      redirectUri: isNative ? 'msauth://login' : 'http://localhost:8100/login',
+      logoutUrl: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
+      redirectUri: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
   }
@@ -287,8 +291,12 @@ export class AuthenticationService {
       clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-      logoutUrl: isNative ? 'msauth://login' : 'http://localhost:8100/login',
-      redirectUri: isNative ? 'msauth://login' : 'http://localhost:8100/login',
+      logoutUrl: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
+      redirectUri: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
 
@@ -719,7 +727,7 @@ Manifest merger failed : Attribute data@scheme at AndroidManifest.xml requires a
 
 On iOS, the application runs, but you get an invalid URL error after successfully logging in on Auth0.
 
-The problem is that on mobile we are deep-linking back into our application using `msauth://login`. We have not registered that scheme with the OS so it does not know to deep-link back to our application. We will set that up now.
+The problem is that on mobile we are deep-linking back into our application using `msauth://auth-action-complete`. We have not registered that scheme with the OS so it does not know to deep-link back to our application. We will set that up now.
 
 For Android, modify the `android` section of the `android/app/build.gradle` file to include the `AUTH_URL_SCHEME`:
 
@@ -864,8 +872,12 @@ export class AuthenticationService {
       clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-      logoutUrl: isNative ? 'msauth://login' : 'http://localhost:8100/login',
-      redirectUri: isNative ? 'msauth://login' : 'http://localhost:8100/login',
+      logoutUrl: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
+      redirectUri: isNative
+        ? 'msauth://auth-action-complete'
+        : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
 
