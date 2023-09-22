@@ -1509,3 +1509,5 @@ If the user logs in and refreshes the browser or restarts the application the au
 ## Next Steps
 
 Explore the specific topics that are of interest to you at this time. This application is used as the foundation to build upon as those topics are explored.
+
+Happy coding!! 🤓
