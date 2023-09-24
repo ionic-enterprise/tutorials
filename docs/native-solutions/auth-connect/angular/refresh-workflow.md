@@ -14,11 +14,11 @@ When a user logs in using [Auth Connect](https://ionic.io/docs/auth-connect) the
 
 The key take away is that OIDC authentication servers are typically set up to return a short lived access token along with an much longer lived refresh token. For example, the access token may expire after one hour with the refresh token expiring after five days. This allows the application to use the access token for a period of time and then refresh it after that time has elapsed. As such, the application needs to be able to detect that the access token has expired and request a refresh of the session.
 
-We will build upon the application we created in the [introduction tutorial](introduction) in order to implement a token refresh workflow.
+We will build upon the application we created in the [getting started tutorial](getting-started) in order to implement a token refresh workflow.
 
 ## Let's Code
 
-As mentioned previously, this tutorial builds upon the application created when doing the [introduction tutorial](introduction). If you have the code from when you performed that tutorial, then you are good to go. If you need the code you can make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
+As mentioned previously, this tutorial builds upon the application created when doing the [getting started tutorial](getting-started). If you have the code from when you performed that tutorial, then you are good to go. If you need the code you can make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
 
 The refresh strategy used in this tutorial is:
 

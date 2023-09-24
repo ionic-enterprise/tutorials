@@ -1,6 +1,6 @@
 ---
-title: Introduction
-sidebar_label: Introduction
+title: Getting Started with Auth Connect
+sidebar_label: Getting Started
 sidebar_position: 1
 ---
 
