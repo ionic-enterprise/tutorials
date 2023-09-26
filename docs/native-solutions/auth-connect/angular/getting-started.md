@@ -52,11 +52,6 @@ const config: CapacitorConfig = {
 export default config;
 ```
 
-```bash Terminal focus=2
-ionic start getting-started-ac tabs --type=angular-standalone
-cd getting-started-ac
-```
-
 </CH.Code>
 
 Change the `appId` to be something unique. The `appId` is used as the [bundle ID](https://developer.apple.com/documentation/appstoreconnectapi/bundle_ids) / [application ID](https://developer.android.com/build/configure-app-module#set-application-id). Therefore it should be a string that is unique to your organization and application. We will use `io.ionic.gettingstartedac` for this application.
@@ -85,7 +80,7 @@ Build the application and install the platforms.
 
 ```json package.json focus=8,9
 {
-    "name": "getting-started-ac",
+  "name": "getting-started-ac",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -105,35 +100,6 @@ Build the application and install the platforms.
 
 We should do a `cap sync` with each build and ensure that our application is served on port `8100` when we run the development server. Change the scripts in `package.json` to do this.
 
----
-
-<CH.Code>
-
-```bash Terminal focus=6
-ionic start getting-started-ac tabs --type=angular-standalone
-cd getting-started-ac
-npm run build
-ionic cap add android
-ionic cap add ios
-ionic generate page auth-action-complete
-```
-
-</CH.Code>
-
-When we set up the callback URLs we will see that they use a `/auth-action-complete` path, so add a page for that path.
-
----
-
-<CH.Code>
-
-```html auth-action-complete.page.html
-<ion-content></ion-content>
-```
-
-</CH.Code>
-
-Since this page _may_ display for a short time in the OIDC provider popup tab on the web, it is best to modify the HTML for it to only contain an `ion-content` tag. Open `src/app/auth-action-complete/auth-action-complete.page.html` and remove everything other than the empty `ion-content`.
-
 </CH.Scrollycoding>
 
 ## Install Auth Connect
@@ -149,11 +115,17 @@ npm install @ionic-enterprise/auth
 npx cap sync
 ```
 
-## Setup and Initialization
+## Create the `AuthenticationService`
+
+All interaction with Auth Connect will be abstracted into an `AuthenticationService`. Generate that now.
 
 ```bash Terminal
 ionic generate service core/authentication
 ```
+
+### Setup and Initialization
+
+Before we use Auth Connect, we need to make sure that it is properly set up and initialized.
 
 <CH.Scrollycoding>
 
@@ -226,7 +198,7 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2,9,15:23
+```typescript authentication.service.ts focus=2,9,15:27
 import { Injectable } from '@angular/core';
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
 import { Platform } from '@ionic/angular';
@@ -266,7 +238,7 @@ Auth Connect needs to know how to communicate with our authentication vendor. Yo
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2:6,15,30:40
+```typescript authentication.service.ts focus=2:6,15,34:44
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -322,6 +294,28 @@ We need to perform a one-time setup with Auth Connect. Please refer to the [docu
 The promise returned by `AuthConnect.setup()` is stored in our service so we can ensure the setup has completed before we execute code in methods we will add later.
 
 </CH.Scrollycoding>
+
+### Create the `auth-action-complete` Page
+
+Note that the `logoutUrl` and `redirectUri` properties are using the `/auth-action-complete` route. Generate a page for the route.
+
+<CH.Code>
+
+```bash terminal
+ionic generate page auth-action-complete
+```
+
+</CH.Code>
+
+This page does not need to do anything. When running on the web, the authentication provider will navigate to this route within the OIDC authentication tab. We can just show a blank page.
+
+<CH.Code>
+
+```html auth-action-complete.page.html
+<ion-content></ion-content>
+```
+
+</CH.Code>
 
 ## Handling the Authentication Flow
 
@@ -446,7 +440,7 @@ export class AuthenticationService {
 
 </CH.Code>
 
-For the `logout()`, we need to pass both the `provider` and the `AuthResult` we established with the `login()`.
+For the `logout()`, when we call Auth Connect we need to pass the `provider` as well as the `AuthResult` we established with the `login()`.
 
 </CH.Scrollycoding>
 
@@ -1293,7 +1287,7 @@ Create methods to get, set, and clear the session.
 <CH.Code>
 
 ```typescript authentication.service.ts focus=9,20[35:65]
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
   AuthConnect,
@@ -1344,7 +1338,7 @@ Inject the `SessionService` into the `AuthenticationService`.
 <CH.Code>
 
 ```typescript authentication.service.ts focus=41:51
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
   AuthConnect,
