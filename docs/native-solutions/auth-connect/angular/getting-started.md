@@ -26,7 +26,7 @@ Use the Ionic CLI to generate the application.
 
 ```bash Terminal focus=2
 ionic start getting-started-ac tabs --type=angular-standalone
-cd getting-started-ac-angular
+cd getting-started-ac
 ```
 
 </CH.Code>
@@ -42,7 +42,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.gettingstartedac',
-  appName: 'getting-started-ac-angular',
+  appName: 'getting-started-ac',
   webDir: 'www',
   server: {
     androidScheme: 'https',
@@ -53,8 +53,8 @@ export default config;
 ```
 
 ```bash Terminal focus=2
-ionic start getting-started-ac-angular tabs --type=angular-standalone
-cd getting-started-ac-angular
+ionic start getting-started-ac tabs --type=angular-standalone
+cd getting-started-ac
 ```
 
 </CH.Code>
@@ -68,8 +68,8 @@ It is best to do this before adding the `iOS` and `Android` platforms to ensure 
 <CH.Code>
 
 ```bash Terminal focus=3:5
-ionic start getting-started-ac-angular tabs --type=angular-standalone
-cd getting-started-ac-angular
+ionic start getting-started-ac tabs --type=angular-standalone
+cd getting-started-ac
 npm run build
 ionic cap add android
 ionic cap add ios
@@ -85,7 +85,7 @@ Build the application and install the platforms.
 
 ```json package.json focus=8,9
 {
-    "name": "getting-started-ac-angular",
+    "name": "getting-started-ac",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -110,8 +110,8 @@ We should do a `cap sync` with each build and ensure that our application is ser
 <CH.Code>
 
 ```bash Terminal focus=6
-ionic start getting-started-ac-angular tabs --type=angular-standalone
-cd getting-started-ac-angular
+ionic start getting-started-ac tabs --type=angular-standalone
+cd getting-started-ac
 npm run build
 ionic cap add android
 ionic cap add ios
@@ -778,7 +778,7 @@ For iOS, add a `CFBundleURLTypes` section to the `ios/App/App/Info.plist` file:
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>getting-started-ac-angular</string>
+    <string>getting-started-ac</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
