@@ -67,10 +67,14 @@ Add a `refreshAuthResult()` function. For now it can be a simple pass-through to
 
 <CH.Code>
 
-```typescript authentication.ts focus=2:6
+```typescript authentication.ts focus=2:10
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
-  if (authResult && (await AuthConnect.isAccessTokenExpired(authResult))) {
+  if (
+    authResult &&
+    (await AuthConnect.isAccessTokenAvailable(authResult)) &&
+    (await AuthConnect.isAccessTokenExpired(authResult))
+  ) {
     authResult = await refreshAuthResult(authResult);
   }
   return authResult;
@@ -91,10 +95,14 @@ If an `AuthResult` exists and contains an expired access token, then we need to 
 
 <CH.Code>
 
-```typescript authentication.ts focus=12:16
+```typescript authentication.ts focus=16:20
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
-  if (authResult && (await AuthConnect.isAccessTokenExpired(authResult))) {
+  if (
+    authResult &&
+    (await AuthConnect.isAccessTokenAvailable(authResult)) &&
+    (await AuthConnect.isAccessTokenExpired(authResult))
+  ) {
     authResult = await refreshAuthResult(authResult);
   }
   return authResult;
@@ -119,10 +127,14 @@ We should only refresh the session if a refresh token exists. Otherwise the refr
 
 <CH.Code>
 
-```typescript authentication.ts focus=14:18
+```typescript authentication.ts focus=18:22
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
-  if (authResult && (await AuthConnect.isAccessTokenExpired(authResult))) {
+  if (
+    authResult &&
+    (await AuthConnect.isAccessTokenAvailable(authResult)) &&
+    (await AuthConnect.isAccessTokenExpired(authResult))
+  ) {
     authResult = await refreshAuthResult(authResult);
   }
   return authResult;

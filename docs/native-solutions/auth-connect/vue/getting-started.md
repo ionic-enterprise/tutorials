@@ -892,7 +892,7 @@ We can log in and we can log out, but it is hard to tell what our current authen
 
 <CH.Code>
 
-```typescript authentication.ts focus=39:41
+```typescript authentication.ts focus=39:43
 import {
   Auth0Provider,
   AuthConnect,
@@ -931,8 +931,10 @@ const isReady: Promise<void> = AuthConnect.setup({
 });
 
 export const useAuthentication = () => ({
-  isAuthenticated: (): boolean => {
-    return !!authResult;
+  isAuthenticated: async (): Promise<boolean> => {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -994,7 +996,7 @@ const logoutClicked = async (): Promise<void> => {
 
 </CH.Code>
 
-If we have an `AuthResult` we will assume that we are authenticated. The authentication session _could_ be expired or otherwise invalid, but we will work on handling that in other tutorials.
+If we have an `AuthResult` with an access token we will assume that we are authenticated. The authentication session _could_ be expired or otherwise invalid, but we will work on handling that in other tutorials.
 
 ---
 
@@ -1090,18 +1092,18 @@ import { ref } from 'vue';
 const { isAuthenticated, login, logout } = useAuthentication();
 const authenticated = ref<boolean>();
 
-const checkAuthentication = (): void => {
-  authenticated.value = isAuthenticated();
+const checkAuthentication = async (): Promise<void> => {
+  authenticated.value = await isAuthenticated();
 };
 
 const loginClicked = async (): Promise<void> => {
   await login();
-  checkAuthentication();
+  await checkAuthentication();
 };
 
 const logoutClicked = async (): Promise<void> => {
   await logout();
-  checkAuthentication();
+  await checkAuthentication();
 };
 
 checkAuthentication();
@@ -1154,18 +1156,18 @@ import { ref } from 'vue';
 const { isAuthenticated, login, logout } = useAuthentication();
 const authenticated = ref<boolean>();
 
-const checkAuthentication = (): void => {
-  authenticated.value = isAuthenticated();
+const checkAuthentication = async (): Promise<void> => {
+  authenticated.value = await isAuthenticated();
 };
 
 const loginClicked = async (): Promise<void> => {
   await login();
-  checkAuthentication();
+  await checkAuthentication();
 };
 
 const logoutClicked = async (): Promise<void> => {
   await logout();
-  checkAuthentication();
+  await checkAuthentication();
 };
 
 checkAuthentication();
@@ -1236,8 +1238,10 @@ const isReady: Promise<void> = AuthConnect.setup({
 });
 
 export const useAuthentication = () => ({
-  isAuthenticated: (): boolean => {
-    return !!authResult;
+  isAuthenticated: async (): Promise<boolean> => {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -1251,62 +1255,6 @@ export const useAuthentication = () => ({
     }
   },
 });
-```
-
-```vue Tab1Page.vue
-<template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Tab 1</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-button v-if="authenticated" @click="logoutClicked"
-        >Logout</ion-button
-      >
-      <ion-button v-else @click="loginClicked">Login</ion-button>
-    </ion-content>
-  </ion-page>
-</template>
-
-<script setup lang="ts">
-import {
-  IonButton,
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-} from '@ionic/vue';
-import { useAuthentication } from '@/composables/authentication';
-import { ref } from 'vue';
-
-const { isAuthenticated, login, logout } = useAuthentication();
-const authenticated = ref<boolean>();
-
-const checkAuthentication = (): void => {
-  authenticated.value = isAuthenticated();
-};
-
-const loginClicked = async (): Promise<void> => {
-  await login();
-  checkAuthentication();
-};
-
-const logoutClicked = async (): Promise<void> => {
-  await logout();
-  checkAuthentication();
-};
-
-checkAuthentication();
-</script>
 ```
 
 </CH.Code>
@@ -1402,8 +1350,10 @@ const isReady: Promise<void> = AuthConnect.setup({
 });
 
 export const useAuthentication = () => ({
-  isAuthenticated: (): boolean => {
-    return !!authResult;
+  isAuthenticated: async (): Promise<boolean> => {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -1481,8 +1431,10 @@ const isReady: Promise<void> = AuthConnect.setup({
 });
 
 export const useAuthentication = () => ({
-  isAuthenticated: (): boolean => {
-    return !!authResult;
+  isAuthenticated: async (): Promise<boolean> => {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -1506,7 +1458,7 @@ Create functions to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.ts focus=53:56,59[5:9],60,64,67
+```typescript authentication.ts focus=54,61,66,69
 import {
   Auth0Provider,
   AuthConnect,
@@ -1561,7 +1513,9 @@ const isReady: Promise<void> = AuthConnect.setup({
 export const useAuthentication = () => ({
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return !!authResult;
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -1582,70 +1536,6 @@ export const useAuthentication = () => ({
 </CH.Code>
 
 Use the new functions instead of the `authResult` variable, which can be removed now.
-
----
-
-<CH.Code>
-
-```vue Tab1Page.vue focus=38[29:33,39:51],39[25:29]
-<template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Tab 1</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-button v-if="authenticated" @click="logoutClicked"
-        >Logout</ion-button
-      >
-      <ion-button v-else @click="loginClicked">Login</ion-button>
-    </ion-content>
-  </ion-page>
-</template>
-
-<script setup lang="ts">
-import {
-  IonButton,
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-} from '@ionic/vue';
-import { useAuthentication } from '@/composables/authentication';
-import { ref } from 'vue';
-
-const { isAuthenticated, login, logout } = useAuthentication();
-const authenticated = ref<boolean>();
-
-const checkAuthentication = async (): Promise<void> => {
-  authenticated.value = await isAuthenticated();
-};
-
-const loginClicked = async (): Promise<void> => {
-  await login();
-  checkAuthentication();
-};
-
-const logoutClicked = async (): Promise<void> => {
-  await logout();
-  checkAuthentication();
-};
-
-checkAuthentication();
-</script>
-```
-
-</CH.Code>
-
-Since `isAuthenticated()` is now `async`, minor adjustments need to be made to the `Tab1Page`. We don't need to await the `checkAuthentication()`. Nothing directly depends on it resolving.
 
 </CH.Scrollycoding>
 
