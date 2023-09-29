@@ -839,7 +839,7 @@ We can log in and we can log out, but it is hard to tell what our current authen
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=45:47
+```typescript authentication.service.ts focus=49:53
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -888,8 +888,10 @@ export class AuthenticationService {
     });
   }
 
-  isAuthenticated(): boolean {
-    return !!this.authResult;
+  async isAuthenticated(): Promise<boolean> {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   }
 
   async login(): Promise<void> {
@@ -953,7 +955,7 @@ export class Tab1Page {
 
 </CH.Code>
 
-If we have an `AuthResult` we will assume that we are authenticated. The authentication session _could_ be expired or otherwise invalid, but we will work on handling that in other tutorials.
+If we have an `AuthResult` with an access token we assume that we are authenticated. The authentication session _could_ be expired or otherwise invalid, but we will work on handling that in other tutorials.
 
 ---
 
@@ -978,16 +980,16 @@ export class Tab1Page {
 
   async login(): Promise<void> {
     await this.authentication.login();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
   async logout(): Promise<void> {
     await this.authentication.logout();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
-  private checkAuthentication(): void {
-    this.authenticated = this.authentication.isAuthenticated();
+  private async checkAuthentication(): Promise<void> {
+    this.authenticated = await this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1017,8 +1019,8 @@ export class Tab1Page implements OnInit {
 
   constructor(private authentication: AuthenticationService) {}
 
-  ngOnInit() {
-    this.checkAuthentication();
+  async ngOnInit() {
+    await this.checkAuthentication();
   }
 
   async login(): Promise<void> {
@@ -1031,8 +1033,8 @@ export class Tab1Page implements OnInit {
     this.checkAuthentication();
   }
 
-  private checkAuthentication(): void {
-    this.authenticated = this.authentication.isAuthenticated();
+  private async checkAuthentication(): Private<void> {
+    this.authenticated = await this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1077,8 +1079,8 @@ export class Tab1Page implements OnInit {
     this.checkAuthentication();
   }
 
-  private checkAuthentication(): void {
-    this.authenticated = this.authentication.isAuthenticated();
+  private async checkAuthentication(): Promise<void> {
+    this.authenticated = await this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1166,8 +1168,10 @@ export class AuthenticationService {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  isAuthenticated(): boolean {
-    return !!this.authResult;
+  async isAuthenticated(): Promise<boolean> {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   }
 
   async login(): Promise<void> {
@@ -1181,44 +1185,6 @@ export class AuthenticationService {
       await AuthConnect.logout(this.provider, this.authResult);
       this.authResult = null;
     }
-  }
-}
-```
-
-```typescript tab1.page.ts
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
-
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [CommonModule, IonicModule],
-})
-export class Tab1Page implements OnInit {
-  authenticated = false;
-
-  constructor(private authentication: AuthenticationService) {}
-
-  ngOnInit() {
-    this.checkAuthentication();
-  }
-
-  async login(): Promise<void> {
-    await this.authentication.login();
-    this.checkAuthentication();
-  }
-
-  async logout(): Promise<void> {
-    await this.authentication.logout();
-    this.checkAuthentication();
-  }
-
-  private checkAuthentication(): void {
-    this.authenticated = this.authentication.isAuthenticated();
   }
 }
 ```
@@ -1310,8 +1276,10 @@ export class AuthenticationService {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  isAuthenticated(): boolean {
-    return !!this.authResult;
+  async isAuthenticated(): Promise<boolean> {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   }
 
   async login(): Promise<void> {
@@ -1337,7 +1305,7 @@ Inject the `SessionService` into the `AuthenticationService`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=41:51
+```typescript authentication.service.ts focus=43:53
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1361,8 +1329,10 @@ export class AuthenticationService {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
-  isAuthenticated(): boolean {
-    return !!this.authResult;
+  async isAuthenticated(): Promise<boolean> {
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   }
 
   async login(): Promise<void> {
@@ -1400,7 +1370,7 @@ Create methods to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=23:26,30:31,36:37
+```typescript authentication.service.ts focus=24:27,32:33,38:39
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1425,7 +1395,9 @@ export class AuthenticationService {
 
   async isAuthenticated(): Promise<boolean> {
     const authResult = await this.getAuthResult();
-    return !!authResult;
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   }
 
   async login(): Promise<void> {
@@ -1461,52 +1433,6 @@ export class AuthenticationService {
 </CH.Code>
 
 Use the new methods instead of the `authResult` class property, which can be removed now.
-
----
-
-<CH.Code>
-
-```typescript tab1.page.ts focus=32:34
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
-
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [CommonModule, IonicModule],
-})
-export class Tab1Page implements OnInit {
-  authenticated = false;
-
-  constructor(private authentication: AuthenticationService) {}
-
-  ngOnInit() {
-    this.checkAuthentication();
-  }
-
-  async login(): Promise<void> {
-    await this.authentication.login();
-    this.checkAuthentication();
-  }
-
-  async logout(): Promise<void> {
-    await this.authentication.logout();
-    this.checkAuthentication();
-  }
-
-  private async checkAuthentication(): Promise<void> {
-    this.authenticated = await this.authentication.isAuthenticated();
-  }
-}
-```
-
-</CH.Code>
-
-Since `isAuthenticated()` is now `async`, minor adjustments need to be made to the `Tab1Page`.
 
 </CH.Scrollycoding>
 
