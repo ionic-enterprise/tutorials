@@ -1370,7 +1370,7 @@ Create methods to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=24:27,32:33,38:39
+```typescript authentication.service.ts focus=24:27,32:33,38:41
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1416,7 +1416,6 @@ export class AuthenticationService {
   }
 
   private async getAuthResult(): Promise<AuthResult | null> {
-    await this.isReady;
     return this.session.getSession();
   }
 
