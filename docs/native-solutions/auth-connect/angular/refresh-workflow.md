@@ -151,6 +151,41 @@ We should only refresh the session if a refresh token exists. Otherwise the refr
 
 In rare instances, the refresh could fail. For example, if the refresh token has expired or is otherwise invalid. In such cases we should also return `null` signifying that we no longer have a valid session.
 
+---
+
+<CH.Code>
+
+```typescript authentication.service.ts focus=22
+  private async getAuthResult(): Promise<AuthResult | null> {
+    let authResult = await this.session.getSession();
+    if (
+      authResult &&
+      (await AuthConnect.isAccessTokenAvailable(authResult)) &&
+      (await AuthConnect.isAccessTokenExpired(authResult))
+    ) {
+      authResult = await this.refreshAuthResult(authResult);
+    }
+    return authResult;
+  }
+
+  private async refreshAuthResult(authResult: AuthResult): Promise<AuthResult | null> {
+    let newAuthResult: AuthResult | null = null;
+    if (await AuthConnect.isRefreshTokenAvailable(authResult)) {
+      try {
+        newAuthResult = await AuthConnect.refreshSession(this.provider, authResult);
+      } catch (err) {
+        null;
+      }
+    }
+    await this.saveAuthResult(newAuthResult);
+    return newAuthResult;
+  }
+```
+
+</CH.Code>
+
+Save the refreshed value. If `newAuthResult` is `null`, indicating that the refresh failed, the session will be cleared.
+
 </CH.Scrollycoding>
 
 ## Next Steps
