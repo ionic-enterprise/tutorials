@@ -6,7 +6,7 @@ sidebar_position: 3
 
 ## Overview
 
-Now that we are authenticating with a provider we need to look at protecting our routes. This protection takes no two major forms:
+Now that we are authenticating with a provider we need to look at protecting our routes. This protection takes two major forms:
 
 1. Guarding our routes so a user cannot navigate to various places within our application unless they are logged in.
 1. Protecting our backend API such that users cannot access data without a valid access token. Our role is to pass the access token to our API.
@@ -1086,6 +1086,6 @@ If the error is an `HttpErrorResponse` and the status is `401`, clear the sessio
 
 ## Next Steps
 
-Currently, if we have an `AuthResult` with an access token we assume the user is properly authenticated. If you would like to expand this logic to first make sure they access token has not expired, and try to refresh it if it has, then please have a look at the tutorial on [refreshing the session](refresh-workflow).
+Currently, if we have an `AuthResult` with an access token we assume the user is properly authenticated. If you would like to expand this logic to first make sure the access token has not expired, and try to refresh it if it has, then please have a look at the tutorial on [refreshing the session](refresh-workflow).
 
 Happy coding!! 🤓
