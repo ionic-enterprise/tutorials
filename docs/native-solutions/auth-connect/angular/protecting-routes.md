@@ -903,7 +903,7 @@ CREATE src/app/core/interceptors/unauth.interceptor.ts (411 bytes)
 
 </CH.Code>
 
-The interceptor needs to be built out to navigate to clear our session and navigate to the login page when a 401 error occurs.
+The interceptor needs to be built out to clear the session data and navigate to the login page when a 401 error occurs.
 
 <CH.Scrollycoding>
 
@@ -1041,7 +1041,7 @@ Inject the `NavController` and `SessionService`.
 
 <CH.Code>
 
-```typescript unauth.interceptor.ts focus=9,10,14:17
+```typescript unauth.interceptor.ts focus=25:30
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
