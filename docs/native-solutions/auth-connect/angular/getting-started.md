@@ -1122,7 +1122,7 @@ Which button is shown on the `Tab1Page` is now determined by the current authent
 
 ### Persist the `AuthResult`
 
-The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` service that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`.
+The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` service that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`. In a production application, we should store the result securely using [Identity Vault](https://ionic.io/docs/identity-vault). However, setting up Identity Vault is beyond the scope of this tutorial.
 
 ```bash Terminal
 npm install @capacitor/preferences
