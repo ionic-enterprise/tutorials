@@ -146,6 +146,8 @@ npx cap sync
 
 When using Auth Connect, the current session is defined by the current [AuthResult](https://ionic.io/docs/auth-connect/interfaces/AuthResult) which contains auth tokens as well as other session information. Auth Connect returns an `AuthResult` from the `login()` function. We will need a place to store that result. Let's create that now. Create a `src/util` directory, then create a file called `src/util/session-store.ts`.
 
+**Note:** React allows for many different state management strategies. Your strategy may differ significantly. State management strategies are outside the scope of this tutorial. Use code that aligns with your chosen strategy.
+
 <CH.Scrollycoding>
 
 <CH.Code>
@@ -181,6 +183,8 @@ const subscribe = (listener: any) => {
 </CH.Code>
 
 To sync the store with React, we will eventually use [useSyncExternalHook](https://react.dev/reference/react/useSyncExternalStore). In preparation, we need some boilerplate code starting with a `subscribe()` method.
+
+---
 
 <CH.Code>
 
