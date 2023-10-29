@@ -150,7 +150,7 @@ When using Auth Connect, the current session is defined by the current [AuthResu
 
 <CH.Code>
 
-```typescript session-store.ts
+```typescript src/utils/session-store.ts
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -164,7 +164,7 @@ We know we will need to store the session, and that the session is defined by th
 
 <CH.Code>
 
-```typescript session-store.ts focus=4:11
+```typescript src/utils/session-store.ts focus=4:11
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -186,7 +186,7 @@ Eventually, this store will be used with a [useSyncExternalHook](https://react.d
 
 <CH.Code>
 
-```typescript session-store.ts focus=13:15
+```typescript src/utils/session-store.ts focus=13:15
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -212,7 +212,7 @@ Add a `getSnapshot()` function that just returns the current session.
 
 <CH.Code>
 
-```typescript session-store.ts focus=17:21
+```typescript src/utils/session-store.ts focus=17:21
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -244,7 +244,7 @@ When the `session` changes, we need to inform any subscribed listeners.
 
 <CH.Code>
 
-```typescript session-store.ts focus=23:26
+```typescript src/utils/session-store.ts focus=23:26
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -281,7 +281,7 @@ We need a function that we can use to set the `session`. For now, this is the on
 
 <CH.Code>
 
-```typescript session-store.ts focus=28
+```typescript src/utils/session-store.ts focus=28
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -330,7 +330,7 @@ Before we use Auth Connect, we need to make sure that it is properly set up and 
 
 <CH.Code>
 
-```typescript authentication.ts
+```typescript src/utils/authentication.ts
 import { isPlatform } from '@ionic/react';
 
 const isNative = isPlatform('hybrid');
@@ -344,7 +344,7 @@ Auth Connect needs a slightly different configuration between mobile and web, so
 
 <CH.Code>
 
-```typescript authentication.ts focus=1,5
+```typescript src/utils/authentication.ts focus=1,5
 import { Auth0Provider } from '@ionic-enterprise/auth';
 import { isPlatform } from '@ionic/react';
 
@@ -360,7 +360,7 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 
 <CH.Code>
 
-```typescript authentication.ts focus=1[25:39],7:19
+```typescript src/utils/authentication.ts focus=1[25:39],7:19
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
 import { isPlatform } from '@ionic/react';
 
@@ -390,7 +390,7 @@ Auth Connect needs to know how to communicate with our authentication vendor. Yo
 
 <CH.Code>
 
-```typescript authentication.ts focus=3,25:32
+```typescript src/utils/authentication.ts focus=3,25:32
 import {
   Auth0Provider,
   AuthConnect,
@@ -435,7 +435,7 @@ The utility module needs to return the `setupAuthConnect` function. It will be c
 
 <CH.Code>
 
-```typescript authentication.ts focus=34
+```typescript src/utils/authentication.ts focus=34
 import {
   Auth0Provider,
   AuthConnect,
@@ -486,7 +486,7 @@ We need to create `login()` and `logout()` functions.
 
 <CH.Code>
 
-```typescript authentication.ts focus=7
+```typescript src/utils/authentication.ts focus=7
 import {
   Auth0Provider,
   AuthConnect,
@@ -532,7 +532,7 @@ Import the functions from our session store that are used to get and set the ses
 
 <CH.Code>
 
-```typescript authentication.ts focus=35:38,40[10:15]
+```typescript src/utils/authentication.ts focus=35:38,40[10:15]
 import {
   Auth0Provider,
   AuthConnect,
@@ -583,7 +583,7 @@ For the `login()`, we need to pass both the `provider` and the `authOptions` we 
 
 <CH.Code>
 
-```typescript authentication.ts focus=41:47,49[17:23]
+```typescript src/utils/authentication.ts focus=41:47,49[17:23]
 import {
   Auth0Provider,
   AuthConnect,
@@ -787,7 +787,7 @@ The Auth Connect related functionality will be exposed to our application via a 
 
 <CH.Code>
 
-```tsx AuthenticationProvider.tsx
+```tsx src/providers/AuthenticationProvider.tsx
 import { createContext } from 'react';
 
 type Context = {
@@ -807,7 +807,7 @@ Start with creating the context we want to provide to the application.
 
 <CH.Code>
 
-```tsx AuthenticationProvider.tsx focus=1[10:27,42:51],11:21
+```tsx src/providers/AuthenticationProvider.tsx focus=1[10:27,42:51],11:21
 import { PropsWithChildren, createContext, useState } from 'react';
 
 type Context = {
@@ -839,7 +839,7 @@ Create a shell component for the `AuthenticationProvider`. It needs to render th
 
 <CH.Code>
 
-```tsx AuthenticationProvider.tsx focus=1,2[42:52],3,17,19:21,25
+```tsx src/providers/AuthenticationProvider.tsx focus=1,2[42:52],3,17,19:21,25
 import { IonSpinner } from '@ionic/react';
 import { PropsWithChildren, createContext, useEffect, useState } from 'react';
 import { setupAuthConnect } from '../utils/authentication';
@@ -878,7 +878,7 @@ Initialize `AuthConnect`. The child components should only be able to interact w
 
 <CH.Code>
 
-```tsx AuthenticationProvider.tsx focus=7,10,25,31:33
+```tsx src/providers/AuthenticationProvider.tsx focus=7,10,25,31:33
 import { IonSpinner } from '@ionic/react';
 import {
   PropsWithChildren,
@@ -931,7 +931,7 @@ Now that the `AuthenticationProvider` has been created, we can add it to our app
 
 <CH.Code>
 
-```tsx focus=14,43,79
+```tsx src/App.tsx focus=14,43,79
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
@@ -1027,7 +1027,7 @@ We can use the first tab of our application to test the `login()` and `logout()`
 
 <CH.Code>
 
-```tsx Tab1.tsx
+```tsx src/pages/Tab1.tsx
 import {
   IonContent,
   IonHeader,
@@ -1069,7 +1069,7 @@ Currently, the `Tab1` page contains the default skeleton code.
 
 <CH.Code>
 
-```tsx Tab1.tsx focus=8:9,14
+```tsx src/pages/Tab1.tsx focus=8:9,14
 import {
   IonContent,
   IonHeader,
@@ -1115,7 +1115,7 @@ Use the `AuthenticationContext` to get the `isAuthenticated` value.
 
 <CH.Code>
 
-```tsx Tab1.tsx focus=2,29:33
+```tsx src/pages/Tab1.tsx focus=2,29:33
 import {
   IonButton,
   IonContent,
@@ -1165,7 +1165,7 @@ Replace the `ExploreContainer` component with a Login or Logout button, dependin
 
 <CH.Code>
 
-```tsx Tab1.tsx focus=11,31[22:37],33[22:36]
+```tsx src/pages/Tab1.tsx focus=11,31[22:37],33[22:36]
 import {
   IonButton,
   IonContent,
@@ -1361,7 +1361,7 @@ Use the `@capacitor/preferences` in our session store to persist the `AuthResult
 
 <CH.Code>
 
-```typescript session-store.ts focus=3,14,24
+```typescript src/utils/session-store.ts focus=3,14,24
 import { AuthResult } from '@ionic-enterprise/auth';
 
 let session: AuthResult | null = null;
@@ -1400,7 +1400,7 @@ Currently, the session information is _only_ stored in the `session` variable. W
 
 <CH.Code>
 
-```typescript session-store.ts focus=2
+```typescript src/utils/session-store.ts focus=2
 import { AuthResult } from '@ionic-enterprise/auth';
 import { Preferences } from '@capacitor/preferences';
 
@@ -1440,7 +1440,7 @@ Import the `Preferences` plugin.
 
 <CH.Code>
 
-```typescript session-store.ts focus=24[20:24],26
+```typescript src/utils/session-store.ts focus=24[20:24],26
 import { AuthResult } from '@ionic-enterprise/auth';
 import { Preferences } from '@capacitor/preferences';
 
@@ -1481,7 +1481,7 @@ Save the session to `Preferences` when the session is set.
 
 <CH.Code>
 
-```typescript session-store.ts focus=30:35
+```typescript src/utils/session-store.ts focus=30:35
 import { AuthResult } from '@ionic-enterprise/auth';
 import { Preferences } from '@capacitor/preferences';
 
