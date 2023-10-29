@@ -33,7 +33,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -44,8 +44,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
-    const isNative = platform.is('hybrid');
+  constructor(private session: SessionService) {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -349,7 +349,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -360,8 +360,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
-    const isNative = platform.is('hybrid');
+  constructor(private session: SessionService) {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',

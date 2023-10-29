@@ -152,14 +152,14 @@ We will build this service up to perform the setup and initialization required b
 
 ```typescript authentication.service.ts focus=2,8:10
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
   }
 }
 ```
@@ -175,7 +175,7 @@ Auth Connect needs a slightly different configuration between mobile and web, so
 ```typescript authentication.service.ts focus=2,9,13
 import { Injectable } from '@angular/core';
 import { Auth0Provider } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -183,8 +183,8 @@ import { Platform } from '@ionic/angular';
 export class AuthenticationService {
   private provider: Auth0Provider;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
   }
 }
@@ -201,7 +201,7 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 ```typescript authentication.service.ts focus=2,9,15:27
 import { Injectable } from '@angular/core';
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -210,8 +210,8 @@ export class AuthenticationService {
   private authOptions: ProviderOptions;
   private provider: Auth0Provider;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -245,7 +245,7 @@ import {
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -255,8 +255,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -337,7 +337,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -348,7 +348,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     // existing constructor code cut for brevity, do not remove in your code
   }
 }
@@ -370,7 +370,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -381,7 +381,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     ...
   }
 
@@ -408,7 +408,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -419,7 +419,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     ...
   }
 
@@ -847,7 +847,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -858,8 +858,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -1153,7 +1153,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -1164,7 +1164,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1260,7 +1260,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1272,7 +1272,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1313,7 +1313,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1325,7 +1325,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1378,7 +1378,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1389,7 +1389,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
