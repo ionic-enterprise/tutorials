@@ -180,9 +180,7 @@ const subscribe = (listener: any) => {
 
 </CH.Code>
 
-Eventually, this store will be used with a [useSyncExternalHook](https://react.dev/reference/react/useSyncExternalStore) hook. Because of this, we need some boilerplate code starting with a `subscribe()` function.
-
----
+To sync the store with React, we will eventually use [useSyncExternalHook](https://react.dev/reference/react/useSyncExternalStore). In preparation, we need some boilerplate code starting with a `subscribe()` method.
 
 <CH.Code>
 
