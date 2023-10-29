@@ -333,9 +333,9 @@ Before we use Auth Connect, we need to make sure that it is properly set up and 
 <CH.Code>
 
 ```typescript src/utils/authentication.ts
-import { isPlatform } from '@ionic/react';
+import { Capacitor } from '@capacitor/core';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 ```
 
 </CH.Code>
@@ -347,10 +347,10 @@ Auth Connect needs a slightly different configuration between mobile and web, so
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=1,5
+import { Capacitor } from '@capacitor/core';
 import { Auth0Provider } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 ```
 
@@ -363,10 +363,10 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=1[25:39],7:19
+import { Capacitor } from '@capacitor/core';
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -393,14 +393,14 @@ Auth Connect needs to know how to communicate with our authentication vendor. Yo
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=3,25:32
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -438,14 +438,14 @@ The utility module needs to return the `setupAuthConnect` function. It will be c
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=34
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -489,15 +489,15 @@ We need to create `login()` and `logout()` functions.
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=7
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 import { getSnapshot, setSession } from './session-store';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -535,15 +535,15 @@ Import the functions from our session store that are used to get and set the ses
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=35:38,40[10:15]
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 import { getSnapshot, setSession } from './session-store';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -579,22 +579,22 @@ export { login, setupAuthConnect };
 
 </CH.Code>
 
-For the `login()`, we need to pass both the `provider` and the `authOptions` we established earlier. It restores an `AuthResult` that we need to store. Be sure to export the function so we can use it in the rest of our app.
+For the `login()`, we need to pass both the `provider` and the `authOptions` we established earlier. It returns an `AuthResult` that we need to store. Be sure to export the function so we can use it in the rest of our app.
 
 ---
 
 <CH.Code>
 
 ```typescript src/utils/authentication.ts focus=41:47,49[17:23]
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/react';
 import { getSnapshot, setSession } from './session-store';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 let authResult: AuthResult | null = null;
 

@@ -26,16 +26,16 @@ We are using the `Tab1Page` to manage our authentication status. Let's assume th
 <CH.Code rows={10}>
 
 ```typescript authentication.ts focus=54:59
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -459,16 +459,16 @@ The most common way for the backend API to protect its routes is to require that
 <CH.Code>
 
 ```typescript authentication.service.ts focus=54:58
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
