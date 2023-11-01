@@ -53,10 +53,10 @@ export class AuthenticationService {
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
       logoutUrl: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       redirectUri: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
@@ -369,10 +369,10 @@ export class AuthenticationService {
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
       logoutUrl: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       redirectUri: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };

@@ -219,10 +219,10 @@ export class AuthenticationService {
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
       logoutUrl: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       redirectUri: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
@@ -264,10 +264,10 @@ export class AuthenticationService {
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
       logoutUrl: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       redirectUri: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
@@ -634,7 +634,7 @@ Manifest merger failed : Attribute data@scheme at AndroidManifest.xml requires a
 
 On iOS, the application runs, but you get an invalid URL error after successfully logging in on Auth0.
 
-The problem is that on mobile we are deep-linking back into our application using `msauth://auth-action-complete`. We have not registered that scheme with the OS so it does not know to deep-link back to our application. We will set that up now.
+The problem is that on mobile we are deep-linking back into our application using `io.ionic.acdemo://auth-action-complete`. We have not registered that scheme with the OS so it does not know to deep-link back to our application. We will set that up now.
 
 For Android, modify the `android` section of the `android/app/build.gradle` file to include the `AUTH_URL_SCHEME`:
 
@@ -659,7 +659,7 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
         manifestPlaceholders = [
-            'AUTH_URL_SCHEME': 'msauth'
+            'AUTH_URL_SCHEME': 'io.ionic.acdemo'
         ]
     }
     buildTypes {
@@ -730,7 +730,7 @@ For iOS, add a `CFBundleURLTypes` section to the `ios/App/App/Info.plist` file:
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>msauth</string>
+          <string>io.ionic.acdemo</string>
         </array>
       </dict>
     </array>
@@ -780,10 +780,10 @@ export class AuthenticationService {
       discoveryUrl:
         'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
       logoutUrl: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       redirectUri: isNative
-        ? 'msauth://auth-action-complete'
+        ? 'io.ionic.acdemo://auth-action-complete'
         : 'http://localhost:8100/auth-action-complete',
       scope: 'openid offline_access email picture profile',
     };
