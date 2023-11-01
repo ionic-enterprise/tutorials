@@ -33,7 +33,7 @@ Let's see how this looks in our `AuthenticationService`.
 
 <CH.Code>
 
-```typescript authentication.service.ts
+```typescript src/app/core/authentication.service.ts
   private async getAuthResult(): Promise<AuthResult | null> {
     return this.session.getSession();
   }
@@ -47,7 +47,7 @@ We currently have a `getAuthResult()` method that is a simple pass-through to th
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=5:7
+```typescript src/app/core/authentication.service.ts focus=5:7
   private async getAuthResult(): Promise<AuthResult | null> {
     return this.session.getSession();
   }
@@ -65,7 +65,7 @@ Add a `refreshAuthResult()` method. For now it can be a simple pass-through to `
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2:10
+```typescript src/app/core/authentication.service.ts focus=2:10
   private async getAuthResult(): Promise<AuthResult | null> {
     let authResult = await this.session.getSession();
     if (
@@ -91,7 +91,7 @@ If an `AuthResult` exists and contains an expired access token, then we need to 
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=14:18
+```typescript src/app/core/authentication.service.ts focus=14:18
   private async getAuthResult(): Promise<AuthResult | null> {
     let authResult = await this.session.getSession();
     if (
@@ -121,7 +121,7 @@ We should only refresh the session if a refresh token exists. Otherwise the refr
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=16:20
+```typescript src/app/core/authentication.service.ts focus=16:20
   private async getAuthResult(): Promise<AuthResult | null> {
     let authResult = await this.session.getSession();
     if (
@@ -155,7 +155,7 @@ In rare instances, the refresh could fail. For example, if the refresh token has
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=22
+```typescript src/app/core/authentication.service.ts focus=22
   private async getAuthResult(): Promise<AuthResult | null> {
     let authResult = await this.session.getSession();
     if (

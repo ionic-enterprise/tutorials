@@ -33,7 +33,7 @@ Let's see how this looks in our `useAuthentication` composable.
 
 <CH.Code>
 
-```typescript authentication.ts
+```typescript src/composables/authentication.ts
 const getAuthResult = async (): Promise<AuthResult | null> => {
   return getSession();
 };
@@ -47,7 +47,7 @@ We currently have a `getAuthResult()` function that is a simple pass-through to 
 
 <CH.Code>
 
-```typescript authentication.ts focus=5:9
+```typescript src/composables/authentication.ts focus=5:9
 const getAuthResult = async (): Promise<AuthResult | null> => {
   return getSession();
 };
@@ -67,7 +67,7 @@ Add a `refreshAuthResult()` function. For now it can be a simple pass-through to
 
 <CH.Code>
 
-```typescript authentication.ts focus=2:10
+```typescript src/composables/authentication.ts focus=2:10
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
   if (
@@ -95,7 +95,7 @@ If an `AuthResult` exists and contains an expired access token, then we need to 
 
 <CH.Code>
 
-```typescript authentication.ts focus=16:20
+```typescript src/composables/authentication.ts focus=16:20
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
   if (
@@ -127,7 +127,7 @@ We should only refresh the session if a refresh token exists. Otherwise the refr
 
 <CH.Code>
 
-```typescript authentication.ts focus=18:22
+```typescript src/composables/authentication.ts focus=18:22
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
   if (
@@ -163,7 +163,7 @@ In rare instances, the refresh could fail. For example, if the refresh token has
 
 <CH.Code>
 
-```typescript authentication.ts focus=24
+```typescript src/composables/authentication.ts focus=24
 const getAuthResult = async (): Promise<AuthResult | null> => {
   let authResult = await getSession();
   if (

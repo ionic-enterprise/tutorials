@@ -25,17 +25,17 @@ We are using the `Tab1Page` to manage our authentication status. Let's assume th
 
 <CH.Code rows={10}>
 
-```typescript authentication.ts focus=54:59
+```typescript src/composables/authentication.ts focus=54:59
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -458,17 +458,17 @@ The most common way for the backend API to protect its routes is to require that
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=54:58
+```typescript src/composables/authentication.service.ts focus=54:58
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -539,7 +539,7 @@ export const useAuthentication = () => ({
 });
 ```
 
-```vue Tab1Page.vue
+```vue src/views/Tab1Page.vue
 <template>
   <ion-page>
     <ion-header>
@@ -603,7 +603,7 @@ Add a function to the `useAuthentication()` composable API that gets the access 
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=20,37[9:22],38,43
+```vue src/views/Tab1Page.vue focus=20,37[9:22],38,43
 <template>
   <ion-page>
     <ion-header>
@@ -830,7 +830,7 @@ The interceptor needs to be built out to clear the session data and navigate to 
 
 <CH.Code>
 
-```typescript backend-api.ts
+```typescript src/composables/backend-api.ts
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useAuthentication } from './authentication';
 
@@ -868,7 +868,7 @@ Start with the existing code in `src/composables/backend-api.ts`.
 
 <CH.Code>
 
-```typescript backend-api.ts focus=23
+```typescript src/composables/backend-api.ts focus=23
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useAuthentication } from './authentication';
 
@@ -908,7 +908,7 @@ Create a placeholder where we will add our interceptor code to `client.intercept
 
 <CH.Code>
 
-```typescript backend-api.ts focus=25:27
+```typescript src/composables/backend-api.ts focus=25:27
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useAuthentication } from './authentication';
 
@@ -953,7 +953,7 @@ We need to handle the error. For now just reject.
 
 <CH.Code>
 
-```typescript backend-api.ts focus=3,4,28:31
+```typescript src/composables/backend-api.ts focus=3,4,28:31
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useAuthentication } from './authentication';
 import { useSession } from './session';

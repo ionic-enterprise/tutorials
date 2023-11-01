@@ -43,7 +43,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'io.ionic.gettingstartedac',
   appName: 'getting-started-ac',
-  webDir: 'www',
+  webDir: 'dist',
   server: {
     androidScheme: 'https',
   },
@@ -153,7 +153,7 @@ All interaction with Auth Connect will be abstracted into an `Authentication` Co
 
 <CH.Code>
 
-```typescript authentication.ts
+```typescript src/composables/authentication.ts
 export const useAuthentication = () => ({});
 ```
 
@@ -167,7 +167,7 @@ Before we use Auth Connect, we need to make sure that it is properly set up and 
 
 <CH.Code>
 
-```typescript authentication.ts
+```typescript src/composables/authentication.ts
 export const useAuthentication = () => ({});
 ```
 
@@ -179,10 +179,10 @@ We will build the composable up to perform the setup and initialization required
 
 <CH.Code>
 
-```typescript authentication.ts focus=1,3
-import { isPlatform } from '@ionic/vue';
+```typescript src/composables/authentication.ts focus=1,3
+import { Capacitor } from '@capacitor/core';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 
 export const useAuthentication = () => ({});
 ```
@@ -195,11 +195,11 @@ Auth Connect needs a slightly different configuration between mobile and web, so
 
 <CH.Code>
 
-```typescript authentication.ts focus=1,5
+```typescript src/composables/authentication.ts focus=1,5
+import { Capacitor } from '@capacitor/core';
 import { Auth0Provider } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 export const useAuthentication = () => ({});
@@ -213,11 +213,11 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 
 <CH.Code>
 
-```typescript authentication.ts focus=1[25:39],7:19
+```typescript src/composables/authentication.ts focus=1[25:39],7:19
+import { Capacitor } from '@capacitor/core';
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -245,15 +245,15 @@ Auth Connect needs to know how to communicate with our authentication vendor. Yo
 
 <CH.Code>
 
-```typescript authentication.ts focus=3,25:35
+```typescript src/composables/authentication.ts focus=3,25:35
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 
 const authOptions: ProviderOptions = {
@@ -299,7 +299,7 @@ Note that the `logoutUrl` and `redirectUri` properties are using the `/auth-acti
 
 <CH.Code>
 
-```vue AuthActionCompletePage.vue
+```vue src/views/AuthActionCompletePage.vue
 <template>
   <ion-content class="main-content">
     <div class="container">
@@ -391,16 +391,16 @@ We begin by creating the `login()` and `logout()` functions.
 
 <CH.Code>
 
-```typescript authentication.ts focus=4,11
+```typescript src/composables/authentication.ts focus=4,11
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 let authResult: AuthResult | null = null;
 
@@ -441,16 +441,16 @@ The `AuthConnect.login()` call resolves an `AuthResult` if the operation succeed
 
 <CH.Code>
 
-```typescript authentication.ts focus=40:43
+```typescript src/composables/authentication.ts focus=40:43
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 let authResult: AuthResult | null = null;
 
@@ -496,16 +496,16 @@ For the `login()`, we need to pass both the `provider` and the `options` we esta
 
 <CH.Code>
 
-```typescript authentication.ts focus=44:50
+```typescript src/composables/authentication.ts focus=44:50
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 let authResult: AuthResult | null = null;
 
@@ -563,7 +563,7 @@ We can use the first tab of our application to test the `login()` and `logout()`
 <CH.Scrollycoding>
 <CH.Code>
 
-```vue Tab1Page.vue
+```vue src/views/Tab1Page.vue
 <template>
   <ion-page>
     <ion-header>
@@ -603,7 +603,7 @@ Currently, the `Tab1Page` contains the default skeleton code.
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=29,31
+```vue src/views/Tab1Page.vue focus=29,31
 <template>
   <ion-page>
     <ion-header>
@@ -646,7 +646,7 @@ Import our the `useAuthentication` composable and destructure the `login()` and 
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=33:39
+```vue src/views/Tab1Page.vue focus=33:39
 <template>
   <ion-page>
     <ion-header>
@@ -697,7 +697,7 @@ Create `loginClicked()` and `logoutClicked()` functions that we can bind to in o
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=15,16,23
+```vue src/views/Tab1Page.vue focus=15,16,23
 <template>
   <ion-page>
     <ion-header>
@@ -892,16 +892,16 @@ We can log in and we can log out, but it is hard to tell what our current authen
 
 <CH.Code>
 
-```typescript authentication.ts focus=39:43
+```typescript src/composables/authentication.ts focus=39:43
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -950,7 +950,7 @@ export const useAuthentication = () => ({
 });
 ```
 
-```vue Tab1Page.vue
+```vue src/views/Tab1Page.vue
 <template>
   <ion-page>
     <ion-header>
@@ -1002,7 +1002,7 @@ If we have an `AuthResult` with an access token we will assume that we are authe
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=31,34
+```vue src/views/Tab1Page.vue focus=31,34
 <template>
   <ion-page>
     <ion-header>
@@ -1056,7 +1056,7 @@ Create an `authenticated` value for the `Tab1Page`.
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=33[9:23],36:38,42,47,50
+```vue src/views/Tab1Page.vue focus=33[9:23],36:38,42,47,50
 <template>
   <ion-page>
     <ion-header>
@@ -1118,7 +1118,7 @@ Check if we are authenticated when the page is page is created as well as after 
 
 <CH.Code>
 
-```vue Tab1Page.vue focus=15:18
+```vue src/views/Tab1Page.vue focus=15:18
 <template>
   <ion-page>
     <ion-header>
@@ -1184,7 +1184,7 @@ Which button is shown on the `Tab1Page` is now determined by the current authent
 
 ### Persist the `AuthResult`
 
-The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` composable that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`.
+The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` composable that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`. In a production application, we should store the result more securely by using [Identity Vault](https://ionic.io/docs/identity-vault). However, setting up Identity Vault is beyond the scope of this tutorial.
 
 ```bash Terminal
 npm install @capacitor/preferences
@@ -1193,22 +1193,23 @@ npm install @capacitor/preferences
 Build out the `useSession` composable in `src/composables/session.ts`.
 
 <CH.Scrollycoding>
+
 <CH.Code>
 
-```typescript session.ts
+```typescript src/composables/session.ts
 export const useSession = () => ({});
 ```
 
-```typescript authentication.ts
+```typescript src/composables/authentication.ts
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -1265,7 +1266,7 @@ The `useSession` functions starts with the basic skeleton.
 
 <CH.Code>
 
-```typescript session.ts focus=1,2
+```typescript src/composables/session.ts focus=1,2
 import { Preferences } from '@capacitor/preferences';
 import { AuthResult } from '@ionic-enterprise/auth';
 
@@ -1280,7 +1281,7 @@ Import the `Preferences` and `AuthResult` classes.
 
 <CH.Code>
 
-```typescript session.ts focus=4,7:16
+```typescript src/composables/session.ts focus=4,7:16
 import { Preferences } from '@capacitor/preferences';
 import { AuthResult } from '@ionic-enterprise/auth';
 
@@ -1308,17 +1309,17 @@ Create functions to get, set, and clear the session.
 
 <CH.Code>
 
-```typescript authentication.ts focus=8,27
+```typescript src/composables/authentication.ts focus=8,27
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -1377,17 +1378,17 @@ Import `useSession` into our `useAuthentication` composable and destructure the 
 
 <CH.Code>
 
-```typescript authentication.ts focus=29:39
+```typescript src/composables/authentication.ts focus=29:39
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
@@ -1458,17 +1459,17 @@ Create functions to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.ts focus=54,61,66,69
+```typescript src/composables/authentication.ts focus=54,61,66,69
+import { Capacitor } from '@capacitor/core';
 import {
   Auth0Provider,
   AuthConnect,
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { isPlatform } from '@ionic/vue';
 import { useSession } from '@/composables/session';
 
-const isNative = isPlatform('hybrid');
+const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
