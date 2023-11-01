@@ -131,7 +131,7 @@ Before we use Auth Connect, we need to make sure that it is properly set up and 
 
 <CH.Code>
 
-```typescript authentication.service.ts
+```typescript src/app/core/authentication.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -150,16 +150,16 @@ We will build this service up to perform the setup and initialization required b
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2,8:10
+```typescript src/app/core/authentication.service.ts focus=2,8:10
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
   }
 }
 ```
@@ -172,10 +172,10 @@ Auth Connect needs a slightly different configuration between mobile and web, so
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2,9,13
+```typescript src/app/core/authentication.service.ts focus=2,9,13
 import { Injectable } from '@angular/core';
 import { Auth0Provider } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -183,8 +183,8 @@ import { Platform } from '@ionic/angular';
 export class AuthenticationService {
   private provider: Auth0Provider;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
   }
 }
@@ -198,10 +198,10 @@ For this tutorial, we are using Auth0 as the authentication vendor. We need to c
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2,9,15:27
+```typescript src/app/core/authentication.service.ts focus=2,9,15:27
 import { Injectable } from '@angular/core';
 import { Auth0Provider, ProviderOptions } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -210,8 +210,8 @@ export class AuthenticationService {
   private authOptions: ProviderOptions;
   private provider: Auth0Provider;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -238,14 +238,14 @@ Auth Connect needs to know how to communicate with our authentication vendor. Yo
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=2:6,15,34:44
+```typescript src/app/core/authentication.service.ts focus=2:6,15,34:44
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
   AuthConnect,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -255,8 +255,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -311,7 +311,7 @@ This page does not need to do anything. When running on the web, the authenticat
 
 <CH.Code>
 
-```html auth-action-complete.page.html
+```html src/app/auth-action-complete/auth-action-complete.page.html
 <ion-content></ion-content>
 ```
 
@@ -329,7 +329,7 @@ We begin by creating the `login()` and `logout()` methods.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=5,15
+```typescript src/app/core/authentication.service.ts focus=5,15
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -337,7 +337,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -348,7 +348,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     // existing constructor code cut for brevity, do not remove in your code
   }
 }
@@ -362,7 +362,7 @@ The `AuthConnect.login()` call resolves an `AuthResult` if the operation succeed
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=23:26
+```typescript src/app/core/authentication.service.ts focus=23:26
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -370,7 +370,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -381,7 +381,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     ...
   }
 
@@ -400,7 +400,7 @@ For the `login()`, we need to pass both the `provider` and the `options` we esta
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=28:34
+```typescript src/app/core/authentication.service.ts focus=28:34
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -408,7 +408,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -419,7 +419,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     ...
   }
 
@@ -451,7 +451,7 @@ We can use the first tab of our application to test the `login()` and `logout()`
 <CH.Scrollycoding>
 <CH.Code>
 
-```typescript tab1.page.ts
+```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
@@ -468,7 +468,7 @@ export class Tab1Page {
 }
 ```
 
-```html tab1.page.html
+```html src/app/tab1/tab1.page.html
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -494,7 +494,7 @@ Currently, the `Tab1Page` contains the default skeleton code.
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=4,14
+```typescript src/app/tab1/tab1.page.ts focus=4,14
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
@@ -510,24 +510,6 @@ import { AuthenticationService } from '../core/authentication.service';
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
 }
-```
-
-```html tab1.page.html
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Tab 1 </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
-</ion-content>
 ```
 
 </CH.Code>
@@ -538,7 +520,7 @@ Inject our `AuthenticationService`.
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=16:22
+```typescript src/app/tab1/tab1.page.ts focus=16:22
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
@@ -562,24 +544,6 @@ export class Tab1Page {
     await this.authentication.logout();
   }
 }
-```
-
-```html tab1.page.html
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Tab 1 </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
-</ion-content>
 ```
 
 </CH.Code>
@@ -590,7 +554,7 @@ Create `login()` and `logout()` methods that we can bind to in our template.
 
 <CH.Code>
 
-```html tab1.page.html focus=14
+```html src/app/tab1/tab1.page.html focus=14
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -608,32 +572,6 @@ Create `login()` and `logout()` methods that we can bind to in our template.
 </ion-content>
 ```
 
-```typescript tab1.page.ts
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-import { AuthenticationService } from '../core/authentication.service';
-
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [IonicModule, ExploreContainerComponent],
-})
-export class Tab1Page {
-  constructor(private authentication: AuthenticationService) {}
-
-  async login(): Promise<void> {
-    await this.authentication.login();
-  }
-
-  async logout(): Promise<void> {
-    await this.authentication.logout();
-  }
-}
-```
-
 </CH.Code>
 
 The `app-explore-container` component is no longer needed.
@@ -642,7 +580,7 @@ The `app-explore-container` component is no longer needed.
 
 <CH.Code>
 
-```html tab1.page.html focus=14:15
+```html src/app/tab1/tab1.page.html focus=14:15
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -659,31 +597,6 @@ The `app-explore-container` component is no longer needed.
   <ion-button (click)="login()">Login</ion-button>
   <ion-button (click)="logout()">Logout</ion-button>
 </ion-content>
-```
-
-```typescript tab1.page.ts
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
-
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [IonicModule],
-})
-export class Tab1Page {
-  constructor(private authentication: AuthenticationService) {}
-
-  async login(): Promise<void> {
-    await this.authentication.login();
-  }
-
-  async logout(): Promise<void> {
-    await this.authentication.logout();
-  }
-}
 ```
 
 </CH.Code>
@@ -839,7 +752,7 @@ We can log in and we can log out, but it is hard to tell what our current authen
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=49:53
+```typescript src/app/core/authentication.service.ts focus=49:53
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -847,7 +760,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -858,8 +771,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
-    const isNative = platform.is('hybrid');
+  constructor() {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -909,7 +822,7 @@ export class AuthenticationService {
 }
 ```
 
-```typescript tab1.page.ts
+```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthenticationService } from '../core/authentication.service';
@@ -934,7 +847,7 @@ export class Tab1Page {
 }
 ```
 
-```html tab1.page.html
+```html src/app/tab1/tab1.page.html
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -961,7 +874,7 @@ If we have an `AuthResult` with an access token we assume that we are authentica
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=13,19,24,27:29
+```typescript src/app/tab1/tab1.page.ts focus=13,19,24,27:29
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthenticationService } from '../core/authentication.service';
@@ -1002,7 +915,7 @@ Create an `authenticated` property in the `Tab1Page` class. Recheck the status a
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=1[21:26],12[23:39],17:19
+```typescript src/app/tab1/tab1.page.ts focus=1[21:26],12[23:39],17:19
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthenticationService } from '../core/authentication.service';
@@ -1047,7 +960,7 @@ To ensure that the value is initialized properly, the page should also check on 
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=1,11[13:25]
+```typescript src/app/tab1/tab1.page.ts focus=1,11[13:25]
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
@@ -1093,7 +1006,7 @@ Import the `CommonModule` so `ngIf` can be used in the page's template.
 
 <CH.Code>
 
-```html tab1.page.html focus=14:15
+```html src/app/tab1/tab1.page.html focus=14:15
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -1122,7 +1035,7 @@ Which button is shown on the `Tab1Page` is now determined by the current authent
 
 ### Persist the `AuthResult`
 
-The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` service that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`.
+The user can perform login and logout operations, but if the browser is refreshed, the application loses the `AuthResult`. This value needs to be persisted between sessions of the application. To fix this, create a `session` service that uses the [Preferences](https://capacitorjs.com/docs/apis/preferences) plugin to persist the `AuthResult`. In a production application, we should store the result securely using [Identity Vault](https://ionic.io/docs/identity-vault). However, setting up Identity Vault is beyond the scope of this tutorial.
 
 ```bash Terminal
 npm install @capacitor/preferences
@@ -1134,7 +1047,7 @@ First build out the `SessionService`.
 <CH.Scrollycoding>
 <CH.Code>
 
-```typescript session.service.ts
+```typescript src/app/core/session.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -1145,7 +1058,7 @@ export class SessionService {
 }
 ```
 
-```typescript authentication.service.ts
+```typescript src/app/core/authentication.service.ts
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1153,7 +1066,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -1164,7 +1077,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform) {
+  constructor() {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1197,7 +1110,7 @@ The `SessionService` starts with the basic service skeleton.
 
 <CH.Code>
 
-```typescript session.service.ts focus=2,3
+```typescript src/app/core/session.service.ts focus=2,3
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { AuthResult } from '@ionic-enterprise/auth';
@@ -1218,7 +1131,7 @@ Import the `Preferences` and `AuthResult` classes.
 
 <CH.Code>
 
-```typescript session.service.ts focus=9:22
+```typescript src/app/core/session.service.ts focus=9:22
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { AuthResult } from '@ionic-enterprise/auth';
@@ -1252,7 +1165,7 @@ Create methods to get, set, and clear the session.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=9,20[35:65]
+```typescript src/app/core/authentication.service.ts focus=9,20[35:65]
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1260,7 +1173,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1272,7 +1185,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1305,7 +1218,7 @@ Inject the `SessionService` into the `AuthenticationService`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=43:53
+```typescript src/app/core/authentication.service.ts focus=43:53
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1313,7 +1226,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1325,7 +1238,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 
@@ -1370,7 +1283,7 @@ Create methods to get and save the `AuthResult`.
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=24:27,32:33,38:41
+```typescript src/app/core/authentication.service.ts focus=24:27,32:33,38:41
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -1378,7 +1291,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -1389,7 +1302,7 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
+  constructor(private session: SessionService) {
     // existing constructor code cut for brevity, do not remove in your code
   }
 

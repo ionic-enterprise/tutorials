@@ -25,7 +25,7 @@ We are using the `Tab1Page` to manage our authentication status. Let's assume th
 
 <CH.Code rows={10}>
 
-```typescript authentication.service.ts focus=49:52
+```typescript src/app/core/authentication.service.ts focus=49:52
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -33,7 +33,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -44,8 +44,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
-    const isNative = platform.is('hybrid');
+  constructor(private session: SessionService) {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -135,7 +135,7 @@ Now that the guard has been generated, we need to build it out.
 
 <CH.Code>
 
-```typescript tabs.routes.ts
+```typescript src/app/tabs/tabs.routes.ts
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 
@@ -174,7 +174,7 @@ export const routes: Routes = [
 ];
 ```
 
-```typescript auth.guard.ts
+```typescript src/app/core/guards/auth.guard.ts
 import { CanActivateFn } from '@angular/router';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -190,7 +190,7 @@ For this application, we want to guard the `tab2` and `tab3` routes. We cannot g
 
 <CH.Code>
 
-```typescript tabs.routes.ts focus=3,19,25
+```typescript src/app/tabs/tabs.routes.ts focus=3,19,25
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { authGuard } from '../core/guards/auth.guard';
@@ -240,7 +240,7 @@ Import the `authGuard` and apply it to those two routes.
 
 <CH.Code>
 
-```typescript auth.guard.ts
+```typescript src/app/core/guards/auth.guard.ts
 import { CanActivateFn } from '@angular/router';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -256,7 +256,7 @@ We can still navigate to the `tab2` and `tab3` routes because our guard always r
 
 <CH.Code>
 
-```typescript auth.guard.ts focus=1,3,5[46:50],6
+```typescript src/app/core/guards/auth.guard.ts focus=1,3,5[46:50],6
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
@@ -276,7 +276,7 @@ We need to make our guard `async` and inject the `AuthenticationService`.
 
 <CH.Code>
 
-```typescript auth.guard.ts focus=8:12
+```typescript src/app/core/guards/auth.guard.ts focus=8:12
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
@@ -304,7 +304,7 @@ Run the application in a web browser and navigate directly to `http://localhost:
 
 <CH.Code>
 
-```typescript auth.guard.ts focus=3,8,14
+```typescript src/app/core/guards/auth.guard.ts focus=3,8,14
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { NavController } from '@ionic/angular';
@@ -341,7 +341,7 @@ The most common way for the backend API to protect its routes is to require that
 
 <CH.Code>
 
-```typescript authentication.service.ts focus=69:73
+```typescript src/app/core/authentication.service.ts focus=69:73
 import { Injectable } from '@angular/core';
 import {
   Auth0Provider,
@@ -349,7 +349,7 @@ import {
   AuthResult,
   ProviderOptions,
 } from '@ionic-enterprise/auth';
-import { Platform } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
 import { SessionService } from './session.service';
 
 @Injectable({
@@ -360,8 +360,8 @@ export class AuthenticationService {
   private provider: Auth0Provider;
   private isReady: Promise<void>;
 
-  constructor(platform: Platform, private session: SessionService) {
-    const isNative = platform.is('hybrid');
+  constructor(private session: SessionService) {
+    const isNative = Capacitor.isNativePlatform();
     this.provider = new Auth0Provider();
     this.authOptions = {
       audience: 'https://io.ionic.demo.ac',
@@ -432,7 +432,7 @@ export class AuthenticationService {
 }
 ```
 
-```typescript tab1.page.ts
+```typescript src/app/tab1/tab1.page.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
@@ -471,7 +471,7 @@ export class Tab1Page implements OnInit {
 }
 ```
 
-```html tab1.page.html
+```html src/app/tab1/tab1.page.html
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -509,7 +509,7 @@ Add a method to the `AuthenticationService` that gets the access token:
 
 <CH.Code>
 
-```typescript tab1.page.ts focus=16,36
+```typescript src/app/tab1/tab1.page.ts focus=16,36
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
@@ -558,7 +558,7 @@ Modify the `Tab1Page` to grab the access token.
 
 <CH.Code>
 
-```html tab1.page.html focus=26
+```html src/app/tab1/tab1.page.html focus=26
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -614,7 +614,7 @@ We now need to build up the interceptor and hook it up so it executes with each 
 
 <CH.Code>
 
-```typescript auth.interceptor.ts
+```typescript src/app/core/interceptors/auth.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -637,7 +637,7 @@ export class AuthInterceptor implements HttpInterceptor {
 }
 ```
 
-```typescript main.ts
+```typescript src/main.ts
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
@@ -668,7 +668,7 @@ The Angular CLI generated the start of the interceptor for us.
 
 <CH.Code>
 
-```typescript auth.interceptor.ts focus=9,13
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=9,13
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -700,7 +700,7 @@ Inject the authentication service.
 
 <CH.Code>
 
-```typescript auth.interceptor.ts focus=22:24
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=22:24
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -736,7 +736,7 @@ Not all requests require a token. For our made up use-case, paths ending in `pub
 
 <CH.Code>
 
-```typescript auth.interceptor.ts focus=8[22:35],19:25
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=8[22:35],19:25
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -778,7 +778,7 @@ Before passing the request to the next handler in the pipeline, get the access t
 
 <CH.Code>
 
-```typescript auth.interceptor.ts focus=22:28
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=22:28
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -826,7 +826,7 @@ If the token exists add it to the request as a bearer token.
 
 <CH.Code>
 
-```typescript main.ts
+```typescript src/main.ts
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
@@ -857,7 +857,7 @@ The `main.ts` file needs to be updated to provide the interceptor.
 
 <CH.Code>
 
-```typescript main.ts focus=9,10,19
+```typescript src/main.ts focus=9,10,19
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
@@ -909,7 +909,7 @@ The interceptor needs to be built out to clear the session data and navigate to 
 
 <CH.Code>
 
-```typescript unauth.interceptor.ts
+```typescript src/app/core/interceptors/unauth.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -932,7 +932,7 @@ export class UnauthInterceptor implements HttpInterceptor {
 }
 ```
 
-```typescript main.ts
+```typescript src/main.ts
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
@@ -966,7 +966,7 @@ We are starting with the generated interceptor.
 
 <CH.Code>
 
-```typescript unauth.interceptor.ts focus=8[22:24],18:23
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=8[22:24],18:23
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -1001,7 +1001,7 @@ Tap into the observable pipeline for the request. Notice that we only need to ha
 
 <CH.Code>
 
-```typescript unauth.interceptor.ts focus=9,10,14:17
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=9,10,14:17
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -1041,7 +1041,7 @@ Inject the `NavController` and `SessionService`.
 
 <CH.Code>
 
-```typescript unauth.interceptor.ts focus=25:30
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=25:30
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
