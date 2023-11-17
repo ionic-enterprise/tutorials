@@ -1,7 +1,68 @@
 ---
-title: Extending Microfrontends for Portals
+title: Extending Micro Frontends for Portals
 sidebar_label: Overview
 sidebar_position: 1
 ---
 
-## Running the Expenses Web Application
+Ionic Portals is a supercharged WebView component that enables the addition of web-based experiences to native mobile apps. <a href="https://ionic.io/docs/portals" target="_blank">Portals</a> enables native and web teams to better collaborate and bring new and existing web experiences to mobile in a safe, controlled way.
+
+Web developers use Portals to extend web-based experiences by layering on functionality that interacts with native mobile apps. 
+
+## Training Overview
+
+In this training, you will take an existing Portals project and implement Portals from the web development perspective. You will be guided through the different mechanisms available to communicate between a web-based experience and the native app that presents it through a Portal.
+
+Jobsync is the superapp that has been created for this training. A superapp is a thin native app that facilitates launching and communicating with several micro frontend web applications that contain application features. Jobsync is an employee tool-set with features such as time tracking, expense reporting, and task management.
+
+## Project Structure
+
+<div style={{float: "right", maxWidth: "550px", marginLeft: "40px"}}>
+
+![Jobsync Project Structure](/img/jobsync-project-structure-web.png)
+
+</div>
+
+Jobsync contains several applications, both native and web, contained within a single repository as a monorepo. Portals projects do not require a monorepo structure; however, it increases this training's ease of use.
+
+This training focuses on implementing Portals functionality for the _Expenses_ micro frontend web application.
+
+Micro frontends in Jobsync are written in React. To accommodate _all_ web developers, all coding in this training is isolated to the _Portals_ shared library, which is framework-agnostic.
+
+<div style={{ clear: 'both'}}></div>
+
+## Getting Started 
+
+### Prerequisites
+
+In order to install and build from this repo, you will need <a href="https://pnpm.io" target="_blank">pnpm</a>.
+
+### Cloning the Repository
+
+The Jobsync repository can be found using the following URL: <a href="https://github.com/ionic-enterprise/tutorials-and-training-portals" target="_blank">https://github.com/ionic-enterprise/tutorials-and-training-portals</a>.
+
+Follow the steps below to clone the repo, and checkout the correct tag to start with:
+
+```bash
+git clone https://github.com/ionic-enterprise/tutorials-and-training-portals
+cd ./tutorials-and-training-portals
+git checkout tags/start-tag
+```
+
+All web packages (micro frontends and shared libraries) reside within the `/web` subfolder. To install all dependencies and link shared libraries with micro frontends, run the following commands:
+
+```bash
+cd ./web
+pnpm install
+```
+
+### Running the Expenses Web Application
+
+Ensure that you are running the _Expenses_ micro frontend web application during this training. Doing so will allow you to view changes made in the _Portals_ shared library in the browser as you go. 
+
+To run the _Expenses_ web application, run the command below. It will be available at the following link: `localhost:5173`.
+
+```bash
+pnpm run --filter="expenses" dev
+```
+
+Proceed to the next page once you have cloned the repository and started the _Expenses_ web application.
