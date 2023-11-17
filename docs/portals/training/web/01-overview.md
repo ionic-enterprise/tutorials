@@ -45,7 +45,7 @@ Follow the steps below to clone the repo, and checkout the correct tag to start 
 ```bash
 git clone https://github.com/ionic-enterprise/tutorials-and-training-portals
 cd ./tutorials-and-training-portals
-git checkout tags/start-tag
+git checkout tags/start-web
 ```
 
 All web packages (micro frontends and shared libraries) reside within the `/web` subfolder. To install all dependencies and link shared libraries with micro frontends, run the following commands:
