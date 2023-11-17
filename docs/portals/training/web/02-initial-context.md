@@ -16,7 +16,7 @@ In order to obtain the session, the _Expenses_ web application needs to pass aut
 
 Most developers build web applications for Portals projects in isolation, without building and running native projects. This development workflow is encouraged; however, it does require that you stub initial context.
 
-This tutorial will guide you through completing the _Expenses_ web application functionality. You will use the Portals library to retrieve initial context set by the native portion of a Portals project. When developing a web application for a Portals project, initial context is not available, so you will learn how to stub initial context for development purposes.
+This step of the training will guide you through completing the _Expenses_ web application functionality. You will use the Portals library to retrieve initial context set by the native portion of a Portals project. When developing a web application for a Portals project, initial context is not available, so you will learn how to stub initial context for development purposes.
 
 > **Note:** As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
 
@@ -196,4 +196,4 @@ After saving the file, view the _Expenses_ web application in the browser. It is
 
 In this tutorial, you learned how to use initial context to retrieve data shared from a native application to a web application presented within a Portal. You also learned that initial context is only available when a Portals project is run, and stubbed initial context for development purposes.
 
-In the next tutorial, we will use the pub/sub communication mechanism available with Portals. 
+On the next page, we will use the pub/sub communication mechanism available with Portals. 
