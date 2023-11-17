@@ -74,8 +74,6 @@ export const resolveInitialContext = () =>
 
 As mentioned above, `accessToken` and `refreshToken` will be passed to the web application as initial context. Let's refactor `resolveInitialContext()` to use the Portals library to extract the initial context.
 
----
-
 ## Extracting Initial Context
 
 The Portals library (`@ionic/portals`) contains the API that allows us to extract initial context.
