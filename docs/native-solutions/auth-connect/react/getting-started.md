@@ -422,7 +422,7 @@ const setupAuthConnect = async (): Promise<void> => {
     platform: isNative ? 'capacitor' : 'web',
     logLevel: 'DEBUG',
     ios: { webView: 'private' },
-    web: { uiMode: 'popup', authFlow: 'implicit' },
+    web: { uiMode: 'popup', authFlow: 'PKCE' },
   });
 };
 ```
@@ -467,7 +467,7 @@ const setupAuthConnect = async (): Promise<void> => {
     platform: isNative ? 'capacitor' : 'web',
     logLevel: 'DEBUG',
     ios: { webView: 'private' },
-    web: { uiMode: 'popup', authFlow: 'implicit' },
+    web: { uiMode: 'popup', authFlow: 'PKCE' },
   });
 };
 
@@ -519,7 +519,7 @@ const setupAuthConnect = async (): Promise<void> => {
     platform: isNative ? 'capacitor' : 'web',
     logLevel: 'DEBUG',
     ios: { webView: 'private' },
-    web: { uiMode: 'popup', authFlow: 'implicit' },
+    web: { uiMode: 'popup', authFlow: 'PKCE' },
   });
 };
 
@@ -565,7 +565,7 @@ const setupAuthConnect = async (): Promise<void> => {
     platform: isNative ? 'capacitor' : 'web',
     logLevel: 'DEBUG',
     ios: { webView: 'private' },
-    web: { uiMode: 'popup', authFlow: 'implicit' },
+    web: { uiMode: 'popup', authFlow: 'PKCE' },
   });
 };
 
@@ -617,7 +617,7 @@ const setupAuthConnect = async (): Promise<void> => {
     platform: isNative ? 'capacitor' : 'web',
     logLevel: 'DEBUG',
     ios: { webView: 'private' },
-    web: { uiMode: 'popup', authFlow: 'implicit' },
+    web: { uiMode: 'popup', authFlow: 'PKCE' },
   });
 };
 
