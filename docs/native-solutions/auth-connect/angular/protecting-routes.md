@@ -596,14 +596,14 @@ Display the results in the page.
 
 We would not normally grab the access token and display it like that. This is just being done to make sure everything is working. Log in and out a few times. You should see a token while logged in but not while logged out.
 
-We will use an HTTP interceptor to attach the access token to outgoing HTTP requests. Use `npx ng generate interceptor core/interceptors/auth` to generate the code.
+We will use an HTTP interceptor to attach the access token to outgoing HTTP requests. Use `npx ng generate interceptor` to generate the code.
 
 <CH.Code>
 
 ```bash Terminal
-npx ng generate interceptor core/interceptors/auth
-CREATE src/app/core/interceptors/auth.interceptor.spec.ts (404 bytes)
-CREATE src/app/core/interceptors/auth.interceptor.ts (409 bytes)
+npx ng generate interceptor core/interceptors/auth --functional
+CREATE src/app/core/interceptors/auth.interceptor.spec.ts (476 bytes)
+CREATE src/app/core/interceptors/auth.interceptor.ts (149 bytes)
 ```
 
 </CH.Code>
@@ -615,33 +615,18 @@ We now need to build up the interceptor and hook it up so it executes with each 
 <CH.Code>
 
 ```typescript src/app/core/interceptors/auth.interceptor.ts
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor() {}
-
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request);
-  }
-}
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req);
+};
 ```
 
 ```typescript src/main.ts
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -654,7 +639,7 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    importProvidersFrom(IonicModule.forRoot({})),
+    provideIonicAngular(),
     provideRouter(routes),
   ],
 });
@@ -662,34 +647,22 @@ bootstrapApplication(AppComponent, {
 
 </CH.Code>
 
-The Angular CLI generated the start of the interceptor for us.
+The Angular CLI generated the start of the interceptor for us. This interceptor currently does nothing.
 
 ---
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/auth.interceptor.ts focus=9,13
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=2,3,6
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authentication: AuthenticationService) {}
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authentication = inject(AuthenticationService);
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request);
-  }
-}
+  return next(req);
+};
 ```
 
 </CH.Code>
@@ -700,32 +673,20 @@ Inject the authentication service.
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/auth.interceptor.ts focus=22:24
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=1[29:39],5:7
+import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authentication: AuthenticationService) {}
+const requestRequiresToken = (req: HttpRequest<any>): boolean => {
+  return !/\/public$/.test(req.url);
+};
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request);
-  }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authentication = inject(AuthenticationService);
 
-  private requestRequiresToken(req: HttpRequest<any>): boolean {
-    return !/\/public$/.test(req.url);
-  }
-}
+  return next(req);
+};
 ```
 
 </CH.Code>
@@ -736,38 +697,27 @@ Not all requests require a token. For our made up use-case, paths ending in `pub
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/auth.interceptor.ts focus=8[22:35],19:25
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, from, mergeMap } from 'rxjs';
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=4,13:19
+import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
+import { from, mergeMap } from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authentication: AuthenticationService) {}
+const requestRequiresToken = (req: HttpRequest<any>): boolean => {
+  return !/\/public$/.test(req.url);
+};
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return from(
-      this.requestRequiresToken(request)
-        ? this.authentication.getAccessToken().then((token) => {
-            null;
-          })
-        : Promise.resolve()
-    ).pipe(mergeMap(() => next.handle(request)));
-  }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authentication = inject(AuthenticationService);
 
-  private requestRequiresToken(req: HttpRequest<any>): boolean {
-    return !/\/public$/.test(req.url);
-  }
-}
+  return from(
+    requestRequiresToken(req)
+      ? authentication.getAccessToken().then((token) => {
+          null;
+        })
+      : Promise.resolve()
+  ).pipe(mergeMap(() => handle(req)));
+};
 ```
 
 </CH.Code>
@@ -778,44 +728,33 @@ Before passing the request to the next handler in the pipeline, get the access t
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/auth.interceptor.ts focus=22:28
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, from, mergeMap } from 'rxjs';
+```typescript src/app/core/interceptors/auth.interceptor.ts focus=16:22
+import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
+import { from, mergeMap } from 'rxjs';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authentication: AuthenticationService) {}
+const requestRequiresToken = (req: HttpRequest<any>): boolean => {
+  return !/\/public$/.test(req.url);
+};
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return from(
-      this.requestRequiresToken(request)
-        ? this.authentication.getAccessToken().then((token) => {
-            if (token) {
-              request = request.clone({
-                setHeaders: {
-                  Authorization: 'Bearer ' + token,
-                },
-              });
-            }
-          })
-        : Promise.resolve()
-    ).pipe(mergeMap(() => next.handle(request)));
-  }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authentication = inject(AuthenticationService);
 
-  private requestRequiresToken(req: HttpRequest<any>): boolean {
-    return !/\/public$/.test(req.url);
-  }
-}
+  return from(
+    requestRequiresToken(req)
+      ? authentication.getAccessToken().then((token) => {
+          if (token) {
+            request = request.clone({
+              setHeaders: {
+                Authorization: 'Bearer ' + token,
+              },
+            });
+          }
+        })
+      : Promise.resolve()
+  ).pipe(mergeMap(() => handle(req)));
+};
 ```
 
 </CH.Code>
@@ -827,10 +766,10 @@ If the token exists add it to the request as a bearer token.
 <CH.Code>
 
 ```typescript src/main.ts
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -843,7 +782,7 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    importProvidersFrom(IonicModule.forRoot({})),
+    provideIonicAngular(),
     provideRouter(routes),
   ],
 });
@@ -858,16 +797,16 @@ The `main.ts` file needs to be updated to provide the interceptor.
 <CH.Code>
 
 ```typescript src/main.ts focus=9,10,19
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '@app/core';
 
 if (environment.production) {
   enableProdMode();
@@ -876,8 +815,8 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    importProvidersFrom(IonicModule.forRoot({})),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideIonicAngular(),
     provideRouter(routes),
   ],
 });
@@ -885,7 +824,7 @@ bootstrapApplication(AppComponent, {
 
 </CH.Code>
 
-Include the `AuthInterceptor` in the [HTTP_INTERCEPTORS](https://angular.io/api/common/http/HTTP_INTERCEPTORS).
+This interceptors are typically provided [with the HTTP client](https://angular.io/api/common/http/provideHttpClient).
 
 </CH.Scrollycoding>
 
@@ -896,9 +835,9 @@ Now that the access token is sent to the backend, we need to also handle the cas
 <CH.Code>
 
 ```bash Terminal
-npx ng generate interceptor core/interceptors/unauth
-CREATE src/app/core/interceptors/unauth.interceptor.spec.ts (416 bytes)
-CREATE src/app/core/interceptors/unauth.interceptor.ts (411 bytes)
+npx ng generate interceptor core/interceptors/unauth --functional
+CREATE src/app/core/interceptors/unauth.interceptor.spec.ts (484 bytes)
+CREATE src/app/core/interceptors/unauth.interceptor.ts (151 bytes)
 ```
 
 </CH.Code>
@@ -910,39 +849,24 @@ The interceptor needs to be built out to clear the session data and navigate to 
 <CH.Code>
 
 ```typescript src/app/core/interceptors/unauth.interceptor.ts
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
 
-@Injectable()
-export class UnauthInterceptor implements HttpInterceptor {
-  constructor() {}
-
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request);
-  }
-}
+export const unauthInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req);
+};
 ```
 
 ```typescript src/main.ts
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '@app/core';
 
 if (environment.production) {
   enableProdMode();
@@ -951,8 +875,8 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    importProvidersFrom(IonicModule.forRoot({})),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideIonicAngular(),
     provideRouter(routes),
   ],
 });
@@ -966,31 +890,17 @@ We are starting with the generated interceptor.
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/unauth.interceptor.ts focus=8[22:24],18:23
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=2,6:8
+import { HttpInterceptorFn } from '@angular/common/http';
+import { tap } from 'rxjs';
 
-@Injectable()
-export class UnauthInterceptor implements HttpInterceptor {
-  constructor() {}
-
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
-      tap({
-        error: async (err: unknown) => {},
-      })
-    );
-  }
-}
+export const unauthInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req).pipe(
+    tap({
+      error: async (err: unknown) => {},
+    })
+  );
+};
 ```
 
 </CH.Code>
@@ -1001,36 +911,23 @@ Tap into the observable pipeline for the request. Notice that we only need to ha
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/unauth.interceptor.ts focus=9,10,14:17
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=2,4,5,8,9
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { tap } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { SessionService } from '../session.service';
 
-@Injectable()
-export class UnauthInterceptor implements HttpInterceptor {
-  constructor(
-    private navigation: NavController,
-    private session: SessionService
-  ) {}
+export const unauthInterceptor: HttpInterceptorFn = (req, next) => {
+  const navigation = inject(NavController);
+  const sesion = inject(SessionService);
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
-      tap({
-        error: async (err: unknown) => {},
-      })
-    );
-  }
-}
+  return next(req).pipe(
+    tap({
+      error: async (err: unknown) => {},
+    })
+  );
+};
 ```
 
 </CH.Code>
@@ -1041,41 +938,28 @@ Inject the `NavController` and `SessionService`.
 
 <CH.Code>
 
-```typescript src/app/core/interceptors/unauth.interceptor.ts focus=25:30
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+```typescript src/app/core/interceptors/unauth.interceptor.ts focus=1[10:26],14:17
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { tap } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { SessionService } from '../session.service';
 
-@Injectable()
-export class UnauthInterceptor implements HttpInterceptor {
-  constructor(
-    private navigation: NavController,
-    private session: SessionService
-  ) {}
+export const unauthInterceptor: HttpInterceptorFn = (req, next) => {
+  const navigation = inject(NavController);
+  const sesion = inject(SessionService);
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
-      tap({
-        error: async (err: unknown) => {
-          if (err instanceof HttpErrorResponse && err.status === 401) {
-            await this.session.clear();
-            this.navigation.navigateRoot(['/', 'tabs', 'tab1']);
-          }
-        },
-      })
-    );
-  }
-}
+  return next(req).pipe(
+    tap({
+      error: async (err: unknown) => {
+        if (err instanceof HttpErrorResponse && err.status === 401) {
+          await session.clear();
+          navigation.navigateRoot(['/', 'tabs', 'tab1']);
+        }
+      },
+    })
+  );
+};
 ```
 
 </CH.Code>
