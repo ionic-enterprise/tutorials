@@ -10,7 +10,7 @@ Initial context is useful when you want to pass authentication information, navi
 
 ## Overview
 
-In this exercise, we will learn:
+This tutorial will teach you:
 
 - How to use initial context to obtain session information passed from native code to the Portal's web application.
 - How to stub initial context within the web application's development workflow. 
@@ -73,7 +73,7 @@ As mentioned above, `accessToken` and `refreshToken` will be passed to the web a
 
 ## Extracting Initial Context
 
-The Portals library (`@ionic/portals`) contains the API that allows us to extract initial context.
+The Portals module (`@ionic/portals`) contains the API that allows us to extract initial context.
 
 <CH.Scrollycoding>
 
