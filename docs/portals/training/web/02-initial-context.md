@@ -10,19 +10,16 @@ Initial context is useful when you want to pass authentication information, navi
 
 ## Overview
 
-The _Expenses_ web application enables employees to view, edit, and add reimbursable expenses within the Jobsync superapp. The functionality of this micro frontend is nearly complete, it is only missing the ability to fetch the user's session information to ensure only their data gets returned from the expenses backend. 
+In this exercise, we will learn:
 
-In order to obtain the session, the _Expenses_ web application needs to pass authentication tokens to an API endpoint that returns session information. Those tokens are passed as initial context from the native portion of the Jobsync superapp to web applications presented within its Portals.
-
-Most developers build web applications for Portals projects in isolation, without building and running native projects. This development workflow is encouraged; however, it does require that you stub initial context.
-
-This step of the training will guide you through completing the _Expenses_ web application functionality. You will use the Portals library to retrieve initial context set by the native portion of a Portals project. When developing a web application for a Portals project, initial context is not available, so you will learn how to stub initial context for development purposes.
+- How to use initial context to obtain session information passed from native code to the Portal's web application.
+- How to stub initial context within the web application's development workflow. 
 
 > **Note:** As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
 
 ## Obtaining Session Information
 
-The _Expenses_ web application needs the user's session information (specifically the user ID) in order to call the expenses backend such that it only returns their expenses. Failing to provide a user ID will return all expenses available in the backend.
+The _Expenses_ web application needs to provide user session information in order to return a filtered list of expenses tied to the user. Without that information, the backend will return all expenses stored in the backend (for illustration purposes, you would not do this in a real project).
 
 In order to get session information, all micro frontends in the Jobsync app need to:
 
@@ -168,7 +165,9 @@ This error occurs because initial context is only available when running the ent
 
 ## Stubbing Initial Context for Development
 
-Stubbing the initial context is a pretty straightforward procedure. Modify `initial-context.ts` to add the highlighted code below:
+Most developers build web applications for Portals projects in isolation, without building and running native projects. This development workflow is encouraged; however, initial context is not available in this context. 
+
+When developing in isolation, initial context should be stubbed. Stubbing the initial context is a pretty straightforward procedure. Modify `initial-context.ts` to add the highlighted code below:
 
 ```typescript web/shared/portals/initial-context.ts focus=8:11,15[31:57]
 import { getInitialContext } from "@ionic/portals";

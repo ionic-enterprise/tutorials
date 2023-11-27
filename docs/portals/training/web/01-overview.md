@@ -8,7 +8,7 @@ Ionic Portals is a supercharged WebView component that enables the addition of w
 
 Web developers use Portals to extend web-based experiences by layering on functionality that interacts with native mobile apps. 
 
-## Training Overview
+## Overview
 
 In this training, you will take an existing Portals project and implement Portals from the web development perspective. You will be guided through the different mechanisms available to communicate between a web-based experience and the native app that presents it through a Portal.
 
