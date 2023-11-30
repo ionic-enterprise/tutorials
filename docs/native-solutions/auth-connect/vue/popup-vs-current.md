@@ -10,15 +10,15 @@ When the application is running in a web context, Auth Connect provides two diff
 
 ### `popup`
 
-With `popup`, the authentication provider is opened in a new browser tab / window. This mode is the most consistent with how Auth Connect works on mobile where the authentication provider is displayed in a secure web view. On the web, this  This option requires no extra code, but it may not be the best user experience for web.
+With `popup`, the authentication provider is opened in a new browser tab / window. This mode is the most consistent with how Auth Connect works on mobile where the authentication provider is displayed in a secure web view. On the web, this option requires no extra code, but it may not be the best user experience for web.
 
 If your application is only distributed as a web-native mobile app, and the web-context is only used for development, then it is best to use `popup`.
  
 ### `current`
 
-With `current`, the authentication provider is opened in the current windows, replacing your application. Your application will then be called with token information on the URL upon successful login. Since this is fundamentally different than the mobile implementation, it also means that special code is needed to handle it.
+With `current`, the authentication provider is opened in the current window, replacing your application. Your application will then be called with token information on the URL upon successful login. Since this is fundamentally different than the mobile implementation, it also means that special code is needed to handle it.
 
-If your application is distributed in a web context, it is worth considering using `current` for an improved user experience on web.
+If your application is distributed in a web context, it is worth considering using `current` for an improved user experience.
 
 ### General Strategy
 
