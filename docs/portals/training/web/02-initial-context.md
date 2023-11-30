@@ -34,29 +34,28 @@ Notice that expenses for multiple user IDs are displayed. Inspect the network tr
 
 Let's review the code that refreshes the user session:
 
- <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
   <div>
 
-  `refreshSession()` passes the `accessToken` and `refreshToken` to the refresh endpoint from a method called `resolveInitialContext()`.
+  Upon navigating to any route in the _Expenses_ web application, a utility method checks to see if the session needs to be refreshed.
 
-  The implementation for `resolveInitialContext()` simply returns hardcoded empty string values for `accessToken` and `refreshToken`.
-
-  Passing empty strings for these values results in the backend returning an incomplete session object.
+  If so, a utility method obtains `accessToken` and `refreshToken` from `resolveInitialContext()` a method exported as part of `@jobsync/portals`.
+  
+  The implementation of `resolveInitialContext()` returns hardcoded empty string values at the moment. 
 
   </div>
 
   <div>
     <CH.Code>
-```typescript web/shared/api/index.ts focus=3:7
-const refreshSession = async () => {
-  const endpoint = `${url}/auth/refresh`;
-  const { accessToken, refreshToken } = resolveInitialContext();
-  const { data } = await httpClient.post(endpoint, {
-    accessToken,
-    refreshToken,
-  });
-  session = data;
+
+```typescript web/apps/expenses/src/router.ts
+const refreshSessionIfNeeded = async (): Promise<void> => {
+  if (!session) {
+    const { accessToken, refreshToken } = resolveInitialContext();
+    return refreshSession(accessToken, refreshToken);
+  }
+  return Promise.resolve();
 };
 ```
 ---
@@ -69,7 +68,9 @@ export const resolveInitialContext = () =>
   </div>
 </div>
 
-As mentioned above, `accessToken` and `refreshToken` will be passed to the web application as initial context. Let's refactor `resolveInitialContext()` to use the Portals library to extract the initial context.
+Passing an empty access token and refresh token results in the backend returning an incomplete session when attempting to refresh the session.
+
+Mentioned above, `accessToken` and `refreshToken` will be passed to the _Expenses_ web application as initial context. In the next section, `resolveInitialContext()` will be modified to use the Portals library to extract the initial context.
 
 ## Extracting Initial Context
 
@@ -102,10 +103,7 @@ Start by creating a new file in the `web/shared/portals` library named `initial-
 
 <CH.Code>
 
-```typescript web/shared/portals/index.ts focus=4:5
-/**
- *  TODO: See "Stubbing Initial Context for Development"
- */
+```typescript web/shared/portals/index.ts focus=1:2
 import { resolveInitialContext } from "./initial-context";
 export { resolveInitialContext };
 
@@ -119,7 +117,7 @@ export const publishNavigateBackMessage = async () => {};
  */
 export const Analytics = {
   logAction: (opts: any) => {},
-  logScreenView: (opts: any) => {},
+  logScreen: (opts: any) => {},
 };
 ```
 

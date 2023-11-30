@@ -48,16 +48,13 @@ Start by creating a new file in the `web/shared/portals` library named `pub-sub.
 
 <CH.Code>
 
-```typescript web/shared/portals/index.ts focus=10:11
+```typescript web/shared/portals/index.ts focus=7:8
 /**
- *  TODO: See "Stubbing Initial Context for Development"
+ *  COMPLETE: See "Stubbing Initial Context for Development"
  */
 import { resolveInitialContext } from "./initial-context";
 export { resolveInitialContext };
 
-/**
- * TODO: See "Publishing Messages with PubSub"
- */
 import { publishNavigateBackMessage } from "./pub-sub";
 export { publishNavigateBackMessage };
 
@@ -66,7 +63,7 @@ export { publishNavigateBackMessage };
  */
 export const Analytics = {
   logAction: async (opts: any) => {},
-  logScreenView: async (opts: any) => {},
+  logScreen: async (opts: any) => {},
 };
 ```
 
