@@ -22,7 +22,7 @@ development, then it is best to use `popup`.
 ### `current`
 
 With `current`, the authentication provider is opened in the current window, replacing your application. Your
-application will then be called with token information on the URL upon successful login. Since this is fundamentally
+application will then be restarted with token information on the URL upon successful login. Since this is fundamentally
 different than the mobile implementation, it also means that special code is needed to handle it.
 
 If your application is distributed in a web context, it is worth considering using `current` for an improved
@@ -54,9 +54,9 @@ With this code:
   - Our `login()` stores the `AuthResult` and resolves.
 - If the user cancels the operation, our `login()` rejects with an error.
 
-With `current`, this code will still work like this on mobile. However, on web our app is completely replaced by the
-OIDC authentication provider's login page. As such, we are no longer awaiting the login and need to use a completely
-different mechanism to capture the authentication result when the app restarts.
+Since `current` only applies to the web, this code will still work like this on mobile. However, in a web context
+our app is completely replaced by the OIDC authentication provider's login page. As such, we are no longer awaiting
+the login and need to use a completely different mechanism to capture the authentication result when the app restarts.
 
 On web, the flow becomes:
 
@@ -444,10 +444,10 @@ export const useAuthentication = () => ({
 
 </CH.Code>
 
-If search parameters are present, the this is the login returning. We package the data and send it to Auth Connect
+If search parameters are present, then this is the login returning. We package the data and send it to Auth Connect
 to process and create an `AuthResult`.
 
-If there are no parameter, we will assume a logout and set the `authResult` to `null`.
+If there are no parameters, we will assume a logout and set the `authResult` to `null`.
 
 Either way, we will save the current `authResult`.
 
