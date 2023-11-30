@@ -1,28 +1,37 @@
 ---
 title: Popup vs. Current
-sidebar_label: Popup vs. Current 
+sidebar_label: Popup vs. Current
 sidebar_position: 4
 ---
 
 ## Overview
 
-When the application is running in a web context, Auth Connect provides two different options for presenting the authentication page: `popup` or `current`. Up to this point, we have been using `popup`. In this tutorial we will explore `current`.
+When the application is running in a web context, Auth Connect provides two different options for presenting the
+authentication page: `popup` or `current`. Up to this point, we have been using `popup`. In this tutorial we will
+explore `current`.
 
 ### `popup`
 
-With `popup`, the authentication provider is opened in a new browser tab / window. This mode is the most consistent with how Auth Connect works on mobile where the authentication provider is displayed in a secure web view. On the web, this option requires no extra code, but it may not be the best user experience for web.
+With `popup`, the authentication provider is opened in a new browser tab / window. This mode is the most consistent
+with how Auth Connect works on mobile where the authentication provider is displayed in a secure web view. On the
+web, this option requires no extra code, but it may not be the best user experience for web.
 
-If your application is only distributed as a web-native mobile app, and the web-context is only used for development, then it is best to use `popup`.
- 
+If your application is only distributed as a web-native mobile app, and the web-context is only used for
+development, then it is best to use `popup`.
+
 ### `current`
 
-With `current`, the authentication provider is opened in the current window, replacing your application. Your application will then be called with token information on the URL upon successful login. Since this is fundamentally different than the mobile implementation, it also means that special code is needed to handle it.
+With `current`, the authentication provider is opened in the current window, replacing your application. Your
+application will then be called with token information on the URL upon successful login. Since this is fundamentally
+different than the mobile implementation, it also means that special code is needed to handle it.
 
-If your application is distributed in a web context, it is worth considering using `current` for an improved user experience.
+If your application is distributed in a web context, it is worth considering using `current` for an improved
+user experience.
 
 ### General Strategy
 
-When using `popup`, it is very common to have login logic such as the following in the comoponent used for authentication:
+When using `popup`, it is very common to have login logic such as the following in the component used for
+authentication:
 
 ```typescript
 const signinClicked = async () => {
@@ -37,11 +46,12 @@ const signinClicked = async () => {
 
 With this code:
 
-- The `login()` is called and Auth Connect opens the OIDC authentication provider in a new tab (web) or a secure web view (mobile).
+- The `login()` is called and Auth Connect opens the OIDC authentication provider in a new tab (web) or a secure
+  web view (mobile).
 - Auth Connect listens for that tab or secure web view to close.
 - If the user successfully logs in:
-   - Auth Connect unpacks the data sent back when the tab or secure web view is closed and creates an `AuthResult`.
-   - Our `login()` stores the `AuthResult` and resolves.
+  - Auth Connect unpacks the data sent back when the tab or secure web view is closed and creates an `AuthResult`.
+  - Our `login()` stores the `AuthResult` and resolves.
 - If the user cancels the operation, our `login()` rejects with an error.
 
 With `current`, this code will still work like this on mobile. However, on web our app is completely replaced by the
@@ -53,41 +63,58 @@ On web, the flow becomes:
 - The `login()` is called and Auth Connect replaces the application with the OIDC authentication provider's login page.
 - The user logs in or cancels.
 - The application is restarted using the configured `redirectUri`.
-- In the case of a successful login, the authentication information will be included in the URL. It will need to be processed by our application.
+- In the case of a successful login, the authentication information will be included in the URL. It will need to
+  be processed by our application.
 
-In our case, the application is using the `/auth-action-complete` route. We can then use the page for that route to perform the following tasks:
+In our case, the application is using the `/auth-action-complete` route. We can then use the page for that route
+to perform the following tasks:
 
 - Determine if the application is running on the web.
 - If so, call a process that will examine the extra parameters for the URL.
-   - If parameters exist, this was a successful login, and the parameters are used to construct an `AuthResult` which is stored in the session vault.
-   - If parameters do not exist, this was a logout and the session vault is cleared.
+  - If parameters exist, this was a successful login, and the parameters are used to construct an `AuthResult`
+    which is stored in the session vault.
+  - If parameters do not exist, this was a logout and the session vault is cleared.
 
 ## Let's Code
 
-This tutorial builds upon the application created when doing the [getting started tutorial](getting-started) and converts it from using `popup` to using `current`. If you have the code from when you performed that tutorial, then you are good to go. If you need the code you can make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-vue/tree/main/auth-connect/getting-started).
+This tutorial builds upon the application created when doing the [getting started tutorial](getting-started) and
+converts it from using `popup` to using `current`. If you have the code from when you performed that tutorial,
+then you are good to go. If you need the code you can make a copy from
+[our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-vue/tree/main/auth-connect/getting-started).
 
 ### The Authentication Composable
 
 <CH.Scrollycoding>
 
 The first thing that needs to be done is to modify the Auth Connect configuration to use `current` mode on the web.
-A function is then created that handles the URL parameters when Auth Connect restarts our application after login or logout.
+A function is then created that handles the URL parameters when Auth Connect restarts our application after login
+or logout.
 
 <CH.Code>
 
 ```typescript src/composables/authentication.ts focus=11,12,31:41
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
+import {
+  Auth0Provider,
+  AuthConnect,
+  AuthResult,
+  ProviderOptions,
+} from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl:
+    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -121,7 +148,9 @@ const isReady: Promise<void> = AuthConnect.setup({
 export const useAuthentication = () => ({
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -141,7 +170,8 @@ export const useAuthentication = () => ({
 
 </CH.Code>
 
-Start by having a look at the current configuration that is used for our `AuthConnect.setup()` call. Note that it is using a `uiMode` of `popup`.
+Start by having a look at the current configuration that is used for our `AuthConnect.setup()` call. Note that it
+is using a `uiMode` of `popup`.
 
 Also note the return URLs. The page(s) accessed by that route is where we need to eventually modify.
 
@@ -152,16 +182,26 @@ Also note the return URLs. The page(s) accessed by that route is where we need t
 ```typescript src/composables/authentication.ts focus=38
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
+import {
+  Auth0Provider,
+  AuthConnect,
+  AuthResult,
+  ProviderOptions,
+} from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl:
+    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -195,7 +235,9 @@ const isReady: Promise<void> = AuthConnect.setup({
 export const useAuthentication = () => ({
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -224,16 +266,26 @@ Change the `uiMode` to `current`.
 ```typescript src/composables/authentication.ts focus=44:47
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
+import {
+  Auth0Provider,
+  AuthConnect,
+  AuthResult,
+  ProviderOptions,
+} from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl:
+    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -271,7 +323,9 @@ export const useAuthentication = () => ({
   },
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -291,7 +345,8 @@ export const useAuthentication = () => ({
 
 </CH.Code>
 
-Since we will be coming back into the app after login, we need a function to handle that. For now, just wait for Auth Connect to be ready, then read the URL search parameters.
+Since we will be coming back into the app after login, we need a function to handle that. For now, just wait for
+Auth Connect to be ready, then read the URL search parameters.
 
 ---
 
@@ -300,16 +355,26 @@ Since we will be coming back into the app after login, we need a function to han
 ```typescript src/composables/authentication.ts focus=47:53
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
+import {
+  Auth0Provider,
+  AuthConnect,
+  AuthResult,
+  ProviderOptions,
+} from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl:
+    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative
+    ? 'io.ionic.acdemo://auth-action-complete'
+    : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -346,7 +411,10 @@ export const useAuthentication = () => ({
     const params = new URLSearchParams(window.location.search);
     if (params.size > 0) {
       const queryEntries = Object.fromEntries(params.entries());
-      authResult = await AuthConnect.handleLoginCallback(queryEntries, authOptions);
+      authResult = await AuthConnect.handleLoginCallback(
+        queryEntries,
+        authOptions
+      );
     } else {
       authResult = null;
     }
@@ -354,7 +422,9 @@ export const useAuthentication = () => ({
   },
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
+    return (
+      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
+    );
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -374,7 +444,8 @@ export const useAuthentication = () => ({
 
 </CH.Code>
 
-If search parameters are present, the this is the login returning. We package the data and send it to Auth Connect to process and create an `AuthResult`.
+If search parameters are present, the this is the login returning. We package the data and send it to Auth Connect
+to process and create an `AuthResult`.
 
 If there are no parameter, we will assume a logout and set the `authResult` to `null`.
 
@@ -384,8 +455,8 @@ Either way, we will save the current `authResult`.
 
 ### Auth Action Completed Page
 
-The Auth Connect configuration for the application redirects back into the application via the `/auth-action-complete` route.
-The code needs to determine if we are running in a web context, and if so:
+The Auth Connect configuration for the application redirects back into the application via the
+`/auth-action-complete` route. The code needs to determine if we are running in a web context, and if so:
 
 - Handle the authentication.
 - Route back to the root page.
@@ -422,7 +493,7 @@ import { IonContent, IonSpinner } from '@ionic/vue';
 
 </CH.Code>
 
-The AuthActionCompletePage currently just contains markup to show a spinner. No logic is in place. 
+The AuthActionCompletePage currently just contains markup to show a spinner. No logic is in place.
 
 ---
 
@@ -551,7 +622,6 @@ Once the URL has been handled, redirect to the root page.
 **Note**: for this application, redirecting to the root page is the correct thing to do. In a more complex application,
 it may be more appropriate to check various states before determining the route. If so, such logic should be abstracted
 into a routing routine.
-
 
 ## Next Steps
 
