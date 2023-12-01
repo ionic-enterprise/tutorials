@@ -417,14 +417,17 @@ Modify the functional component syntax such that we can start adding the require
 
 <CH.Code>
 
-```tsx src/pages/AuthActionCompletePage.tsx focus=1,6,7
+```tsx src/pages/AuthActionCompletePage.tsx focus=1,2,7:10
+import { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonPage, IonSpinner } from '@ionic/react';
 import './AuthActionCompletePage.css';
 
 const AuthActionCompletePage: React.FC = () => {
-  if (!Capacitor.isNativePlatform())) {
-  }
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform())) {
+    }
+  }, []);
 
   return (
     <IonPage>
@@ -442,22 +445,25 @@ export default AuthActionCompletePage;
 
 </CH.Code>
 
-Import Capacitor so the page can determine if it is running in a native context or not.
+Import Capacitor so the page can determine if it is running in a native context or not. Wrap this in a `useEffect`.
 
 ---
 
 <CH.Code>
 
-```tsx src/pages/AuthActionCompletePage.tsx focus=3,8
+```tsx src/pages/AuthActionCompletePage.tsx focus=4,10,12[7:24]
+import { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonPage, IonSpinner } from '@ionic/react';
 import { handleAuthCallback } from '../utils/authentication';
 import './AuthActionCompletePage.css';
 
 const AuthActionCompletePage: React.FC = () => {
-  if (!Capacitor.isNativePlatform())) {
-    handleAuthCallback();
-  }
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform())) {
+      handleAuthCallback();
+    }
+  }, [handleAuthCallback]);
 
   return (
     <IonPage>
@@ -481,7 +487,8 @@ If the application is not running in a native context, handle the return from th
 
 <CH.Code>
 
-```tsx src/pages/AuthActionCompletePage.tsx focus=3,8,11[25:57]
+```tsx src/pages/AuthActionCompletePage.tsx focus=4,9,13[27:59]
+import { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { IonContent, IonPage, IonSpinner } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
@@ -491,9 +498,11 @@ import './AuthActionCompletePage.css';
 const AuthActionCompletePage: React.FC = () => {
   const history = useHistory();
 
-  if (!Capacitor.isNativePlatform())) {
-    handleAuthCallback().then(() => history.replace('/'));
-  }
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform())) {
+      handleAuthCallback().then(() => history.replace('/'));
+    }
+  }, [handleAuthCallback]);
 
   return (
     <IonPage>
