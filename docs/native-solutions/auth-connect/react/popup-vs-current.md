@@ -71,10 +71,12 @@ In our case, the application is using the `/auth-action-complete` route. We can 
 to perform the following tasks:
 
 - Determine if the application is running on the web.
-- If so, call a process that will examine the extra parameters for the URL.
-  - If parameters exist, this was a successful login, and the parameters are used to construct an `AuthResult`
-    which is stored in the session vault.
-  - If parameters do not exist, this was a logout and the session vault is cleared.
+- If so:
+  - Call a process that will examine the extra parameters for the URL.
+    - If parameters exist, this was a successful login, and the parameters are used to construct an `AuthResult`
+      which is stored in the session vault.
+    - If parameters do not exist, this was a logout and the session vault is cleared.
+  - Continue navigation to the appropriate page within the application.
 
 ## Let's Code
 
