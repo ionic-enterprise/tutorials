@@ -4,7 +4,7 @@ sidebar_label: Implementing a Plugin
 sidebar_position: 4
 ---
 
-Portals uses Capacitor under the hood, allowing the use of <a href="https://ionic.io/docs/portals/for-ios/how-to/using-a-capacitor-plugin" target="_blank">Capacitor plugins</a> as a means of communication between native and web code. The Capacitor Plugin API allows for a structured, class-based approach to communication.  
+Portals projects can use <a href="https://ionic.io/docs/portals/for-ios/how-to/using-a-capacitor-plugin" target="_blank">Capacitor plugins</a> to communicate between web and native code. The Capacitor Plugin API provides a structured, object-oriented approach to communicating between web and native suitable for larger and more complex use-cases.
 
 Writing a Capacitor plugin is the recommended way to expose complex native functionality to web applications presented through a Portal, such as scanning a barcode or integrating with a 3rd party native SDK.
 
@@ -104,17 +104,7 @@ Replace the existing `Analytics` export with an import and export of the new con
 
 </CH.Scrollycoding>
 
-Looking at the _Expenses_ web application within a browser, you will see the following error:
-
-```
-"Analytics" plugin is not implemented on web
-```
-
-This error occurs because there are calls to `Analytics.logAction()` and `Analytics.logScreen()` in the _Expenses_ web application but there is no implementation that can be called when it is run on a web browser, as it would be as part of a typical web development workflow.
-
-> **Note:** Plugin calls are made within a React context and will not be expanded upon in this tutorial. If desired, search the codebase to see where the calls are made.
-
-In the next section we will implement the analytics plugin for the web platform and resolve the issue.
+When you see the error message `"Analytics" plugin is not implemented on the web`, it indicates that the web implementation of the Analytics plugin is missing. In the following sections, we will address this and provide a complete implementation for the web platform.
 
 ## Implementing the Plugin
 

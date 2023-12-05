@@ -1,16 +1,18 @@
 ---
-title: Extending Micro Frontends for Portals
+title: Portals Integration for Web Developers
 sidebar_label: Overview
 sidebar_position: 1
 ---
 
 Ionic Portals is a supercharged WebView component that enables the addition of web-based experiences to native mobile apps. <a href="https://ionic.io/docs/portals" target="_blank">Portals</a> enables native and web teams to better collaborate and bring new and existing web experiences to mobile in a safe, controlled way.
 
-Web developers use Portals to extend web-based experiences by layering on functionality that interacts with native mobile apps. 
+Portals provides web developers with ways to communicate with the native application presenting their web experience.
 
 ## Overview
 
-In this training, you will take an existing Portals project and implement Portals from the web development perspective. You will be guided through the different mechanisms available to communicate between a web-based experience and the native app that presents it through a Portal.
+In this training, you will integrate Portals within an existing web application by implementing communication between the web and native layers of a Portals project. This training exercises all available communication mechanisms supported by Portals: initial context, publisher-subscriber messaging, and using Capacitor plugins.  
+
+Portals is designed to let developers work within their existing workflows. This training is designed to be completed only using web development tools and does not require any native tooling such as Android Studio and Xcode.
 
 Jobsync is the superapp that has been created for this training. A superapp is a thin native app that facilitates launching and communicating with several micro frontend web applications that contain application features. Jobsync is an employee tool-set with features such as time tracking, expense reporting, and task management.
 

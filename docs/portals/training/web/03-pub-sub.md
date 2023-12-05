@@ -4,10 +4,9 @@ sidebar_label: Publishing Messages
 sidebar_position: 3
 ---
 
-Portals offer a seamless means of communication between web and native code via a <a href="https://ionic.io/docs/portals/for-web/portals-plugin" target="_blank">publish/subscribe interface</a>. This mechanism, commonly known as pub/sub, is primarily used for broadcasting messages from the web to native subscribers. However, it supports the reverse flow, enabling web code to subscribe and handle messages from native code.
+Portals offers a seamless means of communication between web and native code via a <a href="https://ionic.io/docs/portals/for-web/portals-plugin" target="_blank">publish/subscribe interface</a>. This mechanism, commonly known as pub/sub, is primarily used for broadcasting messages from the web to native subscribers. However, it supports the reverse flow, enabling web code to subscribe and handle messages from native code.
 
 Pub/sub communication works well for simple UI actions, like initiating native navigation or triggering native dialogs.
-
 
 ## Overview
 
@@ -24,7 +23,6 @@ In order to navigate back to this native view, all micro frontends need to publi
 The back button of the _Expenses_ web application's landing page (`ExpensesList.tsx`) fires a method called `publishNavigateBackMessage` when clicked. It currently does nothing -- in the next section we will modify it to publish a message using the Portals module.
 
 > **Note:** All micro frontends in Jobsync use `publishNavigateBackMessage` on their landing pages. Implementing the method will allow them to publish messages as well.
-
 
 ## Publishing a Message
 
@@ -87,7 +85,7 @@ export const publishNavigateBackMessage = async () => {
 
 </CH.Code>
 
-The `publish` method supports type-safety. Typing messages is a best practice, as it prevents publishing messages that aren't subscribed to on the native side.
+The `type Messages` declaration ensures type safety for our messages, preventing potential bugs and promoting robust code. It allows us to define the structure of our messages and catch any inconsistencies during development.
 
 ---
 
@@ -109,8 +107,7 @@ Finally, call `publish` with the proper message.
 
 </CH.Scrollycoding>
 
-If you press the back button on the _Expenses_ web application, the method fires, but there are no subscribers available to handle the messages published. While pub/sub is a simple communication mechanism to use, the tradeoff is that it requires 
-integration testing from the native side to ensure it functions properly.
+If you press the back button on the _Expenses_ web application, the method fires, but there are no subscribers available to handle the messages published. While pub/sub is a simple communication mechanism to use, the tradeoff is that it is only testable from a native application presenting the web application within a Portal.
 
 ## Conclusion
 

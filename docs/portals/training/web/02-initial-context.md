@@ -70,7 +70,7 @@ export const resolveInitialContext = () =>
 
 Passing an empty access token and refresh token results in the backend returning an incomplete session when attempting to refresh the session.
 
-Mentioned above, `accessToken` and `refreshToken` will be passed to the _Expenses_ web application as initial context. In the next section, `resolveInitialContext()` will be modified to use the Portals library to extract the initial context.
+Mentioned above, `accessToken` and `refreshToken` will be passed to the _Expenses_ web application as initial context. In the next section, `resolveInitialContext()` will be modified to use the Portals module to extract the initial context.
 
 ## Extracting Initial Context
 
@@ -145,7 +145,7 @@ export const resolveInitialContext = (): InitialContext => {
 
 </CH.Code>
 
-Adjust `resolveInitialContext()` to use the Portals library. Data passed through as initial context is available in the `value` property.
+Adjust `resolveInitialContext()` to use the Portals module. Data passed through as initial context is available in the `value` property.
 
 
 </CH.Scrollycoding>
