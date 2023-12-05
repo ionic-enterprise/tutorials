@@ -4,7 +4,9 @@ sidebar_label: Creating Passes
 sidebar_position: 2
 ---
 
-Creating an Apple Wallet Pass requires a backend (it cannot be done in just an App). So in this tutorial we'll show you how to do this in [NodeJS](https://nodejs.org/) using a Cloudflare Worker. The same principles apply for other languages.
+Creating Apple Wallet Passes must occur on a backend server as mobile apps are restricted from generating them.
+
+This tutorial will walk you through a sample backend service that generates Apple Wallet Passes developed in [NodeJS](https://nodejs.org/) using a Cloudflare Worker. The principles applied in this tutorial apply to other server stacks and their programming languages.
 
 A [Sample Project](https://github.com/dtarnawsky/cs-digital-pass/tree/main/backend) is available if you would prefer to look at code.
 

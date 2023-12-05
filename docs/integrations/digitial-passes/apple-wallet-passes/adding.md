@@ -11,7 +11,7 @@ A [sample project](https://github.com/dtarnawsky/cs-digital-pass) is available i
 ## Downloading a Pass
 You can download a `pkpass` file in a Capacitor app using this function called `get`:
 ```typescript
-  public async get(url: string): Promise<string> {
+  async function get(url: string): Promise<string> {
     const response = await fetch(url);
     const blob = await response.blob();
     const base64 = await blobToBase64(blob);
@@ -22,7 +22,7 @@ You can download a `pkpass` file in a Capacitor app using this function called `
   }
 ```
 
-As we need the `pkpass` data base64 encoded we have a helper function called `blobToBase64`:
+`pkpass` data must be base64 encoded, create a helper function called `blobToBase64`:
 ```typescript
 function blobToBase64(blob: Blob): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ function blobToBase64(blob: Blob): Promise<string | ArrayBuffer | null> {
 
 ## Adding to Apple Wallet
 
-After downloading the pass we need to add it using a plugin. In this tutorial we'll use `capacitor-pass-to-wallet` which you can install by running these commands:
+After downloading the pass we need to add it using a plugin. In this tutorial we'll use [`capacitor-pass-to-wallet`](https://github.com/valentinAbundo/capacitor-pass-to-wallet) which you can install by running these commands:
 
 ```bash
 npm install capacitor-pass-to-wallet
