@@ -6,7 +6,7 @@ sidebar_position: 4
 
 Launching a Capacitor app on an Android device typically initiates the display of your application's content in a webview. However, if the user is in the process of authentication and leaves the app it might not display the login page in the same state when the user returns. To fix this behavior you would want the app to direct users back to the login page instead of the application's content in such scenarios. To achieve this, specific modifications are necessary, as outlined in the following steps.
 
-Go to your Capacitor Android project and navigate to the directory that contains your application's package. Your path will be something like `android/app/src/main/java/io/ionic/starter/`. However, the end of the path will reflect your bundle ID.
+Go to your Capacitor Android project and navigate to the directory that contains your application's package. Your path will be something like `android/app/src/main/java/io/ionic/starter/`. However, the end of the path will reflect your unique bundle ID.
 
 Created a new Java file in this folder named `LauncherActivity.java`.
 
@@ -62,7 +62,7 @@ public class LauncherActivity extends AppCompatActivity {
 
 </CH.Code>
 
-Replace `io.ionic.starter` with your projects identifier.
+Replace `io.ionic.starter` with your project's identifier.
 
 ---
 
