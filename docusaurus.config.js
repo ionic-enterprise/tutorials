@@ -12,7 +12,7 @@ const config = {
   favicon: 'img/favicon-96x96.png',
 
   url: 'https://ionic-enterprise.github.io',
-  baseUrl: '/tutorials',
+  baseUrl: '/docs/tutorials',
   organizationName: 'ionic-enterprise',
   projectName: 'tutorials',
   onBrokenLinks: 'throw',
