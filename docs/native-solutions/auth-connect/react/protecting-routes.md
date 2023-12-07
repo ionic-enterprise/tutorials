@@ -648,8 +648,8 @@ client.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (session?.accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${session.accessToken}`;
+    if (error.response.status === 401) {
+      setSession(null);
     }
     return Promise.reject(error);
   }
