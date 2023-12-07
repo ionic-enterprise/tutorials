@@ -60,7 +60,7 @@ import {
 } from '@ionic-enterprise/auth';
 import { getSnapshot, setSession } from './session-store';
 
-// Existing code cut out for clarity. It is left as-is in your code.
+// Existing code cut out for clarity. Code not shown here should be left as-is in your project.
 
 const refreshIfExpired = async (): Promise<void> => {
   null;
@@ -86,7 +86,7 @@ import {
 } from '@ionic-enterprise/auth';
 import { getSnapshot, setSession } from './session-store';
 
-// Existing code cut out for clarity. It is left as-is in your code.
+// Existing code cut out for clarity. Code not shown here should be left as-is in your project.
 
 const refreshIfExpired = async (): Promise<void> => {
   const authResult = getSnapshot();
