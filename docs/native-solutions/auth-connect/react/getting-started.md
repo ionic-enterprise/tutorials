@@ -1394,6 +1394,20 @@ const setSession = (newSession: AuthResult | null) => {
 export { subscribe, getSnapshot, setSession };
 ```
 
+```typescript src/main.tsx
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
 </CH.Code>
 
 Currently, the session information is _only_ stored in the `session` variable. We will modify our code to store the session information using the `Preferences` plugin.
@@ -1483,7 +1497,7 @@ Save the session to `Preferences` when the session is set.
 
 <CH.Code>
 
-```typescript src/utils/session-store.ts focus=30:35
+```typescript src/utils/session-store.ts focus=30:35,37[10:20]
 import { AuthResult } from '@ionic-enterprise/auth';
 import { Preferences } from '@capacitor/preferences';
 
@@ -1513,19 +1527,44 @@ const setSession = async (newSession: AuthResult | null) => {
   emitChange();
 };
 
-Preferences.get({ key: 'session' }).then((result) => {
-  if (result.value) {
-    session = JSON.parse(result.value);
-    emitChange();
+const initialize = async (): Promise<void> => {
+  const { value } = await Preferences.get({ key: 'session' });
+  if (value) {
+    session = JSON.parse(value);
   }
-});
+};
 
-export { subscribe, getSnapshot, setSession };
+export { initialize, subscribe, getSnapshot, setSession };
 ```
 
 </CH.Code>
 
-Get the session from `Preferences` when the code is instantiated.
+Create an `initialize()` function that gets the value from the `Preferences` plugin.
+
+---
+
+<CH.Code>
+
+```typescript src/main.tsx focus=4,8:14
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { initialize } from './utils/session-store';
+
+const container = document.getElementById('root');
+const root = createRoot(container!);
+initialize().then(() =>
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  )
+);
+```
+
+</CH.Code>
+
+Ensure the authentication information is initialized before the application is mounted.
 
 </CH.Scrollycoding>
 
