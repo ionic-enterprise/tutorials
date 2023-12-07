@@ -6,7 +6,7 @@ sidebar_position: 1
 
 A Digital pass can be added to Apple Wallet in a Capacitor app by downloading the pass from your backend, and using a Capacitor plugin to add it. These steps and code needed are outlined below.
 
-A [sample project](https://github.com/dtarnawsky/cs-digital-pass) is available if you would like to see adding a pass in action.
+A [sample project](https://github.com/ionic-enterprise/tutorials-digital-passes) is available if you would like to see adding a pass in action.
 
 ## Downloading a Pass
 You can download a `pkpass` file in a Capacitor app using this function called `get`:

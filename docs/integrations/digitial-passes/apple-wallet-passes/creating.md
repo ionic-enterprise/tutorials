@@ -8,7 +8,7 @@ Creating Apple Wallet Passes must occur on a backend server as mobile apps are r
 
 This tutorial will walk you through a sample backend service that generates Apple Wallet Passes developed in [NodeJS](https://nodejs.org/) using a Cloudflare Worker. The principles applied in this tutorial apply to other server stacks and their programming languages.
 
-A [Sample Project](https://github.com/dtarnawsky/cs-digital-pass/tree/main/backend) is available if you would prefer to look at code.
+A [Sample Project](https://github.com/ionic-enterprise/tutorials-digital-passes/tree/main/backend) is available if you would prefer to look at code.
 
 There are 3 main steps in creating a pass:
 1. **[Designing](#designing)** - Similar to HTML, a pass needs to be designed to show the information you want on it.
@@ -18,7 +18,7 @@ There are 3 main steps in creating a pass:
 ## Designing
 Apple documents the manual [content and design of a pass](https://developer.apple.com/documentation/walletpasses/creating_the_source_for_a_pass) but there are 3rd party designers like [Passkit Visual Designer](https://pkvd.app/) to help.
 
-You can use the sample project as a design template: The [model](https://github.com/dtarnawsky/cs-digital-pass/tree/main/backend/models) folder contains the necessary images and `pass.json` file that defines the structure of the pass:
+You can use the sample project as a design template: The [model](https://github.com/ionic-enterprise/tutorials-digital-passes/tree/main/backend/models) folder contains the necessary images and `pass.json` file that defines the structure of the pass:
 
 ```json
 {
@@ -104,7 +104,7 @@ You'll need to convert this `cer` to `pem` format as well:
 openssl x509 -inform DER -outform PEM -in AppleWWDRCAG4.cer -out wwdr.pem
 ```
 
-The 3 important secret files: `wwdr.pem`, `pass.pem`, `my-key.key` are text based and passed into our node application in [`index.ts`](https://github.com/dtarnawsky/cs-digital-pass/blob/main/backend/src/index.ts). From here the implementation is specific to CloudFlare Workers.
+The 3 important secret files: `wwdr.pem`, `pass.pem`, `my-key.key` are text based and passed into our node application in [`index.ts`](https://github.com/ionic-enterprise/tutorials-digital-passes/blob/main/backend/src/index.ts). From here the implementation is specific to CloudFlare Workers.
 
 ### CloudFlare Worker Setup
 
