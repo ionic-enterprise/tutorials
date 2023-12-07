@@ -8,7 +8,7 @@ Creating Apple Wallet Passes must occur on a backend server as mobile apps are r
 
 This tutorial will walk you through a sample backend service that generates Apple Wallet Passes developed in [NodeJS](https://nodejs.org/) using a Cloudflare Worker. The principles applied in this tutorial apply to other server stacks and their programming languages.
 
-A [Sample Project](https://github.com/ionic-enterprise/tutorials-digital-passes/tree/main/backend) is available if you would prefer to look at code.
+A [Sample Project](https://github.com/ionic-enterprise/tutorials-digital-passes/tree/main/backend) is available if you would prefer to look at code. 
 
 There are 3 main steps in creating a pass:
 1. **[Designing](#designing)** - Similar to HTML, a pass needs to be designed to show the information you want on it.
