@@ -8,7 +8,7 @@ Launching a Capacitor app on an Android device typically initiates the display o
 
 Go to your Capacitor Android project and navigate to the directory that contains your application's package. Your path will be something like `android/app/src/main/java/io/ionic/starter/`. However, the end of the path will reflect your unique bundle ID.
 
-Created a new Java file in this folder named `LauncherActivity.java`.
+Create a new Java file in this folder named `LauncherActivity.java`.
 
 <CH.Scrollycoding>
 
