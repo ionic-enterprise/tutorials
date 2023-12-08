@@ -30,7 +30,7 @@ Up to now we have taken a rather simplistic but unrealistic approach of performi
 
 #### Extract the Tabs
 
-We will extract the tabs into their own component with reach of pages within the tabs being served as a child of a newly created `/tabs` route.
+We will extract the tabs into their own component with each of pages within the tabs being served as a child of a newly created `/tabs` route.
 
 First create the `src/routes/Tabs.tsx` component.
 
