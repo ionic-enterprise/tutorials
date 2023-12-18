@@ -839,16 +839,25 @@ Next we will see how to remove this data from within our application.
 
 The vault has two different methods that we can use to remove the data:
 
-- `clear`: Clear all of the data stored in the vault and destroy the vault. This operation _does not_ require the 
-  vault to be unlocked.
-- `removeValue`: Clear just the data stored with the specified key. This operation _does_ require the vault to be
-  unlocked.
+- `clear`: Clear all of the data stored in the vault and remove the vault from the keystore / keychain.
+  - This operation _does not_ require the vault to be unlocked.
+  - This operation will remove the existing vault from the keychain / keystore.
+  - Subsequent operations on the vault such as storing a new session will not require the vault to be unlocked
+    since the vault had been removed.
+  - Use this method if your vault stores a single logical entity, even if it uses multiple entries to do so.
+- `removeValue`: Clear just the data stored with the specified key.
+  - This operation _does_ require the vault to be unlocked.
+  - This operation will not remove the existing vault from the keychain / keystore even though the vault may
+    be empty.
+  - Subsequent operations on the vault such as storing a new session _may_ require the vault to be unlocked
+    since the vault had been removed.
+  - Use this method if your vault stores multiple logical entities.
 
 **Note:** We will address locking and unlocking a vault later in this tutorial.
 
-Since we are only storing a single key in our example, we could use either method. However, if we later expand our
-vault to store multiple pieces of information then using `removeValue()` will allow us to only remove the session
-data, so we will use that method in `src/app/core/session-vault.service.ts`.
+Our vault stores session information. Having a single vault that stores _only_ the session information is the
+best-practice for this type of data, and it is the practice we are using here. Thus we will use the `clear()`
+method to clear the session.
 
 <CH.Code rows={8}>
 
@@ -885,7 +894,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 }
 ```
@@ -1022,7 +1031,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 }
 ```
@@ -1070,7 +1079,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async updateUnlockMode(type: VaultType): Promise<void> {
@@ -1121,7 +1130,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async updateUnlockMode(mode: UnlockMode): Promise<void> {
@@ -1172,7 +1181,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async updateUnlockMode(mode: UnlockMode): Promise<void> {
@@ -1227,7 +1236,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async updateUnlockMode(mode: UnlockMode): Promise<void> {
@@ -1288,7 +1297,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async updateUnlockMode(mode: UnlockMode): Promise<void> {
@@ -1593,7 +1602,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async lock(): Promise<void> {
@@ -1922,7 +1931,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async lock(): Promise<void> {
@@ -2000,7 +2009,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async lock(): Promise<void> {
@@ -2133,7 +2142,7 @@ export class SessionVaultService {
   }
 
   async clearSession(): Promise<void> {
-    await this.vault.removeValue('session');
+    await this.vault.clear();
   }
 
   async lock(): Promise<void> {
