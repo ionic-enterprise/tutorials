@@ -121,8 +121,9 @@ We should do a `cap sync` with each build. Change the scripts in `package.json` 
 
 ## Install Identity Vault
 
-In order to install Identity Vault, you will need to use `ionic enterprise register` to register your product key.
-This will create a `.npmrc` file containing the product key.
+In order to install Identity Vault, you will need to use `ionic enterprise register`
+[register your product key](https://ionic.io/docs/enterprise-starter/enterprise-key). This will create a `.npmrc` file
+containing the product key.
 
 If you have already performed that step for your production application, you can just copy the `.npmrc` file from your
 production project. Since this application is for learning purposes only, you don't need to obtain another key.
@@ -144,7 +145,13 @@ information. The vault is managed via our `SessionVaultService`. Generate that n
 ionic generate service core/session-vault
 ```
 
-Also create a simple "Vault Factory" class. The purpose of this class is two-fold:
+Also create a simple "Vault Factory" class.
+
+```bash Terminal
+ionic generate class core/Vault --type factory --skip-tests
+```
+
+The purpose of this class is two-fold:
 
 1. It hides the fact that a different vault is used on native vs. browser platforms.
 1. It facilitates mocking the vault, which makes unit testing easier.
@@ -161,6 +168,8 @@ export class VaultFactory {
   }
 }
 ```
+
+**Note:** To avoid confusion, change the name of the generated factory class from `Vault` to `VaultFactory`.
 
 </CH.Code>
 
@@ -335,7 +344,11 @@ Let's store some data in the vault. Here, we will:
 - Add a method to the `SessionVaultService` to store a session.
 - Add a button to our `Tab1Page` to store a fake session.
 
-First, let's define the shape of our authentication session data via `src/app/models/session.ts`.
+First, let's define the shape of our authentication session data via:
+
+```bash Terminal
+ionic generate interface models/Session
+```
 
 ```typescript src/app/models/session.ts
 export interface Session {
@@ -2114,6 +2127,7 @@ export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage'
 })
 export class SessionVaultService {
   private vault: BrowserVault | Vault;
+  private lockedSubject: Subject<boolean>;
 
   constructor() {
     this.vault = VaultFactory.create();
