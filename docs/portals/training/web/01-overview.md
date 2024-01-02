@@ -24,11 +24,11 @@ Jobsync is the superapp that has been created for this training. A superapp is a
 
 </div>
 
-Jobsync contains several applications, both native and web, contained within a single repository as a monorepo. Portals projects do not require a monorepo structure; however, it increases this training's ease of use.
+Jobsync is comprised of several applications - both native and web - contained within a single repository as a monorepo. A monorepo setup **is not** required when using Portals. Ionic publishes Portals demos structured as monorepos as they are easier to maintain internally.
 
-This training focuses on implementing Portals functionality for the _Expenses_ micro frontend web application.
+This training focuses on implementing Portals functionality in to the _Expenses_ micro frontend web application.
 
-Micro frontends in Jobsync are written in React. To accommodate _all_ web developers, all coding in this training is isolated to the _Portals_ shared library, which is framework-agnostic.
+Micro frontends in Jobsync are written in React. To accommodate _all_ web developers, all coding in this training is isolated to the _Portals_ shared library, written in vanilla TypeScript.
 
 <div style={{ clear: 'both'}}></div>
 
@@ -61,7 +61,7 @@ pnpm install
 
 Ensure that you are running the _Expenses_ micro frontend web application during this training. Doing so will allow you to view changes made in the _Portals_ shared library in the browser as you go. 
 
-To run the _Expenses_ web application, run the command below. It will be available at the following link: `localhost:5173`.
+To run the _Expenses_ web application, run the command below. It will be available at the following URL: [`localhost:5173`](http://localhost:5173).
 
 ```bash
 pnpm run --filter="expenses" dev

@@ -100,6 +100,8 @@ export { Analytics };
 
 </CH.Code>
 
+Within the `web/shared/portals` directory, open `index.ts`. 
+
 Replace the existing `Analytics` export with an import and export of the new constant created in the step above.
 
 </CH.Scrollycoding>

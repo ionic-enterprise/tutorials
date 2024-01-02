@@ -98,7 +98,6 @@ export const resolveInitialContext = (): InitialContext => ({
 
 Start by creating a new file in the `web/shared/portals` library named `initial-context.ts`. 
 
-
 ---
 
 <CH.Code>
@@ -123,13 +122,13 @@ export const Analytics = {
 
 </CH.Code>
 
-Replace the existing `resolveInitialContext()` method with an import and export of the new method created in the step above.
+Within the `web/shared/portals` directory, open `index.ts` and replace the existing `resolveInitialContext()` method with an import and export of the method created in the step above.
 
 ---
 
 <CH.Code>
 
-```typescript shared/portals/initial-context.ts focus=8:11
+```typescript web/shared/portals/initial-context.ts focus=8:11
 import { getInitialContext } from "@ionic/portals";
 
 interface InitialContext {
@@ -145,13 +144,13 @@ export const resolveInitialContext = (): InitialContext => {
 
 </CH.Code>
 
-Adjust `resolveInitialContext()` to use the Portals module. Data passed through as initial context is available in the `value` property.
+Switch back to the newly-created `initial-context.ts` file and adjust `resolveInitialContext()` such that is uses the Portals module.
 
-
+Data passed through as initial context is available in the `value` property.
 </CH.Scrollycoding>
 
 
-The code above defines an interface representing the shape of the initial context we expect to receive. This is a best practice, and allows us to type the `value` property by supplying the type as `T` to the method signature: `getInitialContext<T>()`.
+The code above defines an interface representing the shape of the initial context we expect to receive. This is a best practice, and allows us to type the `value` property by supplying the type as `T` to the method signature: `getInitialContext<T>()`. 
 
 While we have implemented `getInitialContext()` correctly, it is throwing an error when viewed within the browser:
 
@@ -159,13 +158,17 @@ While we have implemented `getInitialContext()` correctly, it is throwing an err
 Cannot destructure property 'accessToken' of 'resolveInitialContext(...)' as it is undefined.
 ```
 
-This error occurs because initial context is only available when running the entire Portals project. We will stub the initial context to continue development uninterrupted. 
+Initial context is only available when a web application runs within the native application and is presented through a Portal. `getInitialContext()` returns an optional value, allowing developers to handle cases where initial context will not be available. 
+
+Let's go ahead and handle the scenario where initial context is unavailable to continue development uninterrupted. 
 
 ## Stubbing Initial Context for Development
 
-Most developers build web applications for Portals projects in isolation, without building and running native projects. This development workflow is encouraged; however, initial context is not available in this context. 
+An efficient way to develop web applications for Portal projects is to work in isolation, using the browser to develop, then passing the finished web application to native teams to bundle with native applications.
 
-When developing in isolation, initial context should be stubbed. Stubbing the initial context is a pretty straightforward procedure. Modify `initial-context.ts` to add the highlighted code below:
+Initial context is not available within the browser; it is best practice to handle this scenario. In this case, we will provide a default value for initial context using stub data.
+
+Modify `web/shared/portals/initial-context.ts` to add the highlighted code below:
 
 ```typescript web/shared/portals/initial-context.ts focus=8:11,15[31:57]
 import { getInitialContext } from "@ionic/portals";

@@ -67,6 +67,8 @@ export const Analytics = {
 
 </CH.Code>
 
+Within the `web/shared/portals` directory, open `index.ts`. 
+
 Replace the existing `publishNavigateBackMessage()` method with an import and export of the new method created in the step above.
 
 ---
@@ -85,7 +87,9 @@ export const publishNavigateBackMessage = async () => {
 
 </CH.Code>
 
-The `type Messages` declaration ensures type safety for our messages, preventing potential bugs and promoting robust code. It allows us to define the structure of our messages and catch any inconsistencies during development.
+Head back to the newly created `pub-sub.ts` file and add a `type` containing the message we want to send to the native application.
+
+Adding the type provides type safety for our messages, preventing potential bugs.
 
 ---
 
