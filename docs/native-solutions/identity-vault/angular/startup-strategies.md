@@ -316,7 +316,7 @@ update to add our actual authentication services using a solution such as [Auth 
 
 ### The `LoginPage`
 
-The login page simply include a "Login" button.
+The login page simply includes a "Login" button.
 
 <CH.Code>
 
