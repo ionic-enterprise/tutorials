@@ -53,7 +53,7 @@ To display a progress indicator in the UI we can use the `ion-progress-bar` Ioni
 }
 ```
 
-In this example we display the progress bar only if we are `downloading`. We need to set the `value` property to a value between 0 and 1 which is done using the `progress` event:
+In this example we display the progress bar only if we are `downloading`. We need to set the `value` property to a value between 0 and 1 which is done using the [`progress`](https://capacitorjs.com/docs/apis/filesystem#addlistenerprogress-) event:
 ```typescript
 import { NgZone } from '@angular/core';
 ...
@@ -68,7 +68,7 @@ constructor(ngZone: NgZone) {
 
 You will notice that:
 - We use `ngZone` to tell Angular that the we are making changes to something in the view (the `progress` variable). This is needed because any events that are emitted from Capacitor are not captured by Angular.
-- We calculate the progress by dividing `bytes` by `contentLength` from the `ProgressStatus` object that is given when the `progress` event occurs.
+- We calculate the progress by dividing `bytes` by `contentLength` from the [`ProgressStatus`](https://capacitorjs.com/docs/apis/filesystem#progressstatus) object that is given when the `progress` event occurs.
 
 Next, we'll need to modify our `downloadFile` method to make sure it is emitting its progress by setting `progress` to `true`:
 ```typescript
