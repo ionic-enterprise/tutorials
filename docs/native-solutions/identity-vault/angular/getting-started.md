@@ -654,11 +654,12 @@ We have stored data in our vault. The next step is to get the data back out of t
 
 ### Get a Value
 
-The first step is to add a method to our `SessionVaultService` that encapsulates getting the session.
+The first step is to add a method to our `SessionVaultService` that encapsulates getting the session. Checking if the vault is empty first ensures
+that we don't try to unlock a vault that may be locked but empty, which can happen in some cases.
 
-<CH.Code rows={8}>
+<CH.Code rows={12}>
 
-```typescript src/app/core/session-value.service.ts focus=33:35
+```typescript src/app/core/session-value.service.ts focus=33:38
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -692,6 +693,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 }
@@ -1034,7 +1038,7 @@ method to clear the session.
 
 <CH.Code rows={8}>
 
-```typescript src/app/core/session-vault.service.ts focus=37:39
+```typescript src/app/core/session-vault.service.ts focus=40:42
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1068,6 +1072,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1232,6 +1239,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1288,6 +1298,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1305,7 +1318,7 @@ The `UnlockMode` specifies the logical combinations of settings we wish to suppo
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=46
+```typescript src/app/core/session-vault.service.ts focus=49
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1344,6 +1357,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1363,7 +1379,7 @@ Add an `updateUnlockMode()` method to the class. Take a single argument for the 
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=5,47:51
+```typescript src/app/core/session-vault.service.ts focus=5,50:54
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1403,6 +1419,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1427,7 +1446,7 @@ to `IdentityVaultConfig` to signify that we know the value is not `undefined` at
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=48:53,56
+```typescript src/app/core/session-vault.service.ts focus=51:57,59
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1467,6 +1486,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1497,7 +1519,7 @@ Update the `type` based on the specified `mode`.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=54:57,61
+```typescript src/app/core/session-vault.service.ts focus=57:60,64
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1537,6 +1559,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -1760,7 +1785,7 @@ You should see the following results:
 
 ### Native Configuration
 
-If you tried the tests above, your app should have crashed upon restarting when using a biometric vault. If you
+If you tried the tests above on an iPhone with Face ID, your app should have crashed upon restarting when using a biometric vault. If you
 run `npx cap sync` you will see what is missing.
 
 ```
@@ -1835,6 +1860,9 @@ Biometrics should work on the iPhone at this point.
 
 ## Locking and Unlocking the Vault
 
+Going forward we will begin exploring functionality that only works when the application is run on a device. As such,
+you should begin testing on a device instead of using the development server.
+
 Right now, the only way to "lock" the vault is to close the application. In this section we will look at a couple of
 other ways to lock the vault as well as ways to unlock it.
 
@@ -1844,7 +1872,7 @@ In `src/app/core/session-vault.service.ts`, wrap the vault's `lock()` method so 
 
 <CH.Code rows={10}>
 
-```typescript src/app/core/session-vault.service.ts focus=44:46
+```typescript src/app/core/session-vault.service.ts focus=47:49
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1881,6 +1909,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -2298,6 +2329,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -2382,7 +2416,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
-    return this.vault.getValue<Session>('session');
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
   }
 
   async clearSession(): Promise<void> {
@@ -2540,6 +2576,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
