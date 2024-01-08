@@ -352,7 +352,7 @@ The login page simply includes a "Login" button.
 When the button is pressed the following tasks are performed:
 
 - Attempt to log in.
-- If the login succeeds, to to the `Tab1Page`.
+- If the login succeeds, go to the `Tab1Page`.
 - If the login fails we will just log it for now. When actual authentication is implemented this _may_ be a good
   place to display a "Login Failed" message, but that is beyond the scope of this tutorial.
 
@@ -415,7 +415,7 @@ if it is locked. Update the `SessionVaultService` to provide `unlock()` and `isL
 
 <CH.Code rows={20}>
 
-```typescript src/app/code/session-vault.service.ts focus=62:72
+```typescript src/app/code/session-vault.service.ts focus=65:76
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -466,6 +466,9 @@ export class SessionVaultService {
   }
 
   async getSession(): Promise<Session | null> {
+    if (await this.vault.isEmpty()) {
+      return null;
+    }
     return this.vault.getValue<Session>('session');
   }
 
@@ -485,6 +488,7 @@ export class SessionVaultService {
     return (
       this.vault.config?.type !== VaultType.SecureStorage &&
       this.vault.config?.type !== VaultType.InMemory &&
+      !(await this.vault.isEmpty()) &&
       (await this.vault.isLocked())
     );
   }
