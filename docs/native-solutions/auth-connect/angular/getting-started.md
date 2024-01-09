@@ -280,7 +280,7 @@ export class AuthenticationService {
       },
       web: {
         uiMode: 'popup',
-        authFlow: 'implicit',
+        authFlow: 'PKCE',
       },
     });
   }
@@ -453,7 +453,7 @@ We can use the first tab of our application to test the `login()` and `logout()`
 
 ```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 
 @Component({
@@ -461,7 +461,7 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule, ExploreContainerComponent],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
 })
 export class Tab1Page {
   constructor() {}
@@ -494,18 +494,18 @@ Currently, the `Tab1Page` contains the default skeleton code.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=4,14
+```typescript src/app/tab1/tab1.page.ts focus=2[10:19],4,11[13:22],14
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonButton, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-import { AuthenticationService } from '../core/authentication.service';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule, ExploreContainerComponent],
+  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
 })
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
@@ -514,7 +514,7 @@ export class Tab1Page {
 
 </CH.Code>
 
-Inject our `AuthenticationService`.
+Inject our `AuthenticationService` and import `IonButton` which we will use shortly.
 
 ---
 
@@ -522,16 +522,16 @@ Inject our `AuthenticationService`.
 
 ```typescript src/app/tab1/tab1.page.ts focus=16:22
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-import { AuthenticationService } from '../core/authentication.service';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule, ExploreContainerComponent],
+  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
 })
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
@@ -796,7 +796,7 @@ export class AuthenticationService {
       },
       web: {
         uiMode: 'popup',
-        authFlow: 'implicit',
+        authFlow: 'PKCE',
       },
     });
   }
@@ -824,15 +824,15 @@ export class AuthenticationService {
 
 ```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule],
+  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class Tab1Page {
   constructor(private authentication: AuthenticationService) {}
@@ -876,15 +876,15 @@ If we have an `AuthResult` with an access token we assume that we are authentica
 
 ```typescript src/app/tab1/tab1.page.ts focus=13,19,24,27:29
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule],
+  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class Tab1Page {
   authenticated = false;
@@ -915,38 +915,38 @@ Create an `authenticated` property in the `Tab1Page` class. Recheck the status a
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=1[21:26],12[23:39],17:19
+```typescript src/app/tab1/tab1.page.ts focus=1[21:26],11[23:39],17:19
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonicModule],
+  imports: [IonButton, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class Tab1Page implements OnInit {
   authenticated = false;
 
   constructor(private authentication: AuthenticationService) {}
-
+  
   async ngOnInit() {
     await this.checkAuthentication();
   }
 
   async login(): Promise<void> {
     await this.authentication.login();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
   async logout(): Promise<void> {
     await this.authentication.logout();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
-  private async checkAuthentication(): Private<void> {
+  private async checkAuthentication(): Promise<void> {
     this.authenticated = await this.authentication.isAuthenticated();
   }
 }
@@ -962,34 +962,34 @@ To ensure that the value is initialized properly, the page should also check on 
 
 ```typescript src/app/tab1/tab1.page.ts focus=1,11[13:25]
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AuthenticationService } from '../core/authentication.service';
+import { Component, OnInit } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { AuthenticationService } from './../core/authentication.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonButton, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class Tab1Page implements OnInit {
   authenticated = false;
 
   constructor(private authentication: AuthenticationService) {}
-
-  ngOnInit() {
-    this.checkAuthentication();
+  
+  async ngOnInit() {
+    await this.checkAuthentication();
   }
 
   async login(): Promise<void> {
     await this.authentication.login();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
   async logout(): Promise<void> {
     await this.authentication.logout();
-    this.checkAuthentication();
+    await this.checkAuthentication();
   }
 
   private async checkAuthentication(): Promise<void> {
