@@ -140,7 +140,6 @@ npx cap sync
 Our tutorial application will have a single vault that simulates storing our application's authentication session
 information. The vault is managed via our `SessionVaultService`. Generate that now.
 
-
 ```bash Terminal
 ionic generate service core/session-vault
 ```
@@ -175,7 +174,7 @@ export class VaultFactory {
 
 ### Create and Initialization the Vault
 
-Before we use Identity Vault, we need to make sure that our vault is properly created and initialized.  It is
+Before we use Identity Vault, we need to make sure that our vault is properly created and initialized. It is
 important to note that creation and initialization are different processes. Creation is performed when the service
 is constructed and is limited to the creation of a JavaScript object.
 
@@ -183,7 +182,7 @@ The initialization involves communication with the native layer. As such it is a
 needs to complete before we can begin normal operation of the application, we run the initialization using the
 [APP_INITIALIZER](https://angular.io/api/core/APP_INITIALIZER) and await its completion.
 
-**Important:** awaiting the completion of initialization in this manner is a best-practice that should always 
+**Important:** awaiting the completion of initialization in this manner is a best-practice that should always
 be followed.
 
 <CH.Scrollycoding>
@@ -197,8 +196,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SessionVaultService {
-  constructor() {
-  }
+  constructor() {}
 }
 ```
 
@@ -206,7 +204,10 @@ export class SessionVaultService {
 import { enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import {
+  IonicRouteStrategy,
+  provideIonicAngular,
+} from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -258,9 +259,14 @@ Create the vault using our factory class.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=2[22:41,49:59],15:21
+```typescript src/app/core/session-vault.service.ts focus=4,6,20:26
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { VaultFactory } from './vault.factory';
 
 @Injectable({
@@ -293,11 +299,14 @@ explained later.
 
 <CH.Code>
 
-```typescript src/main.ts focus=1[10:25],9,15:19,23
+```typescript src/main.ts focus=1[10:25],12,18:22,26:31
 import { APP_INITIALIZER, enableProdMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter } from '@angular/router';
-import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import {
+  IonicRouteStrategy,
+  provideIonicAngular,
+} from '@ionic/angular/standalone';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
@@ -316,13 +325,17 @@ const appInitFactory =
 
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: APP_INITIALIZER, useFactory: appInitFactory, deps: [SessionVaultService], multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitFactory,
+      deps: [SessionVaultService],
+      multi: true,
+    },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes),
   ],
 });
-
 ```
 
 </CH.Code>
@@ -336,13 +349,13 @@ In this section, we created a vault using the key `io.ionic.gettingstartediv`. O
 which means that the information we store in the vault is encrypted in the keychain / keystore and is only visible to
 our application, but the vault is never locked. We will explore other types of vaults later in this tutorial.
 
-### Store a Value 
+### Store a Value
 
 Let's store some data in the vault. Here, we will:
 
 - Define our session information.
-- Add a method to the `SessionVaultService` to store a session.
-- Add a button to our `Tab1Page` to store a fake session.
+- Add a method to `SessionVaultService` to store a session.
+- Add a button to `Tab1Page` to store a fake session.
 
 First, let's define the shape of our authentication session data via:
 
@@ -366,9 +379,14 @@ item with the key of `session`. The vault has a `setValue()` method that is used
 
 <CH.Code>
 
-```typescript src/app/core/session-value.service.ts focus=4,24:26
+```typescript src/app/core/session-value.service.ts focus=9,29:31
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { VaultFactory } from './vault.factory';
 import { Session } from '../models/session';
 
@@ -430,7 +448,12 @@ simulate logging in by storing some fake authentication data in the vault.
 
 ```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+} from '@ionic/angular/standalone';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 
 @Component({
@@ -438,7 +461,13 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    ExploreContainerComponent,
+  ],
 })
 export class Tab1Page {
   constructor() {}
@@ -485,16 +514,34 @@ Replace the explore container with a list containing a button.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=2[10:19,44:61],9[13:22,47:64]
+```typescript src/app/tab1/tab1.page.ts focus=3,6:8,19,22:24
 import { Component } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page {
   constructor() {}
@@ -509,9 +556,18 @@ Import the Ionic components that we added to the page template.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=3,13[15:55]
+```typescript src/app/tab1/tab1.page.ts focus=12,31[15:55]
 import { Component } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 
 @Component({
@@ -519,7 +575,16 @@ import { SessionVaultService } from '../core/session-vault.service';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page {
   constructor(private sessionVault: SessionVaultService) {}
@@ -534,9 +599,18 @@ Inject the vault service.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=15:23
+```typescript src/app/tab1/tab1.page.ts focus=33:41
 import { Component } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 
 @Component({
@@ -544,7 +618,16 @@ import { SessionVaultService } from '../core/session-vault.service';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page {
   constructor(private sessionVault: SessionVaultService) {}
@@ -569,15 +652,20 @@ Store some made up test data.
 
 We have stored data in our vault. The next step is to get the data back out of the vault.
 
-### Get a Value 
+### Get a Value
 
 The first step is to add a method to our `SessionVaultService` that encapsulates getting the session.
 
 <CH.Code rows={8}>
 
-```typescript src/app/core/session-value.service.ts focus=28:30
+```typescript src/app/core/session-value.service.ts focus=33:35
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { VaultFactory } from './vault.factory';
 import { Session } from '../models/session';
 
@@ -620,16 +708,34 @@ is stored.
 
 ```typescript src/app/tab1/tab1.page.ts
 import { Component } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-tab1',
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page {
   constructor(private sessionVault: SessionVaultService) {}
@@ -678,9 +784,18 @@ The `Tab1Page` currently stores the session information.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=14
+```typescript src/app/tab1/tab1.page.ts focus=32
 import { Component } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -689,7 +804,16 @@ import { Session } from '../models/session';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page {
   session: Session | null = null;
@@ -716,9 +840,18 @@ Add a `session` property.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=1[19:26],13[23:39],18:20
+```typescript src/app/tab1/tab1.page.ts focus=1[19:26],31[23:39],36:38
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -727,7 +860,16 @@ import { Session } from '../models/session';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -758,9 +900,18 @@ Get the session when the page is initialized.
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=30
+```typescript src/app/tab1/tab1.page.ts focus=48
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -769,7 +920,16 @@ import { Session } from '../models/session';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -846,9 +1006,9 @@ you will see the session information.
 If you would like to clear the session information at this point, remove the application from your device (physical
 or simulated) and re-install it. In the web, you can close the running tab and open new one.
 
-Next we will see how to remove this data from within our application. 
+Next we will see how to remove this data from within our application.
 
-### Remove the Session from the Vault 
+### Remove the Session from the Vault
 
 The vault has two different methods that we can use to remove the data:
 
@@ -874,9 +1034,14 @@ method to clear the session.
 
 <CH.Code rows={8}>
 
-```typescript src/app/core/session-vault.service.ts focus=32:34
+```typescript src/app/core/session-vault.service.ts focus=37:39
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { VaultFactory } from './vault.factory';
 import { Session } from '../models/session';
 
@@ -918,9 +1083,18 @@ Modify `src/app/tab1/tab1.page.ts` and `src/app/tab1/tab1.page.html` to have a "
 
 <CH.Code rows={8}>
 
-```typescript src/app/tab1/tab1.page.ts focus=33:36
+```typescript src/app/tab1/tab1.page.ts focus=51:54
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -929,7 +1103,16 @@ import { Session } from '../models/session';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -957,6 +1140,10 @@ export class Tab1Page implements OnInit {
   }
 }
 ```
+
+</CH.Code>
+
+<CH.Code rows={8}>
 
 ```html src/app/tab1/tab1.page.html focus=20:24
 <ion-header [translucent]="true">
@@ -997,7 +1184,7 @@ export class Tab1Page implements OnInit {
 
 </CH.Code>
 
-## Updated the Vault Type 
+## Updated the Vault Type
 
 We are currently using a "Secure Storage" vault, but there are several other
 [vault types](https://ionic.io/docs/identity-vault/enums/vaulttype). In this section, we will explore the
@@ -1013,7 +1200,12 @@ We can use the vault's `updateConfig()` method to change the type of vault that 
 
 ```typescript src/app/core/session-vault.service.ts
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
@@ -1057,13 +1249,21 @@ Here is the `src/app/core/session-vault.service.ts` that we have created thus fa
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=6
+```typescript src/app/core/session-vault.service.ts focus=11:14
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1093,9 +1293,6 @@ export class SessionVaultService {
 
   async clearSession(): Promise<void> {
     await this.vault.clear();
-  }
-
-  async updateUnlockMode(type: VaultType): Promise<void> {
   }
 }
 ```
@@ -1108,13 +1305,21 @@ The `UnlockMode` specifies the logical combinations of settings we wish to suppo
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=38,39
+```typescript src/app/core/session-vault.service.ts focus=46
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1146,8 +1351,7 @@ export class SessionVaultService {
     await this.vault.clear();
   }
 
-  async updateUnlockMode(mode: UnlockMode): Promise<void> {
-  }
+  async updateUnlockMode(mode: UnlockMode): Promise<void> {}
 }
 ```
 
@@ -1159,13 +1363,22 @@ Add an `updateUnlockMode()` method to the class. Take a single argument for the 
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=2[44:64],39:41
+```typescript src/app/core/session-vault.service.ts focus=5,47:51
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, IdentityVaultConfig, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1214,13 +1427,22 @@ to `IdentityVaultConfig` to signify that we know the value is not `undefined` at
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=39:44,47
+```typescript src/app/core/session-vault.service.ts focus=48:53,56
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, IdentityVaultConfig, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1257,8 +1479,8 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-          ? VaultType.InMemory
-          : VaultType.SecureStorage;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -1275,13 +1497,22 @@ Update the `type` based on the specified `mode`.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=40
+```typescript src/app/core/session-vault.service.ts focus=54:57,61
 import { Injectable } from '@angular/core';
-import { BrowserVault, DeviceSecurityType, IdentityVaultConfig, Vault, VaultType } from '@ionic-enterprise/identity-vault';
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1318,9 +1549,12 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-          ? VaultType.InMemory
-          : VaultType.SecureStorage;
-    const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+    const deviceSecurityType =
+      type === VaultType.DeviceSecurity
+        ? DeviceSecurityType.Both
+        : DeviceSecurityType.None;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -1338,7 +1572,7 @@ Update the `deviceSecurityType` based on the value of the `type`.
 
 #### Why the `UnlockMode`?
 
-One natural question from above may be "why create an `UnlockMode` type when you can pass in the `VaultType` and 
+One natural question from above may be "why create an `UnlockMode` type when you can pass in the `VaultType` and
 figure things out from there?" The answer to that is that any time you incorporate a third-party library into your
 code like this, you should create an "adapter" service that utilizes the library within the domain of your application.
 
@@ -1374,9 +1608,18 @@ We can now add some buttons to the `Tab1Page` in order to try out the different 
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=3[29:40],38:40
+```typescript src/app/tab1/tab1.page.ts focus=12[29:40],56:58
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -1385,7 +1628,16 @@ import { Session } from '../models/session';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -1418,7 +1670,7 @@ export class Tab1Page implements OnInit {
 }
 ```
 
-```html src/app/tab1/tab1.page.html focus=25:39
+```html src/app/tab1/tab1.page.html focus=27:56
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -1440,22 +1692,39 @@ export class Tab1Page implements OnInit {
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="danger" (click)="clear()">Clear</ion-button>
+        <ion-button expand="block" color="danger" (click)="clear()"
+          >Clear</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('BiometricsWithPasscode')">Use Biometrics</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('BiometricsWithPasscode')"
+          >Use Biometrics</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('InMemory')">Use In Memory</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('InMemory')"
+          >Use In Memory</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('SecureStorage')">Use Secure Storage</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('SecureStorage')"
+          >Use Secure Storage</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
@@ -1491,7 +1760,7 @@ You should see the following results:
 
 ### Native Configuration
 
-If you tried the tests above, your app should have crashed upon restarting when using a biometric vault.  If you
+If you tried the tests above, your app should have crashed upon restarting when using a biometric vault. If you
 run `npx cap sync` you will see what is missing.
 
 ```
@@ -1559,6 +1828,7 @@ you want, but the key _must_ be `NSFaceIDUsageDescription`.
   </dict>
 </plist>
 ```
+
 </CH.Code>
 
 Biometrics should work on the iPhone at this point.
@@ -1636,7 +1906,8 @@ export class SessionVaultService {
       deviceSecurityType,
     });
   }
-  ```
+```
+
 }
 
 </CH.Code>
@@ -1645,9 +1916,18 @@ Add a lock button in `src/app/tab1/tab1.page.ts` and `src/app/tab1/tab1.page.htm
 
 <CH.Code rows={8}>
 
-```typescript src/app/tab1/tab1.page.ts focus=42:45
+```typescript src/app/tab1/tab1.page.ts focus=60:63
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -1656,7 +1936,16 @@ import { Session } from '../models/session';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -1694,7 +1983,11 @@ export class Tab1Page implements OnInit {
 }
 ```
 
-```html src/app/tab1/tab1.page.html focus=40:44
+</CH.Code>
+
+<CH.Code rows={8}>
+
+```html src/app/tab1/tab1.page.html focus=57:63
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -1716,27 +2009,46 @@ export class Tab1Page implements OnInit {
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="danger" (click)="clear()">Clear</ion-button>
+        <ion-button expand="block" color="danger" (click)="clear()"
+          >Clear</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('BiometricsWithPasscode')">Use Biometrics</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('BiometricsWithPasscode')"
+          >Use Biometrics</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('InMemory')">Use In Memory</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('InMemory')"
+          >Use In Memory</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('SecureStorage')">Use Secure Storage</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('SecureStorage')"
+          >Use Secure Storage</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="warning" (click)="lock()">Lock</ion-button>
+        <ion-button expand="block" color="warning" (click)="lock()"
+          >Lock</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
@@ -1765,7 +2077,7 @@ the last "unlock mode" button pressed prior to locking the vault.
 ### Unlocking the Vault
 
 To verify the behaviors noted above, you need to be able to unlock the vault. To do this you can use the vault's
-`unlock()` method or you can perform an operation that requires the vault to be unlocked.  When we unlock the vault,
+`unlock()` method or you can perform an operation that requires the vault to be unlocked. When we unlock the vault,
 we need to restore the session data in our page, so we can just use our `getSession()` method. When it calls the
 vault's `getValue()`, the `getValue()` will attempt to unlock the vault.
 
@@ -1773,9 +2085,18 @@ Add the following code to `src/app/tab1/tab1.page.ts` and `src/app/tab1/tab1.pag
 
 <CH.Code rows={8}>
 
-```typescript src/app/tab1/tab1.page.ts focus=47:49
+```typescript src/app/tab1/tab1.page.ts focus=65:67
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -1784,7 +2105,16 @@ import { Session } from '../models/session';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -1826,7 +2156,11 @@ export class Tab1Page implements OnInit {
 }
 ```
 
-```html src/app/tab1/tab1.page.html focus=45:49
+</CH.Code>
+
+<CH.Code rows={8}>
+
+```html src/app/tab1/tab1.page.html focus=64:70
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Tab 1 </ion-title>
@@ -1848,32 +2182,53 @@ export class Tab1Page implements OnInit {
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="danger" (click)="clear()">Clear</ion-button>
+        <ion-button expand="block" color="danger" (click)="clear()"
+          >Clear</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('BiometricsWithPasscode')">Use Biometrics</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('BiometricsWithPasscode')"
+          >Use Biometrics</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('InMemory')">Use In Memory</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('InMemory')"
+          >Use In Memory</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('SecureStorage')">Use Secure Storage</ion-button>
+        <ion-button
+          expand="block"
+          color="secondary"
+          (click)="changeUnlockMode('SecureStorage')"
+          >Use Secure Storage</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="warning" (click)="lock()">Lock</ion-button>
+        <ion-button expand="block" color="warning" (click)="lock()"
+          >Lock</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="warning" (click)="unlock()">Unlock</ion-button>
+        <ion-button expand="block" color="warning" (click)="unlock()"
+          >Unlock</ion-button
+        >
       </ion-label>
     </ion-item>
     <ion-item>
@@ -1902,7 +2257,7 @@ initialize the vault. Here we are setting it to 2000 milliseconds.
 
 <CH.Code rows={10}>
 
-```typescript src/app/core/session-vault.service.ts focus=29
+```typescript src/app/core/session-vault.service.ts focus=32
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1914,7 +2269,10 @@ import {
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -1956,9 +2314,12 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-          ? VaultType.InMemory
-          : VaultType.SecureStorage;
-    const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+    const deviceSecurityType =
+      type === VaultType.DeviceSecurity
+        ? DeviceSecurityType.Both
+        : DeviceSecurityType.None;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -1992,7 +2353,10 @@ import {
 import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -2034,9 +2398,12 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-          ? VaultType.InMemory
-          : VaultType.SecureStorage;
-    const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+    const deviceSecurityType =
+      type === VaultType.DeviceSecurity
+        ? DeviceSecurityType.Both
+        : DeviceSecurityType.None;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -2048,7 +2415,16 @@ export class SessionVaultService {
 
 ```typescript src/app/tab1/tab1.page.ts
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -2057,12 +2433,21 @@ import { Session } from '../models/session';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
 
-  constructor(private sessionVault: SessionVaultService) { }
+  constructor(private sessionVault: SessionVaultService) {}
 
   async ngOnInit() {
     this.session = await this.sessionVault.getSession();
@@ -2107,7 +2492,7 @@ Here are our `SessionVaultService` and `Tab1Page` classes so far.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=11,23,26:28
+```typescript src/app/core/session-vault.service.ts focus=11,23,26:27
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -2120,7 +2505,10 @@ import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 import { Observable, Subject } from 'rxjs';
 
-export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+export type UnlockMode =
+  | 'BiometricsWithPasscode'
+  | 'InMemory'
+  | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -2168,9 +2556,12 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-          ? VaultType.InMemory
-          : VaultType.SecureStorage;
-    const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+    const deviceSecurityType =
+      type === VaultType.DeviceSecurity
+        ? DeviceSecurityType.Both
+        : DeviceSecurityType.None;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -2180,7 +2571,7 @@ export class SessionVaultService {
 }
 ```
 
-</CH.Code> 
+</CH.Code>
 
 Create a private Subject (`lockedSubject`) and expose it publicly as an Observable (`locked$`).
 
@@ -2188,9 +2579,18 @@ Create a private Subject (`lockedSubject`) and expose it publicly as an Observab
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=17
+```typescript src/app/tab1/tab1.page.ts focus=35:37
 import { Component, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 
@@ -2199,13 +2599,24 @@ import { Session } from '../models/session';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
 
   constructor(private sessionVault: SessionVaultService) {
-    this.sessionVault.locked$.subscribe((lock) => (this.session = lock ? null : this.session));
+    this.sessionVault.locked$.subscribe(
+      (lock) => (this.session = lock ? null : this.session)
+    );
   }
 
   async ngOnInit() {
@@ -2251,9 +2662,18 @@ Subscribe to the Observable in the `Tab1Page` and clear page's session data if t
 
 <CH.Code>
 
-```typescript src/app/tab1/tab1.page.ts focus=1[21:30],5,14[40:50]15,19[5:21],26:28
+```typescript src/app/tab1/tab1.page.ts focus=1[21:30],14,32[40:50],33,37[5:21],46:48
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { SessionVaultService, UnlockMode } from '../core/session-vault.service';
 import { Session } from '../models/session';
 import { Subscription } from 'rxjs';
@@ -2263,14 +2683,25 @@ import { Subscription } from 'rxjs';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonTitle, IonToolbar, IonTitle],
+  imports: [
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
   private subscription: Subscription;
   session: Session | null = null;
 
   constructor(private sessionVault: SessionVaultService) {
-    this.subscription = this.sessionVault.locked$.subscribe((lock) => (this.session = lock ? null : this.session));
+    this.subscription = this.sessionVault.locked$.subscribe(
+      (lock) => (this.session = lock ? null : this.session)
+    );
   }
 
   async ngOnInit() {
@@ -2323,7 +2754,7 @@ destroyed.
 
 ### Construction vs. Initialization
 
-Have a look at the `src/app/core/session-vault.service.ts` file. Notice that it is very intentional about 
+Have a look at the `src/app/core/session-vault.service.ts` file. Notice that it is very intentional about
 separating construction and initialization. **This is very important.**
 
 Identity Vault allows you to pass the configuration object via the `new Vault(cfg)` constructor. This, however,
@@ -2371,7 +2802,7 @@ here is _only_ used if we later destroy and re-create this vault.
 
 Notice that we are specifying a type of `VaultType.SecureStorage`. It is best to use either `VaultType.SecureStorage`
 or `VaultType.InMemeory` when calling `initialize()` to avoid the potential of creating a vault of a type that cannot
-be supported. We can always update the type later after and the updated `type` will "stick." We want to start, 
+be supported. We can always update the type later after and the updated `type` will "stick." We want to start,
 however, with an option that will always word regardless of the device's configuration.
 
 ### Single Vault vs Multiple Vaults
