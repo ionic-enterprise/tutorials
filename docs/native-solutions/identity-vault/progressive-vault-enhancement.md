@@ -1,6 +1,7 @@
 ---
 title: Progressively Enhancing Vault Security
 sidebar_label: Progressive Vault Security
+sidebar_position: 1
 ---
 
 Identity Vault offers various configuration options for securing a Vault, including `VaultType` and `DeviceSecurityType`. These options allow developers to dynamically select the most appropriate Vault configuration based on the end user's device capabilities.
