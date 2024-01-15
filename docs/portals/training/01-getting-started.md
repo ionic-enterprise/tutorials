@@ -4,26 +4,42 @@ sidebar_label: Getting Started
 sidebar_position: 1
 ---
 
-Ionic Portals is a supercharged WebView component that enables native and web teams to better collaborate to bring new and existing web experiences to native mobile apps in a safe, controlled way. With <a href="https://ionic.io/docs/portals" target="_blank">Portals</a>, organizations can achieve micro frontend use cases in native mobile apps, from supplementing existing apps with web-based features to creating superapps that utilize a lightweight native shell as a gateway to web-based micro experiences. Unlike traditional WebView components, web experiences displayed through Portals are bundled within the native binary, can communicate with the host native code, and can be updated over-the-air (without additional store deployments).
+Ionic Portals is a supercharged WebView component that enables native and web teams to better collaborate to bring new and existing web experiences to native mobile apps in a safe, controlled way. With <a href="https://ionic.io/docs/portals" target="_blank">Portals</a>, organizations can achieve micro frontend use cases in native mobile applications. Unlike traditional WebView components, web experiences displayed through Portals are bundled within the native binary, can communicate with the host native code, and can be updated over-the-air (without additional store deployments).
 
-In this training, you will learn the basics of Portals by enhancing an existing application to do the following:
+## What you'll be doing
 
-- Adding Portals to a web and/or native mobile project
-- Communicate between web and native mobile code
-- Improve the development workflow using the Portals CLI
+In this training, you will take a series of independent web experiences and present them within a single native mobile experience using Portals. This particular micro frontend use case is commonly referred to as a "superapp". 
 
-Developing with Portals differs between web development and native mobile development. Separate training modules have been written for [web](../training/web/overview), [iOS](../training/ios/overview), and [Android](../training/android/overview). Although iOS and Android training modules share conceptual similarities, they contain platform-specific instructions.
+You will integrate Portals into a fictitious intranet-themed project &mdash;  _Jobsync_ &mdash; that allows end users to perform job-related activities, such as tracking expenses and tracking project time. Each individual function has been developed as a standalone web application, and you will use Portals to bring these experiences into a native mobile app.
 
-## Prerequisites
+## What you'll be learning
 
-In order to run Portals, you will need an active <a href="https://ionic.io/docs/portals/getting-started#using-your-product-key" target="_blank">Portals product key</a>.
+This training will familiarize the reader with the foundational aspects of working with:
 
-The source code for this training is available <a href="https://github.com/ionic-enterprise/tutorials-and-training-portals" target="_blank">on GitHub</a> and can be cloned with the following command:
+- How to add the Portals library to a web and/or native mobile project.
+- How to communicate between web and native mobile code.
+- How to improve your development workflow using the Portals CLI.
+
+Developing for Portals differs whether you are a web developer or a native mobile developer. This training splits into modules based on developer persona, and again for native mobile expertise. Training exercises for the iOS and Android modules are identical and only differ in platform-specific instruction. 
+
+## What you will need
+
+In order to run an application using Portals, you will need an active <a href="https://ionic.io/docs/portals/getting-started#using-your-product-key" target="_blank">Portals product key</a>.
+
+The monorepo containing all source code for this training is available <a href="https://github.com/ionic-enterprise/tutorials-and-training-portals" target="_blank">on GitHub</a> and can be cloned with the following command:
 
 ```bash
 git clone https://github.com/ionic-enterprise/tutorials-and-training-portals.git
 ```
 
-This training uses the <a href="https://ionic.io/docs/portals/cli/overview" target="_blank">Portals CLI</a>, a tool that helps simplify Portals development and deployment workflows. The command-line is not required to use Portals; however, no alternative workflows will be transcribed as part of this training. Web developers should have either <a href="https://developer.apple.com/xcode/" target="_blank">Xcode</a> or <a href="https://developer.android.com/studio" target="_blank">Android Studio</a> to make use of the Portals CLI.
+Each individual training module contains further instructions on where to start within the monorepo.
 
-Once the prerequisites have been satisfied, continue to the training module aligned with your development skill set.
+Lastly, you will need the <a href="https://ionic.io/docs/portals/cli/overview" target="_blank">Portals CLI</a>. Web developers will need either <a href="https://developer.apple.com/xcode/" target="_blank">Xcode</a> or <a href="https://developer.android.com/studio" target="_blank">Android Studio</a> to make use of the Portals CLI commands used in the web training module.
+
+## What's next
+
+Head to the training module that represents your developer persona:
+
+- [Portals for web developers](../training/web/overview)
+- [Portals for iOS developers](../training/ios/overview)
+- [Portals for Android developers](../training/android/overview)
