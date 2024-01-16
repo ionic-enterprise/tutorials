@@ -1,5 +1,5 @@
 ---
-title: Portals Integration for Web Developers
+title: Portals for web developers
 sidebar_label: Overview
 sidebar_position: 1
 ---
@@ -7,6 +7,25 @@ sidebar_position: 1
 Ionic Portals is a supercharged WebView component that enables the addition of web-based experiences to native mobile apps. <a href="https://ionic.io/docs/portals" target="_blank">Portals</a> enables native and web teams to better collaborate and bring new and existing web experiences to mobile in a safe, controlled way.
 
 Portals provides web developers with ways to communicate with the native application presenting their web experience.
+
+---
+
+[[Overview - What will we do w/ Portals on the web?]]
+
+## What you'll do
+
+In this training, you'll exercise the core capabilities of Portals by implementing it into an existing application to do the following:
+
+- 
+
+
+[[Project Structure - What parts of the monorepo will we be touching?]]
+
+[[Running w/ the CLI]]
+
+[[Adding the Portals NPM package]]
+---
+
 
 ## Overview
 
