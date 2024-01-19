@@ -10,25 +10,31 @@ The [Play Integrity API](https://developer.android.com/google/play/integrity/ove
 3. Is installed on a genuine Android device powered by Google Play services
 4. Is free from malware as determined by Google Play Protect
 
-Using the Play Integrity API is a powerful way to ensure that API services that you expose are only accessed by your mobile application. This can prevent API access by bots, scripts etc which is a powerful tool to protect your users and your services.
+Using the Play Integrity API is a powerful way to ensure that API services you expose are only accessed by your mobile application. This can prevent API access by bots, scripts etc which helps protect your users and your services.
 
-This tutorial shows you how to use the Play Integrity API in your Capacitor application to take advantage of these features in 2 steps:
-- [Adding to your app](#adding-to-your-app)
-- [Backend Verification](#backend-verification)
+This tutorial shows you how to integrate the Play Integrity API in your Capacitor application  following these steps:
+1. [Link your cloud project](#link-cloud-project)
+2. [Install the Play Integrity Plugin](#install-the-play-integrity-plugin)
+2. [Get an Integrity Token](#the-integrity-token)
+3. [Backend Verification](#backend-verification)
 
-## Adding to your App
+## Link Cloud Project
+In the [Google Play Console](https://play.google.com/console) you need to go to `App Integrity` and link your Google Cloud Project by clicking the `Link Cloud project` button. Note the Google Cloud Project Number for use in your app.
 
-The first step is calling the [`requestIntegrityToken`](https://developer.android.com/google/play/integrity/classic) method in our Capacitor app. 
+## Install the Play Integrity Plugin
 
-For this we can use a plugin called [`@capacitor-community/play-integrity`](https://github.com/capacitor-community/play-integrity) which can be installed with:
+We need to install a plugin called [`@capacitor-community/play-integrity`](https://github.com/capacitor-community/play-integrity):
 ```bash
 npm install @capacitor-community/play-integrity
 npx cap sync
 ```
 
-The plugin is used to get an **Integrity Token**. The Integrity Token is provided by the Android device and represents an encrypted reference that your backend can use to check the integrity of the device. So, we'll send this token to our backend later in the tutorial.
+The plugin is used to get an **Integrity Token**. 
 
-On the startup of our application we call to get the Integrity Token:
+## The Integrity Token
+The Integrity Token is provided by the Android device and represents an encrypted reference that your backend can use to check the integrity of the device. We'll send this token to our backend later in the tutorial.
+
+On the startup of our application we call to `requestIntegrityToken`:
 ```typescript
 import { PlayIntegrity } from '@capacitor-community/play-integrity';
 ...
@@ -41,14 +47,15 @@ try {
     // Recommendation: Report to backend and exit the application
 }
 ```
-
 The Integrity Token is returned in `result.token`.
+
+More information about the `requestIntegrityToken` method can be found in the [Android documentation](https://developer.android.com/google/play/integrity/classic).
+
+
 
 There are two parameters we needed to supply:
 - **nonce** - This is a unique value that that you will strategically generate (see [Docs for generating a nonce](https://developer.android.com/google/play/integrity/classic#nonce))
 - **googleCloudProjectNumber** - This number can be set to `0` or can be set to the `Project Number` you find in [Firebase Console](https://console.firebase.google.com) in `Project Settings` > `General`. If set to `0` it will default to the project associated with application.
-
-Note: In the [Google Play Console](https://play.google.com/console) you need to go to `App Integrity` and link your Google Cloud Project by clicking the `Link Cloud project` button.
 
 ### Where to use an Integrity Token
 Integrity Tokens are combined with API calls to your backend. It is usually associated with an API call that is "High Value" such as a login (or first call after), obtaining or modifying personal information, performing a transaction or even as an initial check on the first startup of the app. 
@@ -186,7 +193,7 @@ There is more to learn and your best resource is the official docs:
 ## Summary
 If you are reading this tutorial you understand that your API may be accessed by someone other than legitimate users. Using the Play Integrity API will help you enforce limiting that access.
 
-The Play Integrity API is one layer in the overall security with your App. Other topics you may like to explore include Root Kit Detection, Code Obsfucation, SSL Pinning, Security provider updates and storage security.
+The Play Integrity API is one layer in the overall security of your App. Other topics you may like to explore include Root Kit Detection, Code Obsfucation, SSL Pinning, Security provider updates and storage security.
 
 ## Common Questions
 - **What about iOS?** - For the iOS platform the [Device Check](https://developer.apple.com/documentation/devicecheck/) provides an equivalent.
