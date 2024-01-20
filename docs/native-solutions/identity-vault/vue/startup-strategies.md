@@ -558,7 +558,7 @@ const router = useRouter();
 const handleLogin = async () => {
   try {
     await login();
-    router.push('/tabs/tab1');
+    router.replace('/tabs/tab1');
   } catch (error: unknown) {
     console.error('Failed to log in', error);
   }
