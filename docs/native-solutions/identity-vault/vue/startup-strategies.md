@@ -48,7 +48,7 @@ a basic application startup workflow.
 As mentioned previously, this tutorial builds upon the application created when doing the
 [getting started tutorial](getting-started). If you have the code from when you performed that tutorial, then you are
 good to go. If you need the code you can make a copy from
-[our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
+[our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-vue/tree/main/identity-vault/getting-started).
 
 ### Create the New Pages
 
