@@ -67,7 +67,7 @@ module.exports = {
       {
         docs: {
           beforeDefaultRemarkPlugins: [[remarkCodeHike, { lineNumbers: true }]],
-          routeBasePath: '/docs/tutorials',
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           breadcrumbs: false,
         },

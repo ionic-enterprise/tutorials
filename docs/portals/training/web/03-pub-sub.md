@@ -4,6 +4,8 @@ sidebar_label: Publishing Messages
 sidebar_position: 3
 ---
 
+import Admonition from '@theme/Admonition';
+
 Portals offers a seamless means of communication between web and native code via a <a href="https://ionic.io/docs/portals/for-web/portals-plugin" target="_blank">publish/subscribe interface</a>. This mechanism, commonly known as pub/sub, is primarily used for broadcasting messages from the web to native subscribers. However, it supports the reverse flow, enabling web code to subscribe and handle messages from native code.
 
 Pub/sub communication works well for simple UI actions, like initiating native navigation or triggering native dialogs.
@@ -12,7 +14,9 @@ Pub/sub communication works well for simple UI actions, like initiating native n
 
 This tutorial will teach you how to use the Portals module (`@ionic/portals`) to publish messages to native code from the Portal's web application. 
 
-> **Note:** As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+<Admonition type="note">
+As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+</Admonition>
 
 ## Handling Native Navigation 
 
@@ -22,7 +26,9 @@ In order to navigate back to this native view, all micro frontends need to publi
 
 The back button of the _Expenses_ web application's landing page (`ExpensesList.tsx`) fires a method called `publishNavigateBackMessage` when clicked. It currently does nothing -- in the next section we will modify it to publish a message using the Portals module.
 
-> **Note:** All micro frontends in Jobsync use `publishNavigateBackMessage` on their landing pages. Implementing the method will allow them to publish messages as well.
+<Admonition type="info">
+All micro frontends in Jobsync use `publishNavigateBackMessage` on their landing pages. Implementing the method will allow them to publish messages as well.
+</Admonition>
 
 ## Publishing a Message
 
