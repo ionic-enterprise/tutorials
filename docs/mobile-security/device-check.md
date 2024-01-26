@@ -96,6 +96,8 @@ For our next steps we'll need to download a DeviceCheck Key from the Apple Devel
 
 You can use whatever backend technology you like, however in this tutorial I'll describe how to create a backend with a Cloudflare Worker.
 
+You can find the sample Cloudflare Worker project [here](https://github.com/ionic-enterprise/device-check).
+
 ### Creating a Cloudflare Worker
 - Run `npm create cloudflare` and choose the hello world example.
 - Install a JWT library by running `npm install jose`
