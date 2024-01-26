@@ -1,141 +1,62 @@
 ---
-title: Stubbing Initial Context for Development
+title: Leveraging Portal-provided data
 sidebar_label: Initial Context
 sidebar_position: 2
 ---
 
 import Admonition from '@theme/Admonition';
 
-Initial context is a communication mechanism shipped with Portals that allows data to be passed from native code to a web application. Data shared using <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> is immediately available to the web application, synchronously, before the web application renders. 
+The Portals library provides a way to set <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> data for web applications within a Portal that is immediately available before rendering.
 
-Initial context is useful when you want to pass authentication information, navigate to a specific path, or any case where having data _before_ the web application loads would prevent re-renders or UI jank.  
-
-## Overview
-
-This tutorial will teach you:
-
-- How to use initial context to obtain session information passed from native code to the Portal's web application.
-- How to stub initial context within the web application's development workflow. 
+In this step, you will use initial context to obtain session information to filter the list of Expenses.
 
 <Admonition type="note">
-As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+Ensure you are [serving the Expenses web app using the Portals CLI](./getting-started) before proceeding.
 </Admonition>
 
+## Exploring the problem
 
-## Obtaining Session Information
+The Expenses web app lets the current user submit, edit, and track expenses that occur on the job and stores them in a backend service.
 
-The _Expenses_ web application needs to provide user session information in order to return a filtered list of expenses tied to the user. Without that information, the backend will return all expenses stored in the backend (for illustration purposes, you would not do this in a real project).
+However, if you look at the User IDs of each expense in the list - you will see that _all_ expenses are being returned, regardless of user!
 
-In order to get session information, all micro frontends in the Jobsync app need to:
+The expenses backend will return all expenses if no user information has been attached to the request (for illustration purposes, you would not do this in a production setting). To filter the list of expenses, the current user's ID is required. How can that information be retrieved?
 
-1. Obtain the `accessToken` and `refreshToken` from initial context.
-2. Pass those tokens to an endpoint that refreshes the session.
+## Refreshing the user session
+
+The current user's ID is returned as part of a session object obtained when calling an endpoint that refreshes the user's session.
 
 <Admonition type="info" title="Best Practice">
 Refresh the user's session upon launching a Portal to ensure the session stays active.
 </Admonition>
 
-Open the _Expenses_ web application in the browser, if you have not done so already. 
+The web app's router will attempt to refresh the session during navigation, if needed. In order to refresh the session, an `accessToken` and `refreshToken` are required. However, the Expenses web app does not have any way to get these values and returns hardcoded empty strings:
 
-Notice that expenses for multiple user IDs are displayed. Inspect the network traffic for the `/auth/refresh` endpoint. The request payload sends empty string values for `accessToken` and `refreshToken`, and subsequently, the response payload has an empty string value for `sub` (the user ID). This explains why the `/expenses` endpoint returns all expenses instead of a filtered list.
-
-Let's review the code that refreshes the user session:
-
-<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-
-  <div>
-
-  Upon navigating to any route in the _Expenses_ web application, a utility method checks to see if the session needs to be refreshed.
-
-  If so, a utility method obtains `accessToken` and `refreshToken` from `resolveInitialContext()` a method exported as part of `@jobsync/portals`.
-  
-  The implementation of `resolveInitialContext()` returns hardcoded empty string values at the moment. 
-
-  </div>
-
-  <div>
-    <CH.Code>
-
-```typescript web/apps/expenses/src/router.ts
-const refreshSessionIfNeeded = async (): Promise<void> => {
-  if (!session) {
-    const { accessToken, refreshToken } = resolveInitialContext();
-    return refreshSession(accessToken, refreshToken);
-  }
-  return Promise.resolve();
-};
-```
----
 ```typescript web/shared/portals/index.ts
-export const resolveInitialContext = () => 
-  ({ accessToken: "", refreshToken: "" });
+export const resolveInitialContext = () => ({ accessToken: "", refreshToken: "" });
 ```
-    </CH.Code>
 
-  </div>
-</div>
+Portals within the Jobsync mobile application are configured to set those values as initial context. In the next section, you will use the Portals library to get the initial context within the Expenses web app. 
 
-Passing an empty access token and refresh token results in the backend returning an incomplete session when attempting to refresh the session.
+## Using initial context
 
-Mentioned above, `accessToken` and `refreshToken` will be passed to the _Expenses_ web application as initial context. In the next section, `resolveInitialContext()` will be modified to use the Portals module to extract the initial context.
+The Portals library is available as an npm package. For the purpose of this training, it will be added as a dependency of the web package containing the project's shared Portals code:
 
-## Extracting Initial Context
+```bash terminal
+cd ./web/shared/portals
+pnpm add @ionic/portals
+```
 
-The Portals module (`@ionic/portals`) contains the API that allows us to extract initial context.
+<a href="https://ionic.io/docs/portals/for-web/portals-plugin#getinitialcontext" target="_blank">`getInitialContext<T>()`</a> returns data set by a Portal in the resulting object's `value` field. The method returns additional metadata (as part of the <a href="https://ionic.io/docs/portals/for-web/portals-plugin#initialcontext" target="_blank">`InitialContext` type</a>) such as the `name` of the Portal and `assets` files.
+
+
+Use `getInitialContext` to get the `accessToken` and `refreshToken` set by the Portal configuration:
 
 <CH.Scrollycoding>
 
 <CH.Code>
 
 ```typescript web/shared/portals/initial-context.ts
-import { getInitialContext } from '@ionic/portals';
-
-interface InitialContext {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export const resolveInitialContext = (): InitialContext => ({
-  accessToken: "",
-  refreshToken: "",
-});
-```
-
-</CH.Code>
-
-Start by creating a new file in the `web/shared/portals` library named `initial-context.ts`. 
-
----
-
-<CH.Code>
-
-```typescript web/shared/portals/index.ts focus=1:2
-import { resolveInitialContext } from "./initial-context";
-export { resolveInitialContext };
-
-/**
- * TODO: See "Publishing Messages with PubSub"
- */
-export const publishNavigateBackMessage = async () => {};
-
-/**
- * TODO: See "Implementing a Capacitor Plugin"
- */
-export const Analytics = {
-  logAction: (opts: any) => {},
-  logScreen: (opts: any) => {},
-};
-```
-
-</CH.Code>
-
-Within the `web/shared/portals` directory, open `index.ts` and replace the existing `resolveInitialContext()` method with an import and export of the method created in the step above.
-
----
-
-<CH.Code>
-
-```typescript web/shared/portals/initial-context.ts focus=8:11
 import { getInitialContext } from "@ionic/portals";
 
 interface InitialContext {
@@ -151,31 +72,56 @@ export const resolveInitialContext = (): InitialContext => {
 
 </CH.Code>
 
-Switch back to the newly-created `initial-context.ts` file and adjust `resolveInitialContext()` such that is uses the Portals module.
+Re-implement `resolveInitialContext()` using the Portals library in a new file within `web/shared/portals` named `initial-context.ts`.
 
-Data passed through as initial context is available in the `value` property.
+<Admonition type="info" title="Best Practice">
+Pass a type as `T` into the method signature to type the `value` property returned.
+</Admonition>
+
+---
+
+<CH.Code>
+
+```typescript web/shared/portals/index.ts focus=1:2
+import { resolveInitialContext } from "./initial-context.ts";
+export { resolveInitialContext };
+
+/**
+ * TODO: See "Publishing Messages with PubSub"
+ */
+export const publishNavigateBackMessage = async () => {};
+
+/**
+ * TODO: See "Implementing a Capacitor Plugin"
+ */
+export const Analytics = {
+  logAction: async (opts: any) => {},
+  logScreen: async (opts: any) => {},
+};
+```
+
+</CH.Code>
+
+Replace the existing implementation in `web/shared/portals/index.ts` and point to the new implementation.  
+
 </CH.Scrollycoding>
 
+Save the code, and observe that the Expenses list view updates in real-time. The "DEBUG" user interface cues have been removed, and only a subset of the list of expenses are now returned. If you were to observe the network traffic (but you don't have to), you would see that only the proper expenses are returned, fixing the problem.  
 
-The code above defines an interface representing the shape of the initial context we expect to receive. This is a best practice, and allows us to type the `value` property by supplying the type as `T` to the method signature: `getInitialContext<T>()`. 
+Although the filtering problem has been fixed, a few side-effects have popped up:
 
-While we have implemented `getInitialContext()` correctly, it is throwing an error when viewed within the browser:
+1. Your IDE might be throwing some TypeScript errors.
+2. An error is thrown if `http://localhost:5173` is accessed on a web browser.
 
-```
-Cannot destructure property 'accessToken' of 'resolveInitialContext(...)' as it is undefined.
-```
+The `value` property returned as part of `getInitialContext()` is optional, but the case where it returned `undefined` has not been accounted for. Initial context is not available through web browsers, which means `getInitialContext()` will always return `undefined` for the `value` property.
 
-Initial context is only available when a web application runs within the native application and is presented through a Portal. `getInitialContext()` returns an optional value, allowing developers to handle cases where initial context will not be available. 
+This error can be resolved by providing default values when initial context is not available.
 
-Let's go ahead and handle the scenario where initial context is unavailable to continue development uninterrupted. 
+## Falling back to default values
 
-## Stubbing Initial Context for Development
+You may want to both host a web app as a standalone application on a server and include the web app in a mobile application using Portals. In that scenario, the web app must be able to adapt to the platform it is running on.
 
-An efficient way to develop web applications for Portal projects is to work in isolation, using the browser to develop, then passing the finished web application to native teams to bundle with native applications.
-
-Initial context is not available within the browser; it is best practice to handle this scenario. In this case, we will provide a default value for initial context using stub data.
-
-Modify `web/shared/portals/initial-context.ts` to add the highlighted code below:
+In the case of the Expenses web app, initial context can be provided a default value. Modify `web/shared/portals-initial-context.ts` to do so:
 
 ```typescript web/shared/portals/initial-context.ts focus=8:11,15[31:57]
 import { getInitialContext } from "@ionic/portals";
@@ -194,13 +140,14 @@ export const resolveInitialContext = (): InitialContext => {
   const initialContext = getInitialContext<InitialContext>();
   return initialContext?.value || initialContextDefaults;
 };
-
 ```
 
-After saving the file, view the _Expenses_ web application in the browser. It is now filtering the list of expenses by the user ID in the session!
+The code above resolves the side-effects observed in the section above by providing default values suitable for development and for the purposes of this training. 
 
-## Conclusion
+<Admonition type="info">
+In a production scenario, you may want to run completely different routines depending on the platform a web app runs on. The `@capacitor/core` npm package (which you will see later) contains <a href="https://capacitorjs.com/docs/basics/utilities" target="_blank">utility methods</a> that detect the type of platform the web app currently runs on. The concept of running different code based on the platform a web app runs on is commonly referred to as "platform-detection".
+</Admonition>
 
-In this tutorial, you learned how to use initial context to retrieve data shared from a native application to a web application presented within a Portal. You also learned that initial context is only available when a Portals project is run, and stubbed initial context for development purposes.
+## What's next
 
-On the next page, we will use the pub/sub communication mechanism available with Portals. 
+Using initial context, you have successfully established communication between native mobile code and web code! Initial context is uni-directional communication, from native mobile code to web code. In the next step of this module, you will learn about Portals' pub/sub mechanism to send messages from web code to native mobile code.

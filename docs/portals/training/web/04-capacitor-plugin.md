@@ -6,9 +6,22 @@ sidebar_position: 4
 
 import Admonition from '@theme/Admonition';
 
+<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing any Capacitor plugin to be used.
+
+In this step, you will author a Capacitor plugin to log analytics.
+
+---
+
+CAPACITOR PLUGINS CONTAIN PLATFORM-DETECTION UNDER-THE-HOOD, MAKING THEM A GOOD ABSTRACTION LAYER FOR PROCESSES THAT DIFFER BETWEEN PLATFORMS
+
+---
+
+
 Portals projects can use <a href="https://ionic.io/docs/portals/for-ios/how-to/using-a-capacitor-plugin" target="_blank">Capacitor plugins</a> to communicate between web and native code. The Capacitor Plugin API provides a structured, object-oriented approach to communicating between web and native suitable for larger and more complex use-cases.
 
 Writing a Capacitor plugin is the recommended way to expose complex native functionality to web applications presented through a Portal, such as scanning a barcode or integrating with a 3rd party native SDK.
+
+[[Import the @capacitor/core lib]]
 
 ## Overview
 
@@ -194,7 +207,7 @@ interface AnalyticsPlugin {
 
 class AnalyticsWeb extends WebPlugin implements AnalyticsPlugin {
   async logAction(opts: { action: string; params?: any }): Promise<void> {
-    let { action, params } = opts;
+    const { action, params } = opts;
     await httpClient.post("/analytics", { action, params, platform: "web" });
   }
 
