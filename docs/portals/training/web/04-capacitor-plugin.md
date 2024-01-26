@@ -10,6 +10,8 @@ Portals projects can use <a href="https://ionic.io/docs/portals/for-ios/how-to/u
 
 Writing a Capacitor plugin is the recommended way to expose complex native functionality to web applications presented through a Portal, such as scanning a barcode or integrating with a 3rd party native SDK.
 
+[[Import the @capacitor/core lib]]
+
 ## Overview
 
 This tutorial will teach you:
@@ -194,7 +196,7 @@ interface AnalyticsPlugin {
 
 class AnalyticsWeb extends WebPlugin implements AnalyticsPlugin {
   async logAction(opts: { action: string; params?: any }): Promise<void> {
-    let { action, params } = opts;
+    const { action, params } = opts;
     await httpClient.post("/analytics", { action, params, platform: "web" });
   }
 
