@@ -4,6 +4,8 @@ sidebar_label: Implementing a Plugin
 sidebar_position: 4
 ---
 
+import Admonition from '@theme/Admonition';
+
 Portals projects can use <a href="https://ionic.io/docs/portals/for-ios/how-to/using-a-capacitor-plugin" target="_blank">Capacitor plugins</a> to communicate between web and native code. The Capacitor Plugin API provides a structured, object-oriented approach to communicating between web and native suitable for larger and more complex use-cases.
 
 Writing a Capacitor plugin is the recommended way to expose complex native functionality to web applications presented through a Portal, such as scanning a barcode or integrating with a 3rd party native SDK.
@@ -17,7 +19,9 @@ This tutorial will teach you:
 - How to use the Capacitor Plugin API to author an analytics plugin.
 - How to implement platform-specific code to log analytics when running the Portal's web application in isolation.  
 
-> **Note:** As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+<Admonition type="note">
+As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+</Admonition>
 
 ## Anatomy of a Capacitor Plugin
 
@@ -29,7 +33,9 @@ Both pub/sub and Capacitor plugins allow programmatic communication between web 
 - Calls made to a Capacitor plugin must be made from web code. The request is directed to the appropriate implementation, its code performs the functionality, and a result is returned to the web code. Pub/sub messages can be published from native code and subscribers can reside in web code. 
 - Capacitor plugins treat the web as a platform, allowing plugin developers to write platform-specific implementations that run in the web without writing any conditional code.
 
-> **Note:** Detailed information about Capacitor plugins and the Capacitor Plugin API can be found <a href="https://capacitorjs.com/docs/plugins" target="_blank">here</a>.
+<Admonition type="info">
+Detailed information about Capacitor plugins and the Capacitor Plugin API can be found <a href="https://capacitorjs.com/docs/plugins" target="_blank">here</a>.
+</Admonition>
 
 In the following sections, we will define the plugin's interface and write the web implementation.
 

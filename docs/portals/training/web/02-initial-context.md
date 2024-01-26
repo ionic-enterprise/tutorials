@@ -4,6 +4,8 @@ sidebar_label: Initial Context
 sidebar_position: 2
 ---
 
+import Admonition from '@theme/Admonition';
+
 Initial context is a communication mechanism shipped with Portals that allows data to be passed from native code to a web application. Data shared using <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> is immediately available to the web application, synchronously, before the web application renders. 
 
 Initial context is useful when you want to pass authentication information, navigate to a specific path, or any case where having data _before_ the web application loads would prevent re-renders or UI jank.  
@@ -15,7 +17,10 @@ This tutorial will teach you:
 - How to use initial context to obtain session information passed from native code to the Portal's web application.
 - How to stub initial context within the web application's development workflow. 
 
-> **Note:** As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+<Admonition type="note">
+As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+</Admonition>
+
 
 ## Obtaining Session Information
 
@@ -26,7 +31,9 @@ In order to get session information, all micro frontends in the Jobsync app need
 1. Obtain the `accessToken` and `refreshToken` from initial context.
 2. Pass those tokens to an endpoint that refreshes the session.
 
-> **Note:** It is best practice to refresh the user's session upon launching a Portal to ensure the session stays active.
+<Admonition type="info" title="Best Practice">
+Refresh the user's session upon launching a Portal to ensure the session stays active.
+</Admonition>
 
 Open the _Expenses_ web application in the browser, if you have not done so already. 
 

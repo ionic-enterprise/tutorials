@@ -1,3 +1,9 @@
+.bottom-item {
+  border-bottom: 1px solid #e9edf3;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
 body {
   --ch-scrollycoding-sticker-width: 600px;
   --ch-scrollycoding-code-min-height: 72vh;
