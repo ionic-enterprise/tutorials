@@ -57,3 +57,36 @@ struct WebAppView: View {
         .environmentObject(CredentialsManager.preview)
 }
 ```
+
+Discuss that initial context contains multiple properties, and the values passed in can be found in `.value`. There's also `.name`, etc.
+
+## Dismissing the View
+
+```swift WebAppView.swift focus=17:22
+import SwiftUI
+import IonicPortals
+
+struct WebAppView: View {
+    @EnvironmentObject var credentialsManager: CredentialsManager
+    @Environment(\.dismiss) var dismiss
+    let metadata: WebAppMetadata
+    
+    var body: some View {
+        PortalView(portal: .init(
+            name: "debug",
+            startDir: "portals/debug",
+            initialContext: credentialsManager.credentials!.toJSObject()
+        ))
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden()
+        .task {
+            let stream = PortalsPubSub.subscribe(to: "navigate:back")
+            for await _ in stream {
+                self.dismiss()
+            }
+        }
+    }
+}
+```
+
+To test, navigate to the "Publish/Subscribe" tab, and under "Publish" enter "navigate:back" as the Topic.

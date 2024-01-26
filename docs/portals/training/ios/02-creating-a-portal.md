@@ -44,10 +44,6 @@ portals sync
 ```
 
 
-Add Portals CLI to path
-
-CD to Xcode project dir,  run `portals sync --config ../../.portals.yaml`
-
 ## 4. Build the view
 
 Make the following changes to `WebAppView.swift`:
