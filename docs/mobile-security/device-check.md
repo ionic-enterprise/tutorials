@@ -22,7 +22,7 @@ This can be used to:
 
 The API would typically be used in combination with [Asserting App Integrity](#asserting-app-integrity).
 
-### Asserting App Integrity
+## Asserting App Integrity
 
 <Admonition type="warning">
 This tutorial **DOES NOT** cover the topic of App Integrity. App Integrity uses the <a style={{color: 'blue'}} href="https://developer.apple.com/documentation/devicecheck/dcappattestservice">DCAppAttestService</a> API.
@@ -32,13 +32,13 @@ This tutorial **DOES NOT** cover the topic of App Integrity. App Integrity uses 
 
 If you are interested in this topic it is worth noting that it requires a backend service with database requirements to store multiple key and receipt pairs for each user of a device. It also requires a native plugin in a Capacitor project.
 
-## Getting Started
+## Implementing Device State
 This tutorial describes how you use the Device State feature in a Capacitor application by following these steps:
 1. [Install the Device Check Plugin](#install-the-device-check-plugin)
-2. [Get the Device Token](#get-the-device-token)
-3. [Send the Device Token to Our Backend](#send-the-device-token-to-our-backend)
-4. [Download the Device Check Key](#download-device-check-key)
-5. [Verify the Device Token in the Backend](#verify-token-in-the-backend)
+1. [Get the Device Token](#get-the-device-token)
+1. [Send the Device Token to Our Backend](#send-the-device-token-to-our-backend)
+1. [Download the Device Check Key](#download-device-check-key)
+1. [Verify the Device Token in the Backend](#verify-token-in-the-backend)
 
 ## Install the Device Check Plugin
 We need to install a plugin called [@capacitor-community/device-check](https://www.npmjs.com/package/@capacitor-community/device-check):
@@ -51,7 +51,7 @@ npx cap sync
 The plugin is used to get a Device Token which we will send back to our backend.
 
 ## Get the Device Token
-In our application we call to `generateToken`:
+In our application, we make a call to `generateToken`:
 
 ```typescript
 import { DeviceCheck } from '@capacitor-community/device-check';
@@ -81,7 +81,7 @@ import { CapacitorHttp, HttpResponse } from '@capacitor/core';
       // Add your response handling here
 ```
 
-We can continue running your app regardless of the response but you may want to handle the scenario of a response that indicates the device has been flagged as fraudulent by alerting the users. Other potential responses may include Apples servers being down or is error due to App being run from XCode.
+You can continue running your app regardless of the response but you may want to handle the scenario of a response that indicates the device has been flagged as fraudulent by alerting the users. Other potential responses may include Apples servers being down or is error due to App being run from XCode.
 
 ## Download Device Check Key
 
@@ -102,7 +102,7 @@ You can find the sample Cloudflare Worker project [here](https://github.com/ioni
 - Run `npm create cloudflare` and choose the hello world example.
 - Install a JWT library by running `npm install jose`
 - Install a unique ID generator by running `npm install uuid`
-- Install its types by running `npm i --save-dev @types/uuid`
+- Install its types by running `npm install --save-dev @types/uuid`
 
 ### Verify the Token
 
@@ -217,12 +217,12 @@ These Environment Variables need to be set in the above code:
 - `isDevelopment` - This is a boolean value used to specify which Apple API to use. Set it to `false` during testing with Testflight/Production.
 
 <Admonition type="warning">
-A typical error response you may from Apple's API is status code <b>400</b> with the text `Missing or badly formatted authorization token`. This is likely caused by the app may have been deployed to the device using XCode. You must deploy your app to Testflight (or the Store) to get a `200` response code from Apple.
+A typical error response you may receive from Apple's API is status code <b>400</b> with the text `Missing or badly formatted authorization token`. This may have been by the app being deployed to the device using XCode. You must deploy your app to Testflight (or the Store) to get a `200` response code from Apple.
 </Admonition>
 
 
 ## Summary
-This covers our first use case of the Device Check API to validate that Apple knows about our device. We have **not** verfied that the app is untampered with (see [Asserting App Integrity](#asserting-app-integrity)).
+This tutorial has covered using the Device Check API to confirm that our App was recognized by Apple as having been installed from the App Store. We have **not** verfied that the app is untampered with. Doing so requires that we assert App Integrity, which is a topic that is not covered by this tutorial.
 
 ## Next Steps
 - **App Integrity** - To verify that app is not altered or distributed outside the App Store we need to use the [DCAppAttestService](https://developer.apple.com/documentation/devicecheck/dcappattestservice) class. Reading the detailed documentation from Apple will give a good sense of how much work is required to implement this.
@@ -235,6 +235,8 @@ This covers our first use case of the Device Check API to validate that Apple kn
 - **What are other responses that could be returned from Apple?** - See [Apples documentation]((https://developer.apple.com/documentation/devicecheck/accessing_and_modifying_per-device_data#2910408)).
 
 - **Does Device State survive uninstalling the App?** - Yes, so be sure to store only relevant information. For example, maybe your App has a purchase for a paid plan per device. You can use a bit flag to indicate that the user paid on this device.
+
+- **Is there a way to remove data Device State?** - As one 2 bit values can be stored it isn't necessary to clear this data, but you can set these values for `bit0` and `bit1` to `0`. For information on how, see the [Apple Documentation](https://developer.apple.com/documentation/devicecheck/accessing_and_modifying_per-device_data#2910407).
 
 - **If the user installs my App on another device does the Device State transfer?** - No, the device state is for the particular unique device.
 
