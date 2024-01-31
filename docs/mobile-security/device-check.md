@@ -40,7 +40,7 @@ This tutorial describes how you use the Device State feature in a Capacitor appl
 1. [Download the Device Check Key](#download-device-check-key)
 1. [Verify the Device Token in the Backend](#verify-token-in-the-backend)
 
-## Install the Device Check Plugin
+### Install the Device Check Plugin
 We need to install a plugin called [@capacitor-community/device-check](https://www.npmjs.com/package/@capacitor-community/device-check):
 
 ```bash
@@ -50,7 +50,7 @@ npx cap sync
 
 The plugin is used to get a Device Token which we will send back to our backend.
 
-## Get the Device Token
+### Get the Device Token
 In our application, we make a call to `generateToken`:
 
 ```typescript
@@ -66,7 +66,7 @@ try {
 
 The Device token is now in the variable `result.token` and we can send it to our backend.
 
-## Send the Device Token to Our Backend
+### Send the Device Token to Our Backend
 
 We'll send the Device Token to our backend using Capacitor HTTP:
 ```typescript
@@ -83,7 +83,7 @@ const response: HttpResponse = await CapacitorHttp.post({
 
 You can continue running your app regardless of the response but you may want to handle the scenario of a response that indicates the device has been flagged as fraudulent by alerting the users. Other potential responses may include Apples servers being down or is error due to App being run from XCode.
 
-## Download Device Check Key
+### Download Device Check Key
 
 For our next steps we'll need to download a DeviceCheck Key from the Apple Developer Portal:
 - Login to your [Apple Developer Account](https://developer.apple.com/account/)
@@ -92,7 +92,7 @@ For our next steps we'll need to download a DeviceCheck Key from the Apple Devel
 - Click `Continue`, then click `Register`
 - Click `Download` and store the key securely (it will be saved with the filename format `AuthKey_[key ID].p8`)
 
-## Accept Token in the Backend
+### Accept Token in the Backend
 
 You can use whatever backend technology you like, however in this tutorial I'll describe how to create a backend with a Cloudflare Worker.
 
