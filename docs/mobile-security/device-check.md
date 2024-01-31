@@ -98,13 +98,13 @@ You can use whatever backend technology you like, however in this tutorial I'll 
 
 You can find the sample Cloudflare Worker project [here](https://github.com/ionic-enterprise/device-check).
 
-### Creating a Cloudflare Worker
+#### Creating a Cloudflare Worker
 - Run `npm create cloudflare` and choose the hello world example.
 - Install a JWT library by running `npm install jose`
 - Install a unique ID generator by running `npm install uuid`
 - Install its types by running `npm install --save-dev @types/uuid`
 
-### Verify the Token
+#### Verify the Token
 
 The following code:
 - Accepts the Device Token from our app.
