@@ -9,17 +9,14 @@ import Admonition from '@theme/Admonition';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Web developers provide web apps to be presented through Portals in a native mobile application. Web apps can be enhanced to communicate between web and native mobile code.
-
-**DEFINE COMMUNICATION THROUGH A PORTAL AND UPDATE OTHER PAGES**
+Web developers provide web apps to be presented through Portals in a mobile application. Communication through a Portal can be achieved, allowing web code to interact with native mobile code, and vice versa.
 
 In this training module, you will take an existing web app and learn how to:
 
 - Obtain and use data passed from the native app.
 - Send messages from the web app to the native app.
-- Define, implement, and use a Capacitor plugin.
-- Run the web app within a native artifact using the Portals CLI. 
-
+- Define, implement, and register a Capacitor plugin.
+- Serve the web app within a mobile application using the Portals CLI. 
 
 <Admonition type="note">
 Make sure you have read the [training introduction](../introduction) before proceeding. 
@@ -116,4 +113,4 @@ Finally, press "Login" and select "Expenses" from the dashboard view. You will s
 
 ## What's next
 
-After setting up the project and using the Portals CLI to establish a development workflow, you can now take advantage of the features Portals provides to communicate between web and native mobile code. In the next step of this module, you will learn how to obtain and use data passed from a Portal within a web app.
+After setting up the project and using the Portals CLI to establish a development workflow, you can now take advantage of the features Portals provides to communicate through a Portal. In the next step of this module, you will learn how to obtain and use data passed from a Portal within a web app.

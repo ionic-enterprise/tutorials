@@ -1,17 +1,46 @@
 ---
-title: Creating a Capacitor plugin
+title: Implementing a Capacitor plugin
 sidebar_label: Capacitor Plugin
-sidebar_position: 3
+sidebar_position: 5
 ---
 
-## What plugin do we need?
+import Admonition from '@theme/Admonition';
 
+<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing any Capacitor plugin to be used.
 
+In this step, you will author a Capacitor plugin to log analytics.
 
+## Exploring the problem
 
-## Interface
+Business sponsors of the Expenses web app would like to introduce analytics, with the following requirements: 
 
-```swift AnalyticsPlugin.swift
+1. There should be the ability to log when a user navigates to a new screen.
+2. There should be the ability to log specified actions taken in the app.
+3. Every analytic entry should track the platform the log occurred on.
+4. Analytics should be logged when the web app is accessed through mobile or on the web.
+
+Based on the requirements, the same actions must be available whether the Expenses web app is presented through a Portal or accessed on a web browser, but the implementation of the actions differ based on platform.
+
+Authoring a Capacitor plugin is ideal in this case. The functionality of a Capacitor plugin is specified by a TypeScript API, which iOS, Android, and web developers write platform-specific implementations adhering to. During runtime, a Capacitor plugin dynamically directs calls to the appropriate implementation. 
+
+## Defining the API contract
+
+Based on the requirements above, the following interface is reasonable for the analytics plugin:
+
+```typescript
+interface AnalyticsPlugin {
+  logAction(opts: { action: string, params?: any }): Promise<void>;
+  logScreen(opts: { screen: string, params?: any }): Promise<void>;
+}
+```
+
+Pardon the TypeScript, Capacitor plugin methods handle input/output in a nontraditional manner, as you will shortly see.
+
+Notice that the interface doesn't address the requirement of tracking the running platform. This is an implementation detail that can be addressed when platform-specific code is written.
+
+In Xcode, create a new Swift file in the `Portals` folder named `AnalyticsPlugin.swift` and populate the file with the following code:
+
+```swift Portals/AnalyticsPlugin.swift
 import Foundation
 import Capacitor
 
@@ -32,6 +61,12 @@ class AnalyticsPlugin: CAPInstancePlugin, CAPBridgedPlugin {
     }
 }
 ```
+
+<Admonition type="info">
+Refer to <a href="" target="_blank">How To Define a Portal API</a> for information on Capacitor plugins beyond the scope of this training module.
+</Admonition>
+
+---
 
 ## Add to Portal
 

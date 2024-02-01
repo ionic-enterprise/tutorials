@@ -6,7 +6,7 @@ sidebar_position: 2
 
 import Admonition from '@theme/Admonition';
 
-The Portals library provides a way to set <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> data for web applications within a Portal that is immediately available before rendering.
+The Portals library provides a way to set <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> data for web apps within a Portal that is immediately available before rendering.
 
 In this step, you will use initial context to obtain session information to filter the list of Expenses.
 
@@ -106,7 +106,7 @@ Replace the existing implementation in `web/shared/portals/index.ts` and point t
 
 </CH.Scrollycoding>
 
-Save the code, and observe that the Expenses list view updates in real-time. The "DEBUG" user interface cues have been removed, and only a subset of the list of expenses are now returned. If you were to observe the network traffic (but you don't have to), you would see that only the proper expenses are returned, fixing the problem.  
+Save the code and notice the Expenses list view has updated. The 'DEBUG' user interface cues have been removed, and now only a subset of the expense list is returned. If you were to inspect the network traffic (optional), you would observe that only the relevant expenses are now returned, resolving the issue.
 
 Although the filtering problem has been fixed, a few side-effects have popped up:
 
@@ -150,4 +150,4 @@ In a production scenario, you may want to run completely different routines depe
 
 ## What's next
 
-Using initial context, you have successfully established communication between native mobile code and web code! Initial context is uni-directional communication, from native mobile code to web code. In the next step of this module, you will learn about Portals' pub/sub mechanism to send messages from web code to native mobile code.
+Using initial context, you have successfully established communication through a Portal! Initial context is uni-directional communication, from native mobile code to web code. In the next step of this module, you will learn about Portals' pub/sub mechanism to send messages from web code to native mobile code.
