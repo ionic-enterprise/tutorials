@@ -86,37 +86,27 @@ then you are good to go. If you need the code you can make a copy from
 
 ### The Authentication Composable
 
-<CH.Scrollycoding>
-
 The first thing that needs to be done is to modify the Auth Connect configuration to use `current` mode on the web.
 A function is then created that handles the URL parameters when Auth Connect restarts our application after login
 or logout.
+
+<CH.Scrollycoding>
 
 <CH.Code>
 
 ```typescript src/composables/authentication.ts focus=11,12,31:41
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
+import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl:
-    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -150,9 +140,7 @@ const isReady: Promise<void> = AuthConnect.setup({
 export const useAuthentication = () => ({
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return (
-      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
-    );
+    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -184,26 +172,16 @@ Also note the return URLs. The page(s) accessed by that route is where we need t
 ```typescript src/composables/authentication.ts focus=38
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
+import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl:
-    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -237,9 +215,7 @@ const isReady: Promise<void> = AuthConnect.setup({
 export const useAuthentication = () => ({
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return (
-      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
-    );
+    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -268,26 +244,16 @@ Change the `uiMode` to `current`.
 ```typescript src/composables/authentication.ts focus=44:47
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
+import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl:
-    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -325,9 +291,7 @@ export const useAuthentication = () => ({
   },
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return (
-      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
-    );
+    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
   },
   login: async (): Promise<void> => {
     await isReady;
@@ -357,26 +321,16 @@ Auth Connect to be ready, then read the URL search parameters.
 ```typescript src/composables/authentication.ts focus=47:53
 import { useSession } from '@/composables/session';
 import { Capacitor } from '@capacitor/core';
-import {
-  Auth0Provider,
-  AuthConnect,
-  AuthResult,
-  ProviderOptions,
-} from '@ionic-enterprise/auth';
+import { Auth0Provider, AuthConnect, AuthResult, ProviderOptions } from '@ionic-enterprise/auth';
 
 const isNative = Capacitor.isNativePlatform();
 const provider = new Auth0Provider();
 const authOptions: ProviderOptions = {
   audience: 'https://io.ionic.demo.ac',
   clientId: 'yLasZNUGkZ19DGEjTmAITBfGXzqbvd00',
-  discoveryUrl:
-    'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
-  logoutUrl: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
-  redirectUri: isNative
-    ? 'io.ionic.acdemo://auth-action-complete'
-    : 'http://localhost:8100/auth-action-complete',
+  discoveryUrl: 'https://dev-2uspt-sz.us.auth0.com/.well-known/openid-configuration',
+  logoutUrl: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
+  redirectUri: isNative ? 'io.ionic.acdemo://auth-action-complete' : 'http://localhost:8100/auth-action-complete',
   scope: 'openid offline_access email picture profile',
 };
 let authResult: AuthResult | null = null;
@@ -413,10 +367,7 @@ export const useAuthentication = () => ({
     const params = new URLSearchParams(window.location.search);
     if (params.size > 0) {
       const queryEntries = Object.fromEntries(params.entries());
-      authResult = await AuthConnect.handleLoginCallback(
-        queryEntries,
-        authOptions
-      );
+      authResult = await AuthConnect.handleLoginCallback(queryEntries, authOptions);
     } else {
       authResult = null;
     }
@@ -424,9 +375,7 @@ export const useAuthentication = () => ({
   },
   isAuthenticated: async (): Promise<boolean> => {
     const authResult = await getAuthResult();
-    return (
-      !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult))
-    );
+    return !!authResult && (await AuthConnect.isAccessTokenAvailable(authResult));
   },
   login: async (): Promise<void> => {
     await isReady;
