@@ -82,15 +82,16 @@ to perform the following tasks:
 This tutorial builds upon the application created when doing the [getting started tutorial](getting-started) and
 converts it from using `popup` to using `current`. If you have the code from when you performed that tutorial,
 then you are good to go. If you need the code you can make a copy from
-[our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-vue/tree/main/auth-connect/getting-started).
+[our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/auth-connect/getting-started).
 
 ### The Authentication Composable
 
-<CH.Scrollycoding>
 
 The first thing that needs to be done is to modify the Auth Connect configuration to use `current` mode on the web.
 A function is then created that handles the URL parameters when Auth Connect restarts our application after login
 or logout.
+
+<CH.Scrollycoding>
 
 <CH.Code>
 
@@ -457,10 +458,10 @@ The Auth Connect configuration for the application redirects back into the appli
 <CH.Code>
 
 ```html src/app/auth-action-complete/auth-action-complete.html
-<ion-content>
-    <div class="center">
-        <ion-spinner color="dark" name="crescent"></ion-spinner>
-    </div>
+<ion-content class="main-content">
+  <div class="container">
+    <ion-spinner name="dots"></ion-spinner>
+  </div>
 </ion-content>
 
 <script setup lang="ts">
@@ -473,14 +474,14 @@ export class AuthActionCompletePage implements OnInit {
 </script>
 
 <style scoped>
-ion-content {
-  --background: var(--ion-color-light);
-}
-.center {
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>
 ```
@@ -494,10 +495,10 @@ The AuthActionCompletePage currently just contains markup to show a spinner. No 
 <CH.Code>
 
 ```html src/app/auth-action-complete/auth-action-complete.html focus=8,15:18
-<ion-content>
-    <div class="center">
-        <ion-spinner color="dark" name="crescent"></ion-spinner>
-    </div>
+<ion-content class="main-content">
+  <div class="container">
+    <ion-spinner name="dots"></ion-spinner>
+  </div>
 </ion-content>
 
 <script setup lang="ts">
@@ -515,14 +516,14 @@ async ionViewDidEnter() {
 </script>
 
 <style scoped>
-ion-content {
-  --background: var(--ion-color-light);
-}
-.center {
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>
 ```
@@ -536,10 +537,10 @@ Import Capacitor so the page can determine if it is running in a native context 
 <CH.Code>
 
 ```html src/app/auth-action-complete/auth-action-complete.html focus=10,13,20
-<ion-content>
-    <div class="center">
-        <ion-spinner color="dark" name="crescent"></ion-spinner>
-    </div>
+<ion-content class="main-content">
+  <div class="container">
+    <ion-spinner name="dots"></ion-spinner>
+  </div>
 </ion-content>
 
 <script setup lang="ts">
@@ -561,14 +562,14 @@ async ionViewDidEnter() {
 </script>
 
 <style scoped>
-ion-content {
-  --background: var(--ion-color-light);
-}
-.center {
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>
 ```
@@ -582,10 +583,10 @@ If the application is not running in a native context, handle the return from th
 <CH.Code>
 
 ```html src/app/auth-action-complete/auth-action-complete.html focus=11,14,23
-<ion-content>
-    <div class="center">
-        <ion-spinner color="dark" name="crescent"></ion-spinner>
-    </div>
+<ion-content class="main-content">
+  <div class="container">
+    <ion-spinner name="dots"></ion-spinner>
+  </div>
 </ion-content>
 
 <script setup lang="ts">
@@ -610,14 +611,14 @@ async ionViewDidEnter() {
 </script>
 
 <style scoped>
-ion-content {
-  --background: var(--ion-color-light);
-}
-.center {
-  display: flex;    
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>
 ```
