@@ -127,8 +127,6 @@ The Expenses web app needs to record analytic events whether it is being present
 
 To that end, the analytics Capacitor plugin must contain an implementation when it is used on the web. You can write the web implementation for a Capacitor plugin by writing a class that extends `WebPlugin` and providing an instance of the class as part of `registerPlugin()`:
 
-
-
 <CH.Scrollycoding>
 
 <CH.Code>
