@@ -46,7 +46,7 @@ async signinClicked() {
 
 With this code:
 
-- The `login()` is called and Auth Connect opens the OIDC authentication provider in a new tab (web) or a secure
+- The `login()` method is called and Auth Connect opens the OIDC authentication provider in a new tab (web) or a secure
   web view (mobile).
 - Auth Connect listens for that tab or secure web view to close.
 - If the user successfully logs in:
