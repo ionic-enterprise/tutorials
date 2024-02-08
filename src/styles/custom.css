@@ -28,7 +28,7 @@ body {
 
 .ch-scrollycoding-step-content[data-selected] {
   border-color: var(--token-heading-color-dark);
-  background-color: var(--c-gray-0);
+  background-color: var(--ifm-color-primary-contrast-background);
 }
 
 
