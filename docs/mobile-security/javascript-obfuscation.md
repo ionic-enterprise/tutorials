@@ -8,7 +8,7 @@ import Admonition from '@theme/Admonition';
 
 JavaScript obfuscation is the process of transforming readable JavaScript code into a confusing, unreadable form while preserving its essential functionality.
 
-JavaScript obfuscation can be a useful tool in your security arsenal, but it should be used strategically and in conjunction with other security measures. Carefully weigh the benefits and drawbacks before employing it.
+JavaScript obfuscation can be a useful tool in your security arsenal, but it should be used strategically and in conjunction with other security measures. Carefully weigh the [benefits](#why-obfuscate) and [drawbacks](#what-are-the-caveats) before employing it.
 
 ## Why Obfuscate?
 
