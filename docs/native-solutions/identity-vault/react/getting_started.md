@@ -2234,3 +2234,82 @@ export const lockSession = async (): Promise<void> => {
 ```
 
 </CH.Code>
+
+## Architectural Considerations
+
+### Construction vs. Initialization
+
+Have a look at the `src/util/session-vault.ts` file. Notice that it is very intentional about separating construction and initialization. **This is very important.**
+
+Identity Vault allows you to pass the configuration object via the `new Vault(cfg)` constructor. This, however, will make asynchronous calls which makes construction indeterminate.
+
+Always use a pattern of:
+
+- Construct the vault via `new Vault()` (default constructor, no configuration).
+- Pass the configuration to the `vault.initialize(cfg)` function.
+- Perform the initialization itself prior to mounting the application and make sure that the code is properly
+  `await`ing its completion.
+
+### Control Unlocking on Startup and Navigation
+
+Our code is currently automatically unlocking the vault upon startup due to our `getSession` function being invoked as part of our initialization logic. This is OK for our app, but it could be a problem if we had situations where multiple calls to get data from a locked vault all happened simultaneously. Always make sure you are controlling the vault lock status in such situations to ensure that only one unlock attempt is being made at a time.
+
+We will see various strategies for this in later tutorials. You can also refer to our
+[troubleshooting guide](https://ionic.io/docs/identity-vault/troubleshooting) for further guidance.
+
+### Initial Vault Type Configuration
+
+When we first initialize the vault we use the following configuration:
+
+```typescript
+  await vault.initialize({
+    key: 'io.ionic.gettingstartedivreact',
+    type: VaultType.SecureStorage,
+    deviceSecurityType: DeviceSecurityType.None,
+    lockAfterBackgrounded: 2000,
+  });
+```
+
+It is important to note that this is an _initial_ configuration. Once a vault is created, it (and its current
+configuration) persist between invocations of the application. Thus, if the configuration of the vault is updated by
+the application, the updated configuration will be read when the application is reopened. For example, if the
+`lockAfterBackgrounded` has been updated to 5000 milliseconds, then when we start the application again with the
+vault already existing, `lockAfterBackgrounded` will remain set to 5000 milliseconds. The configuration we pass
+here is _only_ used if we later destroy and re-create this vault.
+
+Notice that we are specifying a type of `VaultType.SecureStorage`. It is best to use either `VaultType.SecureStorage`
+or `VaultType.InMemeory` when calling `initialize()` to avoid the potential of creating a vault of a type that cannot
+be supported. We can always update the type later after and the updated `type` will "stick." We want to start,
+however, with an option that will always word regardless of the device's configuration.
+
+### Single Vault vs Multiple Vaults
+
+Identity Vault is ideal for storing small chunks of data such as authentication information or encryption keys. Our
+sample application contains a single vault. However, it may make sense to use multiple vaults within your application's
+architecture.
+
+Ask yourself the following questions:
+
+1. What type of data is stored?
+1. Under what conditions should the data be available to the application?
+
+Let's say the application is storing the following information:
+
+- The authentication session data.
+- A set of encryption keys.
+
+You can use a single vault to store this data if all of the following are true:
+
+- You only want to access the vault via a single service.
+- The requirements for when the data is accessible is identical.
+
+You should use multiple vaults to store this data if any of the following are true:
+
+- You logically want to use different services for different types of data.
+- You logically would like to use different services to access different types of data.
+- The requirements for when the data is accessible differs in some way. For example, perhaps the authentication
+  information is locked behind a biometric key while access to the encryption keys requires a custom set in-app
+  code to be entered.
+
+If you decide to use multiple vaults, a best-practice is to create a separate service for each vault. That is, in the
+interest of proper organization within your code, each vault service should only manage a single vault.
