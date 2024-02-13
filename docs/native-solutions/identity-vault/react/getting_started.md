@@ -4,6 +4,8 @@ sidebar_label: Getting Started
 sidebar_position: 1
 ---
 
+import Admonition from '@theme/Admonition';
+
 ## Generate the Application
 
 Before we explore the use of Identity Vault, we need to scaffold an application. In this section, we will generate
@@ -15,9 +17,9 @@ this tutorial:
 
 - `npm start`: Start the development server so the application can be run in the browser.
 - `npm run build`: Build the web portion of the application.
-- `npm cap sync`: Copy the web app and any new plugins into the native applications.
-- `npm cap open android`: Open Android Studio in order to build, run, and debug the application on Android.
-- `npm cap open ios`: Open Xcode in order to build, run, and debug the application on iOS.
+- `npx cap sync`: Copy the web app and any new plugins into the native applications.
+- `npx cap open android`: Open Android Studio in order to build, run, and debug the application on Android.
+- `npx cap open ios`: Open Xcode in order to build, run, and debug the application on iOS.
 
 Let's get started.
 
@@ -195,8 +197,9 @@ The initialization involves communication with the native layer. As such it is a
 needs to complete before we can begin normal operation of the application, we run the initialization and await
 its completion before the main application component is mounted.
 
-**Important:** awaiting the completion of initialization in this manner is a best-practice that should always
-be followed.
+<Admonition type="warning">
+Awaiting the completion of initialization in this manner is a best-practice that should always be followed.
+</Admonition>
 
 <CH.Scrollycoding>
 
@@ -307,7 +310,7 @@ In our `src/main.tsx`, execute the `initializeVault` function prior to rendering
 
 </CH.Scrollycoding>
 
-In this section, we created a vault using the key io.ionic.gettingstartediv. Our vault is a "Secure Storage" vault, which means that the information we store in the vault is encrypted in the keychain / keystore and is only visible to our application, but the vault is never locked. We will explore other types of vaults later in this tutorial.
+In this section, we created a vault using the key `io.ionic.gettingstartediv`. Our vault is a "Secure Storage" vault, which means that the information we store in the vault is encrypted in the keychain / keystore and is only visible to our application, but the vault is never locked. We will explore other types of vaults later in this tutorial.
 
 ### Store a Vault
 
@@ -416,13 +419,9 @@ item with the key of `session`. The vault has a `setValue()` method that is used
 
 </CH.Scrollycoding>
 
-Notice that we have created a very light wrapper around the vault's `setValue()` method. This is often all that is
-required. You may be tempted to just make the `useSessionVault`'s `vault` value public and then use the Identity Vault
-methods directly on the vault. It is best-practice, however, to encapsulate the vault in a function like this one and
-only expose the functionality that makes sense for your application.
+Notice that we have created a very light wrapper around the vault's `setValue()` method. This is often all that is required. It is best-practice to encapsulate the vault in a function like this one and only expose the functionality that makes sense for your application.
 
-With the "store session" feature properly abstracted, add a button to the `Tab1` page that will simulate logging in by
-storing some fake authentication data in the vault.
+With the "store session" feature properly abstracted, add a button to the `Tab1` page that will simulate logging in by storing some fake authentication data in the vault.
 
 <CH.Scrollycoding>
 
@@ -799,7 +798,7 @@ When you press the `Store` button you will see the session information on the pa
 you will see the session information.
 
 If you would like to clear the session information at this point, remove the application from your device (physical
-or simulated) and re-install it. In the web, you can close the running tab and open new one.
+or simulated) and re-install it. On the web, you can close the running tab and open new one.
 
 Next we will see how to remove this data from within our application.
 
@@ -821,7 +820,9 @@ The vault has two different methods that we can use to remove the data:
     since the vault had been removed.
   - Use this method if your vault stores multiple logical entities.
 
-**Note:** We will address locking and unlocking a vault later in this tutorial.
+<Admonition type="note">
+We will address locking and unlocking a vault later in this tutorial.
+</Admonition>
 
 Our vault stores session information. Having a single vault that stores _only_ the session information is the
 best-practice for this type of data, and it is the practice we are using here. Thus we will use the `clear()`
@@ -1219,7 +1220,7 @@ Add an `updateUnlockMode()` function. Take a single argument for the mode.
 
 <CH.Code>
 
-```typescript src/util/session-vault.ts focus=6,67:71
+```typescript src/util/session-vault.ts focus=67:71
 import { 
   BrowserVault,
   Vault,
