@@ -31,7 +31,7 @@ cd ./tutorials-and-trainings-portals
 git checkout start-ios
 ```
 
-In this training module, you will be working with the Jobsync superapp iOS project. The project utilizes Swift Package Manager for dependency management and SwiftUI as the UI framework. Where necessary, admonitions will be provided to highlight differences when using UIKit or Cocoapods.
+In this training module, you will be working with the Jobsync superapp iOS project. The project utilizes Swift Package Manager for dependency management and SwiftUI as the UI framework. Where necessary, notes will be provided to highlight differences when using UIKit or Cocoapods.
 
 Launch the project located at `/ios/Jobsync.xcodeproj` and proceed to the next section to install the Portals library.
 
