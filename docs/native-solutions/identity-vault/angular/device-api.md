@@ -8,8 +8,9 @@ import Admonition from '@theme/Admonition';
 
 ## Overview
 
-When we created our other tutorials we implemented several pieces of functionality without taking the capabilities and
-current configuration of the device into account. We will address that now with the help of the [Device API](https://ionic.io/docs/identity-vault/classes/device).
+When we created our other Identity Vault tutorial applications we implemented several pieces of functionality without
+taking the capabilities and current configuration of the device into account. We will address that now with the help
+of the [Device API](https://ionic.io/docs/identity-vault/classes/device).
 
 In this tutorial we will:
 
