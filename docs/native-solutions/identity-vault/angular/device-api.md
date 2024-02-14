@@ -1315,7 +1315,7 @@ export class SessionVaultService {
 
 </CH.Code>
 
-Add a private `provisionBiometrics()`. Display the biometric prompt if permissions need to be prompted.
+Add a private method called `provisionBiometrics()`. Display the biometric prompt if permissions need to be prompted.
 
 ---
 
