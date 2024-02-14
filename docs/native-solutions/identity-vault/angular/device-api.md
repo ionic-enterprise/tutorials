@@ -499,7 +499,7 @@ Now that we have seen an overview of the [Device API](https://ionic.io/docs/iden
 have a look at some common tasks that we can perform using the methods from this API. In this section, we look
 at how to perform the following tasks:
 
-- Enabling or disables various functionality based on the capabilities of the device.
+- Enabling or disabling various functionality based on the capabilities of the device.
 - Setting the app to show the "privacy screen" when the app is being shown in the app switcher.
 - Progressively enhance the vault to use the most secure options available on the device.
 - Handle setting permissions on iOS devices that use Face ID.
