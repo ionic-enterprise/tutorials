@@ -524,7 +524,7 @@ Prompt" workflow is disabled if biometrics is not currently enabled.
 </ion-item>
 ```
 
-Using this code as a model, add similar functionality to to the "Use Biometrics" button on the `Tab1Page`.
+Using this code as a model, add similar functionality to the "Use Biometrics" button on the `Tab1Page`.
 
 ### Show the Privacy Screen
 
