@@ -1181,7 +1181,7 @@ The requirements we have from our design team are;
 - Keep the vault type logic as it is now. That is:
   - If there is a system passcode and biometrics, use biometrics with a system passcode backup.
   - If there is a system passcode but no biometrics, use the system passcode.
-  - If there no system passcode force the user to log in time.
+  - If there no system passcode force the user to log in each time.
 - In addition, if biometrics is enabled:
   - Determine if the user needs to be prompted for permission.
   - If the user needs to be prompted for permission, show a biometric prompt. This will also trigger the
