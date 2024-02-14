@@ -511,8 +511,8 @@ or workflows based on whether or not the current device has biometrics enabled o
 application has a preference to toggle biometric authentication on and off, we could hide or disable the
 toggle for that setting based on the value of `isBiometricsEnabled()`.
 
-We have have an example of doing this within the `Tab2Page` where button that initiates the "Show Biometric Prompt"
-workflow is disabled if biometrics is not currently enabled.
+We have have an example of doing this within the `Tab2Page` where the button that initiates the "Show Biometric
+Prompt" workflow is disabled if biometrics is not currently enabled.
 
 ```html src/app/tab2/tab2.page.html
 <ion-item>
