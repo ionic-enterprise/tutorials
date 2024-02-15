@@ -312,8 +312,8 @@ Build the application and install it on a variety of devices. Then modify the co
 - `setHideScreenOnBackground`: Set whether or not the interface is obscured when the application is placed in
   the background.
 - `showBiometricPrompt`: Show a biometric prompt to the user. This method will resolve when the user dismisses
-  the prompt, and will reject if they cancel. On iOS devices with Face ID, this method will also ask for
-  permission as needed.
+  the prompt by successfully providing biometrics, and will reject if they cancel. On iOS devices with Face ID,
+  this method will also ask for permission as needed.
 
 Add a couple of buttons to the `Tab2Page` to call these methods.
 
