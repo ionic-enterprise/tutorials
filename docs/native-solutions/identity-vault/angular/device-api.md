@@ -502,7 +502,7 @@ at how to perform the following tasks:
 - Enabling or disabling various functionality based on the capabilities of the device.
 - Setting the app to show the "privacy screen" when the app is being shown in the app switcher.
 - Progressively enhance the vault to use the most secure options available on the device.
-- Handle setting permissions on iOS devices that use Face ID.
+- Managing permissions on iOS devices that use Face ID.
 
 ### Enable / Disable Functionality
 
