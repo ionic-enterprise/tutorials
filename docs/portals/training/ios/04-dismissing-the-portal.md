@@ -29,78 +29,78 @@ Pub/sub is bi-directional; messages can be sent from native mobile code to web c
 Modify `Portals/WebAppView.swift` to create a subscriber for the `navigate:back` topic:
 
 <CH.Scrollycoding>
-  <CH.Code>
+<CH.Code>
 
-  ```swift Portals/WebAppView.swift focus=17:19
-  import SwiftUI
-  import IonicPortals
+```swift Portals/WebAppView.swift focus=17:19
+import SwiftUI
+import IonicPortals
 
-  struct WebAppView: View {
-      @EnvironmentObject var credentialsManager: CredentialsManager
-      @Environment(\.dismiss) var dismiss
-      let metadata: WebAppMetadata
-      
-      var body: some View {
-          PortalView(portal: .init(
-              name: "debug",
-              startDir: "portals/debug",
-              initialContext: credentialsManager.credentials!.toJSObject()
-          ))
-          .ignoresSafeArea()
-          .navigationBarBackButtonHidden()
-          .task {
+struct WebAppView: View {
+    @EnvironmentObject var credentialsManager: CredentialsManager
+    @Environment(\.dismiss) var dismiss
+    let metadata: WebAppMetadata
+    
+    var body: some View {
+        PortalView(portal: .init(
+            name: "debug",
+            startDir: "portals/debug",
+            initialContext: credentialsManager.credentials!.toJSObject()
+        ))
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden()
+        .task {
 
-          }
-      }
-  }
+        }
+    }
+}
 
-  #Preview {
+#Preview {
     WebAppView(metadata: WebApps.metadata[0])
         .environmentObject(CredentialsManager.preview)
-  }
-  ```
+}
+```
 
-  </CH.Code>
+</CH.Code>
 
 Apply the `.task` modifier to `PortalView` to execute code when the view becomes active.
 
 ---
 
-  <CH.Code>
+<CH.Code>
 
-  ```swift Portals/WebAppView.swift focus=18:21
-  import SwiftUI
-  import IonicPortals
+```swift Portals/WebAppView.swift focus=18:21
+import SwiftUI
+import IonicPortals
 
-  struct WebAppView: View {
-      @EnvironmentObject var credentialsManager: CredentialsManager
-      @Environment(\.dismiss) var dismiss
-      let metadata: WebAppMetadata
-      
-      var body: some View {
-          PortalView(portal: .init(
-              name: "debug",
-              startDir: "portals/debug",
-              initialContext: credentialsManager.credentials!.toJSObject()
-          ))
-          .ignoresSafeArea()
-          .navigationBarBackButtonHidden()
-          .task {
-              let stream = PortalsPubSub.subscribe(to: "navigate:back")
-              for await _ in stream {
+struct WebAppView: View {
+    @EnvironmentObject var credentialsManager: CredentialsManager
+    @Environment(\.dismiss) var dismiss
+    let metadata: WebAppMetadata
+    
+    var body: some View {
+        PortalView(portal: .init(
+            name: "debug",
+            startDir: "portals/debug",
+            initialContext: credentialsManager.credentials!.toJSObject()
+        ))
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden()
+        .task {
+            let stream = PortalsPubSub.subscribe(to: "navigate:back")
+            for await _ in stream {
 
-              }
-          }
-      }
-  }
+            }
+        }
+    }
+}
 
-  #Preview {
+#Preview {
     WebAppView(metadata: WebApps.metadata[0])
         .environmentObject(CredentialsManager.preview)
-  }
-  ```
+}
+```
 
-  </CH.Code>
+</CH.Code>
 
 Within the `.task` closure, subscribe to the `navigate:back` topic. 
 
@@ -128,10 +128,10 @@ struct WebAppView: View {
         .ignoresSafeArea()
         .navigationBarBackButtonHidden()
         .task {
-          let stream = PortalsPubSub.subscribe(to: "navigate:back")
-          for await _ in stream {
-              self.dismiss()
-          }
+            let stream = PortalsPubSub.subscribe(to: "navigate:back")
+            for await _ in stream {
+                self.dismiss()
+            }
         }
     }
 }
@@ -162,4 +162,4 @@ Here, you can test Portal's pub/sub mechanism by entering `navigate:back` into t
 
 ## What's next
 
-The pub/sub mechanism available within the Portals library is ideal for simple use cases, such as allowing a web app presented through a Portal to request native navigation. In the next step of this module, you will learn about Capacitor plugins, which also communicate bi-directionally, but in a more structured manner suitable for complex use cases.
+The pub/sub mechanism available within the Portals library is ideal for simple use cases, such as allowing a web app presented through a Portal to request native navigation. However, it is not suitable for more complex use cases. In the next step of this module, you will learn about Capacitor plugins, which also communicate bi-directionally, but in a more structured manner suitable for complex use cases.

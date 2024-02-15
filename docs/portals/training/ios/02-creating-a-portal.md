@@ -16,11 +16,11 @@ Launch the Jobsync app on a device or simulator, and sign in using the preset cr
 
 Once complete, the Jobsync app will dynamically load the appropriate web app into a Portal configured within this detail view. 
 
-A good first step is to configure and display a Portal, loading a sample web app to ensure the configuration works. In the next section, you will utilize the Portals CLI to generate such a sample web app and sync it with the iOS project.
+A good first step is to configure and display a Portal, loading a sample web app to ensure the configuration works. In the next section, you will utilize the Portals CLI to generate a sample web app and sync it with the iOS project.
 
 ## Syncing the sample web app
 
-The Portals CLI offers the <a href="https://ionic.io/docs/portals/cli/commands/poc" target="_blank">`poc` command</a>, downloading a prebuilt example web app reflecting Portal information and can be used to test communication through a Portal.
+The Portals CLI offers the <a href="https://ionic.io/docs/portals/cli/commands/poc" target="_blank">`poc` command</a>, which will download a prebuilt example web app that can be used to test communication through a Portal. 
 
 Run the following command in the terminal at the repository root:
 

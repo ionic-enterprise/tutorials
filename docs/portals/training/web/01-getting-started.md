@@ -103,7 +103,9 @@ Next, in a separate terminal, run the Portals CLI's `serve` command. The command
 
   </TabItem>
   <TabItem label="Android" value="android">
-    Coming soon!
+    <Admonition type="info">
+      Android instructions coming soon!   
+    </Admonition>
   </TabItem>
 </Tabs>
 

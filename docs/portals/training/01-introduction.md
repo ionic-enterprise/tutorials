@@ -59,6 +59,6 @@ Web developers will need either <a href="https://developer.apple.com/xcode/" tar
 
 Head to the training module that best represents your developer persona:
 
-- [Portals for web developers](../training/web/overview)
 - [Portals for iOS developers](../training/ios/overview)
 - [Portals for Android developers](../training/android/overview)
+- [Portals for web developers](../training/web/overview)

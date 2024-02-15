@@ -14,9 +14,9 @@ In this step, you will author a Capacitor plugin to log analytics.
 
 Business sponsors of the Jobsync superapp would like to allow the web apps presented through Portals to log analytic events, with the following requirements: 
 
-1. There should be the ability to log when a user navigates to a new screen.
-1. There should be the ability to log specified actions taken in the app.
-1. Every analytic entry should track the platform the log occurred on.
+1. The ability to log navigation to a new screen shall exist.
+2. The ability to log specific actions taken in the app shall exist.
+3. Every analytic entry shall track the platform the log occurred on.
 
 You could use Portal's pub/sub mechanism to satisfy the requirements, but authoring a Capacitor plugin to handle analytics provides a structured, OOP-based approach to communicate through a Portal without the need to manage subscriptions.
 

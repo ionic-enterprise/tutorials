@@ -19,14 +19,14 @@ Ensure you are [serving the Expenses web app using the Portals CLI](./getting-st
 
 Business sponsors of the Expenses web app would like to introduce analytics, with the following requirements: 
 
-1. There should be the ability to log when a user navigates to a new screen.
-2. There should be the ability to log specified actions taken in the app.
-3. Every analytic entry should track the platform the log occurred on.
-4. Analytics should be logged when the web app is accessed through mobile or on the web.
+1. The ability to log navigation to a new screen shall exist.
+2. The ability to log specific actions taken in the app shall exist.
+3. Every analytic entry shall track the platform the log occurred on.
+4. Analytics shall be logged when the web app is accessed through mobile or on the web.
 
 Based on the requirements, the same actions must be available whether the Expenses web app is presented through a Portal or accessed on a web browser, but the implementation of the actions differ based on platform.
 
-Authoring a Capacitor plugin is ideal in this case. The functionality of a Capacitor plugin is specified by a TypeScript API, which iOS, Android, and web developers write platform-specific implementations adhering to. During runtime, a Capacitor plugin dynamically directs calls to the appropriate implementation. 
+Authoring a Capacitor plugin is ideal in this case. The functionality of a Capacitor plugin is specified by a TypeScript API. Android, iOS, and web developers create platform-specific implementations that adhere to the defined API. During runtime, a Capacitor plugin dynamically directs calls to the appropriate implementation. 
 
 <Admonition type="info">
 Capacitor plugins perform platform-detection under the hood, making them a good abstraction for processes that require different implementations on different platforms.
@@ -80,9 +80,7 @@ export const Analytics = registerPlugin<AnalyticsPlugin>(
 
 Register the analytics plugin using the `registerPlugin()` method.
 
-<Admonition type="info">
 The string `"Analytics"` sets the plugin name, and it must be consistent across different platform implementations.
-</Admonition>
 
 ---
 
@@ -113,7 +111,7 @@ Replace the existing implementation in `web/shared/portals/index.ts` and point t
 
 Save the code, then tap either the plus icon or an individual expense's edit (pencil) icon. If you were to monitor network traffic (optional), you would notice requests sent to an analytics endpoint. These requests contain data about the event, including a property `platform` indicating the running platform. For this demo, the analytics plugin has been implemented in the native binary running on your device or simulator.
 
-All works when the plugin runs on a mobile platform, but if you navigate to `http://localhost:5173` you will encounter the following error:
+Everything works when the plugin runs on a mobile platform, but if you navigate to `http://localhost:5173` you will encounter the following error:
 
 ```bash
 "Analytics" plugin is not implemented on web
@@ -227,7 +225,7 @@ Note that `platform: 'web'` is being added to the event payload.
 
 </CH.Scrollycoding>
 
-Return to the browser and notice that no more errors remain. If you inspect network traffic (optional), you will see network requests made to an analytics endpoint with a data payload containing `platform: 'web'`, confirming that the web implementation is in use. The analytics plugin determined that the Expenses web app is running on a web platform, and picked the appropriate plugin implementation to use.
+Return to the browser and notice that no more errors remain. If you monitor network traffic (optional), you will notice network requests made to an analytics endpoint with a data payload containing `platform: 'web'`, confirming that the web implementation is in use. The analytics plugin determined that the Expenses web app is running on a web platform, and picked the appropriate plugin implementation to use.
 
 <Admonition type="info">
 Detailed information about Capacitor plugins and the Capacitor Plugin API can be found <a href="https://capacitorjs.com/docs/plugins" target="_blank">here</a>.

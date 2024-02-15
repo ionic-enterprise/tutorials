@@ -61,9 +61,7 @@ export const publishNavigateBackMessage = async () => {
 
 </CH.Code>
 
-<Admonition type="info" title="Best Practice">
 Type-safety can be added to the method signature of `publish`, preventing potential bugs which can be hard to troubleshoot between different tech stacks.
-</Admonition>
 
 ---
 

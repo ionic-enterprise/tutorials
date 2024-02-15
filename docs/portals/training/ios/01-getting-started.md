@@ -90,5 +90,5 @@ Avoid committing your Portals product key to source code repositories that may b
 
 ## What's next?
 
-After setting up the project and registering your Portals product key, you can now take advantage of the Portals iOS library. In the next step of this module, you will create a Portal and use the Portals CLI to sync a web app to present within it.
+Now that you have set up the project and registered your Portals product key, you can take advantage of the Portals iOS library. In the next step of this module, you will create a Portal and use the Portals CLI to sync a web app to present within it.
 
