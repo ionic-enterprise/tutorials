@@ -2,50 +2,40 @@
 title: Implementing a Capacitor Plugin
 sidebar_label: Implementing a Plugin
 sidebar_position: 4
+pagination_next: null
 ---
 
 import Admonition from '@theme/Admonition';
 
-Portals projects can use <a href="https://ionic.io/docs/portals/for-ios/how-to/using-a-capacitor-plugin" target="_blank">Capacitor plugins</a> to communicate between web and native code. The Capacitor Plugin API provides a structured, object-oriented approach to communicating between web and native suitable for larger and more complex use-cases.
+<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing any Capacitor plugin to be used.
 
-Writing a Capacitor plugin is the recommended way to expose complex native functionality to web applications presented through a Portal, such as scanning a barcode or integrating with a 3rd party native SDK.
-
-## Overview
-
-This tutorial will teach you:
-
-- How to use the Capacitor Plugin API to author an analytics plugin.
-- How to implement platform-specific code to log analytics when running the Portal's web application in isolation.  
+In this step, you will author a Capacitor plugin to log analytics.
 
 <Admonition type="note">
-As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+Ensure you are [serving the Expenses web app using the Portals CLI](./getting-started) before proceeding.
 </Admonition>
 
-## Anatomy of a Capacitor Plugin
+## Exploring the problem
 
-Each Capacitor plugin contains a set of functionalities written in the native language of the platform (e.g., Swift for iOS, Java/Kotlin for Android, Typescript for web). A shared Typescript interface defines the contract between the web application and platform implementations.
+Business sponsors of the Expenses web app would like to introduce analytics, with the following requirements: 
 
-Both pub/sub and Capacitor plugins allow programmatic communication between web and native code, with key differences:
+1. The ability to log navigation to a new screen shall exist.
+2. The ability to log specific actions taken in the app shall exist.
+3. Every analytic entry shall track the platform the log occurred on.
+4. Analytics shall be logged when the web app is accessed through mobile or on the web.
 
-- Capacitor plugins focus on bridging the gap between web and native functionality, whereas Portals' pub/sub messaging system focuses on coordination between a Portal's web application and the host native application.
-- Calls made to a Capacitor plugin must be made from web code. The request is directed to the appropriate implementation, its code performs the functionality, and a result is returned to the web code. Pub/sub messages can be published from native code and subscribers can reside in web code. 
-- Capacitor plugins treat the web as a platform, allowing plugin developers to write platform-specific implementations that run in the web without writing any conditional code.
+Based on the requirements, the same actions must be available whether the Expenses web app is presented through a Portal or accessed on a web browser, but the implementation of the actions differ based on platform.
+
+Authoring a Capacitor plugin is ideal in this case. The functionality of a Capacitor plugin is specified by a TypeScript API. Android, iOS, and web developers create platform-specific implementations that adhere to the defined API. During runtime, a Capacitor plugin dynamically directs calls to the appropriate implementation. 
 
 <Admonition type="info">
-Detailed information about Capacitor plugins and the Capacitor Plugin API can be found <a href="https://capacitorjs.com/docs/plugins" target="_blank">here</a>.
+Capacitor plugins perform platform-detection under the hood, making them a good abstraction for processes that require different implementations on different platforms.
 </Admonition>
 
-In the following sections, we will define the plugin's interface and write the web implementation.
 
-## Defining the Plugin API
+## Defining the API contract
 
-The Jobsync app leverages an analytics service that micro frontends can tap into. The business requirements for logging analytics are as follows:
-
-1. There should be the ability to log when a user navigates to a new screen.
-2. There should be the ability to log specified actions taken in the app.
-3. Every analytic entry should track the platform the log occurred on.
-
-Based on these requirements, the Jobsync team put together this API contract:
+Based on the requirements above, the following interface is reasonable for the analytics plugin:
 
 ```typescript
 interface AnalyticsPlugin {
@@ -54,12 +44,20 @@ interface AnalyticsPlugin {
 }
 ```
 
-Notice that the API contract doesn't address the 3rd requirement. That's an implementation detail that can be handled when platform-specific code is written.
+Notice that the interface doesn't address the requirement of tracking the running platform. This is an implementation detail that can be addressed when platform-specific code is written.
 
-Create a new file, `web/shared/portals/analytics-plugin.ts` and populate it with the interface above.
+Create a new file, `web/shared/portals/analytics-plugin.ts` and populate the file with the interface above.
 
-## Registering the Plugin
+## Registering the plugin
 
+The Capacitor plugin API is available as part of the `@capacitor/core` npm package. For the purpose of this training, it will be added as a dependency of the web package containing the project's shared Portals code:
+
+```bash terminal
+cd ./web/shared/portals
+pnpm add @capacitor/core
+```
+
+Use `@capacitor/core` to register the plugin with the Expenses web app:
 
 <CH.Scrollycoding>
 
@@ -76,12 +74,13 @@ interface AnalyticsPlugin {
 export const Analytics = registerPlugin<AnalyticsPlugin>(
   "Analytics"
 );
-
 ```
+
 </CH.Code>
 
-In order to use the plugin, it must be registered using the `registerPlugin` export from the `@capacitor/core` module.
+Register the analytics plugin using the `registerPlugin()` method.
 
+The string `"Analytics"` sets the plugin name, and it must be consistent across different platform implementations.
 
 ---
 
@@ -106,15 +105,25 @@ export { Analytics };
 
 </CH.Code>
 
-Within the `web/shared/portals` directory, open `index.ts`. 
-
-Replace the existing `Analytics` export with an import and export of the new constant created in the step above.
+Replace the existing implementation in `web/shared/portals/index.ts` and point to the new implementation.  
 
 </CH.Scrollycoding>
 
-When you see the error message `"Analytics" plugin is not implemented on the web`, it indicates that the web implementation of the Analytics plugin is missing. In the following sections, we will address this and provide a complete implementation for the web platform.
+Save the code, then tap either the plus icon or an individual expense's edit (pencil) icon. If you were to monitor network traffic (optional), you would notice requests sent to an analytics endpoint. These requests contain data about the event, including a property `platform` indicating the running platform. For this demo, the analytics plugin has been implemented in the native binary running on your device or simulator.
 
-## Implementing the Plugin
+Everything works when the plugin runs on a mobile platform, but if you navigate to `http://localhost:5173` you will encounter the following error:
+
+```bash
+"Analytics" plugin is not implemented on web
+```
+
+As a web developer, your responsibility includes implementing a Capacitor plugin for the web. In the following section, you will write the web implementation of the analytics plugin to meet the requirements outlined at the beginning of this step.
+
+## Web implementation
+
+The Expenses web app needs to record analytic events whether it is being presented through a Portal, or running as a standalone application on the web.
+
+To that end, the analytics Capacitor plugin must contain an implementation when it is used on the web. You can write the web implementation for a Capacitor plugin by writing a class that extends `WebPlugin` and providing an instance of the class as part of `registerPlugin()`:
 
 <CH.Scrollycoding>
 
@@ -143,13 +152,13 @@ export const Analytics = registerPlugin<AnalyticsPlugin>("Analytics");
 
 </CH.Code>
 
-Start by creating a class that implements `AnalyticsPlugin`. Web implementations of Capacitor plugins must extend `WebPlugin`, part of the `@capacitor/core` module.
+Add a class that extends `WebPlugin` and implements `AnalyticsPlugin` in `web/shared/portals/analytics-plugin.ts`.
 
 ---
 
 <CH.Code>
 
-```typescript web/shared/portals/analytics-plugin.ts focus=17:20
+```typescript web/shared/portals/analytics-plugin.ts focus=17:21
 import { WebPlugin, registerPlugin } from "@capacitor/core";
 
 interface AnalyticsPlugin {
@@ -175,9 +184,7 @@ export const Analytics = registerPlugin<AnalyticsPlugin>(
 
 </CH.Code>
 
-The second parameter of `registerPlugin()` lets developers assign `WebPlugin` class instances to specific platforms.
-
-At this point, we can see the web implementation called as the `Method not implemented.` error is thrown. 
+Register an instance of this class for the web implementation as part of the `registerPlugin()` call.
 
 ---
 
@@ -194,7 +201,7 @@ interface AnalyticsPlugin {
 
 class AnalyticsWeb extends WebPlugin implements AnalyticsPlugin {
   async logAction(opts: { action: string; params?: any }): Promise<void> {
-    let { action, params } = opts;
+    const { action, params } = opts;
     await httpClient.post("/analytics", { action, params, platform: "web" });
   }
 
@@ -212,25 +219,20 @@ export const Analytics = registerPlugin<AnalyticsPlugin>(
 
 </CH.Code>
 
-Shared code in `@jobsync/api` provides an HTTP client to make calls to the analytics backend. Note that the implementation passes `platform: web` to log the platform the analytic event occurred on.
+Use utility methods available as part of the local `@jobsync/api` package to make calls to the analytics backend.
+
+Note that `platform: 'web'` is being added to the event payload.
 
 </CH.Scrollycoding>
 
-Head back to the browser. No more errors remain, and the plugin has been implemented for the web! 
+Return to the browser and notice that no more errors remain. If you monitor network traffic (optional), you will notice network requests made to an analytics endpoint with a data payload containing `platform: 'web'`, confirming that the web implementation is in use. The analytics plugin determined that the Expenses web app is running on a web platform, and picked the appropriate plugin implementation to use.
 
-If you inspect network traffic, you will see the analytic event data returned back as the response body on calls made to the `/analytics` endpoint. Response data will look something like this:
-
-```json
-
-{
-  "success": true,
-  "event": {
-    "screen":"Expenses List",
-    "platform":"web"
-  }
-}
-```
+<Admonition type="info">
+Detailed information about Capacitor plugins and the Capacitor Plugin API can be found <a href="https://capacitorjs.com/docs/plugins" target="_blank">here</a>.
+</Admonition>
 
 ## Conclusion
 
-In this tutorial, you learned how to implement the web portion of a Capacitor plugin. With the completion of this tutorial, you have completed the Portals onboarding training for web developers! 
+With the completion of the analytics Capacitor plugin, the Expenses web app is ready to be bundled within the Jobsync superapp! In this training module, you exercised the various ways web apps can communicate through a Portal. Furthermore, you used the Portals CLI to set up a development workflow to test and debug a web app running within the Portal the mobile application will present it in.
+
+You now have the tools in place to take any web app and make it Portals-ready. Happy coding!! 🤓 

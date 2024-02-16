@@ -1,36 +1,32 @@
 ---
-title: Publishing Messages with Pub/Sub
+title: Publishing messages to native
 sidebar_label: Publishing Messages
 sidebar_position: 3
 ---
 
 import Admonition from '@theme/Admonition';
 
-Portals offers a seamless means of communication between web and native code via a <a href="https://ionic.io/docs/portals/for-web/portals-plugin" target="_blank">publish/subscribe interface</a>. This mechanism, commonly known as pub/sub, is primarily used for broadcasting messages from the web to native subscribers. However, it supports the reverse flow, enabling web code to subscribe and handle messages from native code.
+Web code can publish messages to native mobile code using the <a href="https://ionic.io/docs/portals/for-web/portals-plugin" target="_blank">publish/subscribe interface</a> (pub/sub) available with Portals.
 
-Pub/sub communication works well for simple UI actions, like initiating native navigation or triggering native dialogs.
-
-## Overview
-
-This tutorial will teach you how to use the Portals module (`@ionic/portals`) to publish messages to native code from the Portal's web application. 
+In this step, you will publish messages from the web to trigger native mobile navigation. 
 
 <Admonition type="note">
-As you work through the tutorial, ensure that you are [running the _Expenses_ web application](./overview#running-the-expenses-web-application) to observe any code changes in real-time.
+Ensure you are [serving the Expenses web app using the Portals CLI](./getting-started) before proceeding.
 </Admonition>
 
-## Handling Native Navigation 
+## Exploring the problem
 
-When a user launches Jobsync, they land on a native dashboard view that contains all available micro frontends they can navigate to, including _Expenses_.
+The Expenses web app can be viewed within a device or simulator, but pressing the back arrow doesn't navigate backwards. Currently, the only way to return to the dashboard view is to re-run the Portals CLI's `serve` command -- which is not an ideal user experience.
 
-In order to navigate back to this native view, all micro frontends need to publish a message to the `navigate:back` topic. Once published, the native application will handle the message and use native navigation code to bring the user back to the dashboard page.
+Portals within the Jobsync mobile application are configured to handle messages sent to the `navigate:back` topic and pop the view containing the Portal, navigating the application backward.
 
-The back button of the _Expenses_ web application's landing page (`ExpensesList.tsx`) fires a method called `publishNavigateBackMessage` when clicked. It currently does nothing -- in the next section we will modify it to publish a message using the Portals module.
+In the section below, you will use the Portals library to push messages from the web to native mobile code.
 
-<Admonition type="info">
-All micro frontends in Jobsync use `publishNavigateBackMessage` on their landing pages. Implementing the method will allow them to publish messages as well.
-</Admonition>
+## Publishing messages
 
-## Publishing a Message
+Given a topic and optional data payload, the <a href="https://ionic.io/docs/portals/for-web/portals-plugin#publish" target="blank">`publish()`</a> method within the Portals library publishes a message to native mobile code. In the Expenses web app, a method `publishNavigateBackMessage` belonging to the project's shared Portals code fires when the back button is pressed.
+
+Use `publish` to fire a message to the `navigate:back` topic:
 
 <CH.Scrollycoding>
 
@@ -40,13 +36,32 @@ All micro frontends in Jobsync use `publishNavigateBackMessage` on their landing
 import { publish } from "@ionic/portals";
 
 export const publishNavigateBackMessage = async () => {
-
+  await publish({ topic: "navigate:back" });
 };
 ```
 
 </CH.Code>
 
-Start by creating a new file in the `web/shared/portals` library named `pub-sub.ts`.
+Re-implement `publishNavigateBackMessage` using the Portals library in a new file within `web/shared/portals/` named `pub-sub.ts`.
+
+---
+
+<CH.Code>
+
+```typescript web/shared/portals/pub-sub.ts focus=3,6
+import { publish } from "@ionic/portals";
+
+type Messages = { topic: "navigate:back" };
+
+export const publishNavigateBackMessage = async () => {
+  await publish<Messages>({ topic: "navigate:back" });
+};
+
+```
+
+</CH.Code>
+
+Type-safety can be added to the method signature of `publish`, preventing potential bugs which can be hard to troubleshoot between different tech stacks.
 
 ---
 
@@ -73,54 +88,18 @@ export const Analytics = {
 
 </CH.Code>
 
-Within the `web/shared/portals` directory, open `index.ts`. 
-
-Replace the existing `publishNavigateBackMessage()` method with an import and export of the new method created in the step above.
-
----
-
-<CH.Code>
-
-```typescript web/shared/portals/pub-sub.ts focus=3
-import { publish } from "@ionic/portals";
-
-type Messages = { topic: "navigate:back" };
-
-export const publishNavigateBackMessage = async () => {
-
-};
-```
-
-</CH.Code>
-
-Head back to the newly created `pub-sub.ts` file and add a `type` containing the message we want to send to the native application.
-
-Adding the type provides type safety for our messages, preventing potential bugs.
-
----
-
-<CH.Code>
-
-```typescript web/shared/portals/pub-sub.ts focus=6
-import { publish } from "@ionic/portals";
-
-type Messages = { topic: "navigate:back" };
-
-export const publishNavigateBackMessage = async () => {
-  await publish<Messages>({ topic: "navigate:back" });
-};
-```
-
-</CH.Code>
-
-Finally, call `publish` with the proper message.
+Replace the existing implementation in `web/shared/portals/index.ts` and point to the new implementation.
 
 </CH.Scrollycoding>
 
-If you press the back button on the _Expenses_ web application, the method fires, but there are no subscribers available to handle the messages published. While pub/sub is a simple communication mechanism to use, the tradeoff is that it is only testable from a native application presenting the web application within a Portal.
+Save the code and press the back button. Observe that the view containing the Expenses web app has popped from the native navigation stack. 
 
-## Conclusion
+If you navigate to `http://localhost:5173` and press the back button, nothing will happen. The expenses list view is the root of the Expenses web app, and has no navigation to go back to. For the purposes of this training, leaving the back button in when the web app runs within a web browser is suitable.
 
-In this tutorial, you learned how to publish a message from a web application presented within a Portal to a native application. 
+<Admonition type="info">
+The back button is still visible when you visit `http://localhost:5173` on a web browser. That's OK for the purposes of this training, but in a production scenario you may want to use platform detection to hide visual elements depending on the platform the web app runs on, such as hiding the back button when the Expenses web app is running on a browser.
+</Admonition>
 
-On the next page, we will implement the web portion of a Capacitor plugin, the final communication mechanism available with Portals.
+## What's next
+
+By passing messages using Portals' pub/sub interface, you have triggered native navigation within the Jobsync mobile application. The pub/sub mechanism is ideal for simple use cases, such as telling native mobile apps to navigate. In the next step of this module, you will learn about Capacitor plugins, which communicate bi-directionally in a more structured manner suitable for complex use cases. 
