@@ -2282,9 +2282,7 @@ We can now use the "Lock" and "Unlock" buttons to verify the behavior of each of
 
 ### Locking in the Background
 
-We can manually lock our vault, but it would be nice if the vault locked for us if the application was in the
-background for a period of time. We can accomplish this by setting the `lockAfterBackgrounded` value when we
-initialize the vault. Here we are setting it to 2000 milliseconds.
+We can manually lock our vault, but it would be nice if the vault locked for us automatically. This can be accomplished by setting [lockAfterBackgrounded](https://ionic.io/docs/identity-vault/interfaces/identityvaultconfig#lockafterbackgrounded) when we initialize the vault. This will lock the vault when the application is resumed if the app was backgrounded for the configured amount of time. Here we are setting it to 2000 milliseconds.
 
 <CH.Code rows={10}>
 

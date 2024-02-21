@@ -123,7 +123,7 @@ We should do a `cap sync` with each build. Change the scripts in `package.json` 
 
 ## Install Identity Vault
 
-In order to install Identity Vault, you will need to use `ionic enterprise register`
+In order to install Identity Vault, you will need to use the `ionic enterprise register` command to 
 [register your product key](https://ionic.io/docs/enterprise-starter/enterprise-key). This will create a `.npmrc` file
 containing the product key.
 
@@ -155,8 +155,8 @@ export interface Session {
 Our tutorial application will have a single vault that simulates storing our application's authentication session
 information. To manage this vault, we will create two utility files:
 
-- `vault-factory`: Builds either a `Vault` or `BrowserVault` depending on the whether our application is running in a web or web-native context.
-- `session-vault`: Manages the vault itself.
+- `vault-factory`: Builds either a [`Vault`](https://ionic.io/docs/identity-vault/classes/vault) or [`BrowserVault`](https://ionic.io/docs/identity-vault/classes/browservault) depending on the whether our application is running in a web-native or web context, respectively. The `BrowserVault` only mimics the basic behavior of the `Vault` for the purpose of running on the web and provides no security, as there as none available in the browser context.
+- `session-vault`: Manages the vault and its contents.
 
 ### `vault-factory`
 
@@ -312,7 +312,7 @@ In our `src/main.tsx`, execute the `initializeVault` function prior to rendering
 
 In this section, we created a vault using the key `io.ionic.gettingstartediv`. Our vault is a "Secure Storage" vault, which means that the information we store in the vault is encrypted in the keychain / keystore and is only visible to our application, but the vault is never locked. We will explore other types of vaults later in this tutorial.
 
-### Store a Vault
+### Store a Value
 
 Let's store some data in the vault. Here, we will:
 
@@ -407,7 +407,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -587,7 +587,7 @@ We have stored data in our vault. The next step is to get the data back out of t
 ### Get a Value
 
 In order to better illustrate the operation of the vault, we will modify the `Tab1Page` to display our session if one
-is stored. We can get the current session data using `useSyncExternalStore`.
+is stored. We can get the current session data with `useSyncExternalStore`.
 
 
 <CH.Code>
@@ -709,7 +709,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -773,7 +773,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -806,13 +806,12 @@ Next we will see how to remove this data from within our application.
 
 The vault has two different methods that we can use to remove the data:
 
-- `clear`: Clear all of the data stored in the vault and remove the vault from the keystore / keychain.
+- [`clear`](https://ionic.io/docs/identity-vault/classes/vault#clear): Clear all of the data stored in the vault and remove the vault from the keystore / keychain.
   - This operation _does not_ require the vault to be unlocked.
   - This operation will remove the existing vault from the keychain / keystore.
-  - Subsequent operations on the vault such as storing a new session will not require the vault to be unlocked
-    since the vault had been removed.
+  - Subsequent operations on the vault such as storing a new session will not require the vault to be unlocked since the value had been removed.
   - Use this method if your vault stores a single logical entity, even if it uses multiple entries to do so.
-- `removeValue`: Clear just the data stored with the specified key.
+- [`removeValue`](https://ionic.io/docs/identity-vault/classes/vault#removevalue): Clear just the data stored with the specified key.
   - This operation _does_ require the vault to be unlocked.
   - This operation will not remove the existing vault from the keychain / keystore even though the vault may
     be empty.
@@ -872,7 +871,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1039,7 +1038,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1113,7 +1112,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1188,7 +1187,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1268,7 +1267,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1288,21 +1287,21 @@ export const clearSession = async (): Promise<void> => {
 }
 
 export const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
-  await vault.updateConfig({
-    ...(vault.config as IdentityVaultConfig),
-  });
+  const newConfig = { ...(vault.config as IdentityVaultConfig) };
+
+  await vault.updateConfig(newConfig);
 };
 ```
 </CH.Code>
 
-The vault's `updateConfig()` method takes a full vault configuration object, so pass our current `config`. Cast it
-to `IdentityVaultConfig` to signify that we know the value is not `undefined` at this point.
+The vault's `updateConfig()` method takes a full vault configuration object. We can grab our current config and cast it
+to `IdentityVaultConfig` to signify that we know the value is not `undefined` at this point. The new config will be used in the `updateConfig()` method.
 
 ---
 
 <CH.Code>
 
-```typescript src/util/session-vault.ts focus=68:73,76
+```typescript src/util/session-vault.ts focus=70:83
 import { 
   BrowserVault,
   Vault,
@@ -1350,7 +1349,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1370,16 +1369,24 @@ export const clearSession = async (): Promise<void> => {
 }
 
 export const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
-  const type =
-    mode === 'BiometricsWithPasscode'
-      ? VaultType.DeviceSecurity
-      : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  await vault.updateConfig({
-    ...(vault.config as IdentityVaultConfig),
-    type,
-  });
+  const newConfig = { ...(vault.config as IdentityVaultConfig) };
+
+  switch (mode) {
+    case 'BiometricsWithPasscode': {
+      newConfig.type = VaultType.DeviceSecurity;
+      break;
+    }
+    case 'InMemory': {
+      newConfig.type = VaultType.InMemory;
+      break;
+    }
+    default: {
+      newConfig.type = VaultType.SecureStorage;
+      break;
+    }
+  }
+
+  await vault.updateConfig(newConfig);
 };
 ```
 
@@ -1391,7 +1398,7 @@ Update the `type` based on the specified `mode`.
 
 <CH.Code>
 
-```typescript src/util/session-vault.ts focus=74:77,81
+```typescript src/util/session-vault.ts focus=73,78,83
 import { 
   BrowserVault,
   Vault,
@@ -1439,7 +1446,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1459,21 +1466,27 @@ export const clearSession = async (): Promise<void> => {
 }
 
 export const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
-  const type =
-    mode === 'BiometricsWithPasscode'
-      ? VaultType.DeviceSecurity
-      : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
-  await vault.updateConfig({
-    ...(vault.config as IdentityVaultConfig),
-    type,
-    deviceSecurityType,
-  });
+  const newConfig = { ...(vault.config as IdentityVaultConfig) };
+
+  switch (mode) {
+    case 'BiometricsWithPasscode': {
+      newConfig.type = VaultType.DeviceSecurity;
+      newConfig.deviceSecurityType = DeviceSecurityType.Both;
+      break;
+    }
+    case 'InMemory': {
+      newConfig.type = VaultType.InMemory;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+    default: {
+      newConfig.type = VaultType.SecureStorage;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+  }
+
+  await vault.updateConfig(newConfig);
 };
 ```
 
@@ -1744,7 +1757,7 @@ In `src/util/session-vault.ts`, wrap the vault's `lock()` method so we can use i
 
 <CH.Code rows={20}>
 
-```typescript src/util/session-vault.ts focus=85:89
+```typescript src/util/session-vault.ts focus=91:95
 import { 
   BrowserVault,
   Vault,
@@ -1792,7 +1805,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -1812,21 +1825,27 @@ export const clearSession = async (): Promise<void> => {
 }
 
 export const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
-  const type =
-    mode === 'BiometricsWithPasscode'
-      ? VaultType.DeviceSecurity
-      : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
-  await vault.updateConfig({
-    ...(vault.config as IdentityVaultConfig),
-    type,
-    deviceSecurityType,
-  });
+  const newConfig = { ...(vault.config as IdentityVaultConfig) };
+
+  switch (mode) {
+    case 'BiometricsWithPasscode': {
+      newConfig.type = VaultType.DeviceSecurity;
+      newConfig.deviceSecurityType = DeviceSecurityType.Both;
+      break;
+    }
+    case 'InMemory': {
+      newConfig.type = VaultType.InMemory;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+    default: {
+      newConfig.type = VaultType.SecureStorage;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+  }
+
+  await vault.updateConfig(newConfig);
 };
 
 export const lockSession = async (): Promise<void> => {
@@ -1975,7 +1994,7 @@ the last "unlock mode" button pressed prior to locking the vault.
 
 - "Use Biometrics": The vault has been locked and the session data will not be accessible until it is unlocked.
 - "Use In Memory": The session data no longer exists.
-- "Use In Secure Storage": The session data is in the vault, but is not locked.
+- "Use Secure Storage": The session data is in the vault, but is not locked.
 
 ### Unlocking the Vault
 
@@ -2129,7 +2148,7 @@ We can now use the "Lock" and "Unlock" buttons to verify the behavior of each of
 
 ### Locking in the Background
 
-We can manually lock our vault, but it would be nice if the vault locked for us if the application was in the background for a period of time. We can accomplish this by doing two actions when initializing the vault:
+We can manually lock our vault, but it would be nice if the vault locked for us automatically. This can be accomplished by setting [lockAfterBackgrounded](https://ionic.io/docs/identity-vault/interfaces/identityvaultconfig#lockafterbackgrounded) which will lock the vault when the application is resumed, if the app was backgrounded for the configured amount of time. We can configure this by doing two actions when initializing the vault:
 
 - Set the `lockAfterBackgrounded` value in the config. This value is specified in milliseconds.
 - Set the `onLock` callback so the session is cleared on lock.
@@ -2190,7 +2209,7 @@ export const emitChange = () => {
 };
 
 export const storeSession = async (newSession: Session): Promise<void> => {
-  vault.setValue('session', newSession);
+  await vault.setValue('session', newSession);
   session = newSession;
   emitChange();
 }
@@ -2210,21 +2229,27 @@ export const clearSession = async (): Promise<void> => {
 }
 
 export const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
-  const type =
-    mode === 'BiometricsWithPasscode'
-      ? VaultType.DeviceSecurity
-      : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
-  await vault.updateConfig({
-    ...(vault.config as IdentityVaultConfig),
-    type,
-    deviceSecurityType,
-  });
+  const newConfig = { ...(vault.config as IdentityVaultConfig) };
+
+  switch (mode) {
+    case 'BiometricsWithPasscode': {
+      newConfig.type = VaultType.DeviceSecurity;
+      newConfig.deviceSecurityType = DeviceSecurityType.Both;
+      break;
+    }
+    case 'InMemory': {
+      newConfig.type = VaultType.InMemory;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+    default: {
+      newConfig.type = VaultType.SecureStorage;
+      newConfig.deviceSecurityType = DeviceSecurityType.None;
+      break;
+    }
+  }
+
+  await vault.updateConfig(newConfig);
 };
 
 export const lockSession = async (): Promise<void> => {
