@@ -1857,8 +1857,6 @@ will use Biometrics with a System Passcode backup. If you disallow the use of Fa
 On all other devices, you should not receive any permission requests and application will use Biometrics with a
 System Passcode backup by default.
 
-#### Refactor the Workflow
-
 Notice that the permission request comes during application startup. This may be jarring to some users.
 For this application it may be better to ask for the Face ID permission right after the user logs in.
 Since the provisioning is tied to the enhancement of the vault to use biometrics, this means delaying
@@ -2805,8 +2803,6 @@ Enhance the vault as part of a successful login.
 The application now asks for Face ID permission only if needed and only after a successful login rather than
 doing so as part of the startup process. In your application you may want to tie this to something else such
 as setting a "Use Biometrics" preference toggle. The choice is up to you.
-
-#### Disable the "Use Biometrics" Option
 
 On the `Tab1Page`, the user can currently click the "Use Biometrics" button even if the user has rejected
 Face ID. According to the rules we are enforcing, though, we will end up using an "In Memory" vault in that
