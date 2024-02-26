@@ -154,8 +154,7 @@ import { Capacitor } from '@capacitor/core';
 import { BrowserVault, Vault } from '@ionic-enterprise/identity-vault';
 
 export const useVaultFactory = (): any => {
-  const createVault = (): Vault | BrowserVault =>
-    Capacitor.isNativePlatform() ? new Vault() : new BrowserVault();
+  const createVault = (): Vault | BrowserVault => (Capacitor.isNativePlatform() ? new Vault() : new BrowserVault());
 
   return { createVault };
 };
@@ -238,8 +237,8 @@ We will build this composable up to perform the vault creation and initializatio
 <CH.Code>
 
 ```typescript src/composables/session-vault.ts focus=1,2,4,5
-import { useVaultFactory } from '@/composables/vault-factory';
 import { BrowserVault, Vault } from '@ionic-enterprise/identity-vault';
+import { useVaultFactory } from '@/composables/vault-factory';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -255,13 +254,8 @@ Create the vault using our factory function.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=3:5,12:18,20[45:60]
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+```typescript src/composables/session-vault.ts focus=1[22:41,49:59],7:13,15[46:60]
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 
 const { createVault } = useVaultFactory();
@@ -280,7 +274,7 @@ export const useSessionVault = (): any => ({ initializeVault });
 
 </CH.Code>
 
-Create an `initialize()` function from which we will perform all vault initialization. At this time, the only thing
+Create an `initializeVault()` function from which we will perform all vault initialization. At this time, the only thing
 we need to do is pass a configuration object to our vault. The meaning of the configuration properties will be
 explained later.
 
@@ -288,7 +282,48 @@ explained later.
 
 <CH.Code>
 
-```typescript src/main.ts focus=6,27,30[23:27],31
+```typescript src/main.ts focus=26:30
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+
+import { IonicVue } from '@ionic/vue';
+
+/* Core CSS required for Ionic components to work properly */
+import '@ionic/vue/css/core.css';
+
+/* Basic CSS for apps built with Ionic */
+import '@ionic/vue/css/normalize.css';
+import '@ionic/vue/css/structure.css';
+import '@ionic/vue/css/typography.css';
+
+/* Optional CSS utils that can be commented out */
+import '@ionic/vue/css/padding.css';
+import '@ionic/vue/css/float-elements.css';
+import '@ionic/vue/css/text-alignment.css';
+import '@ionic/vue/css/text-transformation.css';
+import '@ionic/vue/css/flex-utils.css';
+import '@ionic/vue/css/display.css';
+
+/* Theme variables */
+import './theme/variables.css';
+
+const app = createApp(App).use(IonicVue).use(router);
+
+router.isReady().then(() => {
+  app.mount('#app');
+});
+```
+
+</CH.Code>
+
+`src/main.ts` currently just waits for the router to be ready before mounting the app.
+
+---
+
+<CH.Code>
+
+```typescript src/main.ts focus=6,27:33
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -316,17 +351,17 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 
 const { initializeVault } = useSessionVault();
-const app = createApp(App).use(IonicVue).use(router);
 
-router.isReady().then(async () => {
-  await initializeVault();
+initializeVault().then(async () => {
+  const app = createApp(App).use(IonicVue).use(router);
+  await router.isReady();
   app.mount('#app');
 });
 ```
 
 </CH.Code>
 
-In `src/main.ts` to make sure our vault is fully initialized on startup before the main application
+Update `src/main.ts` to make sure our vault is fully initialized on startup before the main application
 component is mounted.
 
 </CH.Scrollycoding>
@@ -367,12 +402,7 @@ item with the key of `session`. The vault has a `setValue()` method that is used
 <CH.Code>
 
 ```typescript src/composables/session-vault.ts focus=8,9,13,23:26,30,31
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
@@ -436,13 +466,7 @@ storing some fake authentication data in the vault.
 </template>
 
 <script setup lang="ts">
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 </script>
 ```
@@ -699,12 +723,7 @@ that we don't try to unlock a vault that may be locked but empty, which can happ
 <CH.Code rows={12}>
 
 ```typescript src/composables/session-vault.ts focus=28:34,37
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
@@ -850,12 +869,7 @@ method to clear the session.
 <CH.Code rows={8}>
 
 ```typescript src/composables/session-vault.ts focus=36:39,42
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
@@ -928,9 +942,7 @@ Add a "Clear" button to the `Tab1Page`.
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="danger" @click="clearSession"
-              >Clear</ion-button
-            >
+            <ion-button expand="block" color="danger" @click="clearSession">Clear</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
@@ -996,12 +1008,7 @@ We can use the vault's `updateConfig()` method to change the type of vault that 
 <CH.Code>
 
 ```typescript src/composables/session-vault.ts
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
@@ -1054,20 +1061,12 @@ Here is the `src/composables/session-vault.ts` that we have created thus far.
 <CH.Code>
 
 ```typescript src/composables/session-vault.ts focus=11:14
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1117,20 +1116,12 @@ The `UnlockMode` specifies the logical combinations of settings we wish to suppo
 <CH.Code>
 
 ```typescript src/composables/session-vault.ts focus=46,54
-import {
-  BrowserVault,
-  DeviceSecurityType,
-  Vault,
-  VaultType,
-} from '@ionic-enterprise/identity-vault';
+import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1194,10 +1185,7 @@ import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1266,10 +1254,7 @@ import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1306,8 +1291,8 @@ const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
     mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
   await vault.updateConfig({
     ...(vault.config as IdentityVaultConfig),
     type,
@@ -1344,10 +1329,7 @@ import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1384,12 +1366,9 @@ const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
     mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+  const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
   await vault.updateConfig({
     ...(vault.config as IdentityVaultConfig),
     type,
@@ -1474,37 +1453,26 @@ We can now add some buttons to the `Tab1Page` in order to try out the different 
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="danger" @click="clearSession"
-              >Clear</ion-button
-            >
+            <ion-button expand="block" color="danger" @click="clearSession">Clear</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('BiometricsWithPasscode')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('BiometricsWithPasscode')"
               >Use Biometrics</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('InMemory')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('InMemory')"
               >Use In Memory</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('SecureStorage')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('SecureStorage')"
               >Use Secure Storage</ion-button
             >
           </ion-label>
@@ -1536,8 +1504,7 @@ import {
 } from '@ionic/vue';
 import { useSessionVault } from '@/composables/session-vault';
 
-const { clearSession, getSession, storeSession, updateUnlockMode } =
-  useSessionVault();
+const { clearSession, getSession, storeSession, updateUnlockMode } = useSessionVault();
 const session = ref<Session>();
 
 const storeClicked = async (): Promise<void> => {
@@ -1672,10 +1639,7 @@ import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -1717,12 +1681,9 @@ const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
     mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+  const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
   await vault.updateConfig({
     ...(vault.config as IdentityVaultConfig),
     type,
@@ -1770,46 +1731,33 @@ Add a lock button in `src/views/Tab1Page.vue`.
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="danger" @click="clearSession"
-              >Clear</ion-button
-            >
+            <ion-button expand="block" color="danger" @click="clearSession">Clear</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('BiometricsWithPasscode')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('BiometricsWithPasscode')"
               >Use Biometrics</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('InMemory')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('InMemory')"
               >Use In Memory</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('SecureStorage')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('SecureStorage')"
               >Use Secure Storage</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="warning" @click="lockSession"
-              >Lock</ion-button
-            >
+            <ion-button expand="block" color="warning" @click="lockSession">Lock</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
@@ -1839,13 +1787,7 @@ import {
 } from '@ionic/vue';
 import { useSessionVault } from '@/composables/session-vault';
 
-const {
-  clearSession,
-  getSession,
-  lockSession,
-  storeSession,
-  updateUnlockMode,
-} = useSessionVault();
+const { clearSession, getSession, lockSession, storeSession, updateUnlockMode } = useSessionVault();
 
 const storeClicked = async (): Promise<void> => {
   await storeSession({
@@ -1904,53 +1846,38 @@ Add the following code to `src/views/Tab1Page.vue`:
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="danger" @click="clearSession"
-              >Clear</ion-button
-            >
+            <ion-button expand="block" color="danger" @click="clearSession">Clear</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('BiometricsWithPasscode')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('BiometricsWithPasscode')"
               >Use Biometrics</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('InMemory')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('InMemory')"
               >Use In Memory</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('SecureStorage')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('SecureStorage')"
               >Use Secure Storage</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="warning" @click="lockSession"
-              >Lock</ion-button
-            >
+            <ion-button expand="block" color="warning" @click="lockSession">Lock</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="warning" @click="getSession"
-              >Unlock</ion-button
-            >
+            <ion-button expand="block" color="warning" @click="getSession">Unlock</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
@@ -1980,13 +1907,7 @@ import {
 } from '@ionic/vue';
 import { useSessionVault } from '@/composables/session-vault';
 
-const {
-  clearSession,
-  getSession,
-  lockSession,
-  storeSession,
-  updateUnlockMode,
-} = useSessionVault();
+const { clearSession, getSession, lockSession, storeSession, updateUnlockMode } = useSessionVault();
 
 const storeClicked = async (): Promise<void> => {
   await storeSession({
@@ -2027,10 +1948,7 @@ import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
@@ -2075,12 +1993,9 @@ const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
     mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
-  const deviceSecurityType =
-    type === VaultType.DeviceSecurity
-      ? DeviceSecurityType.Both
-      : DeviceSecurityType.None;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+  const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
   await vault.updateConfig({
     ...(vault.config as IdentityVaultConfig),
     type,
