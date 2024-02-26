@@ -24,7 +24,7 @@ In this tutorial we will:
 
 This tutorial builds upon the application created when doing the [startup strategies tutorial](startup-strategies).
 If you have the code from when you performed that tutorial, then you are ready to go. If you need the code you can
-make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/identity-vault/getting-started).
+make a copy from [our GitHub repository](https://github.com/ionic-enterprise/tutorials-and-demos-ng/tree/main/identity-vault/startup-strategies).
 
 ## The Device API
 
@@ -1186,14 +1186,14 @@ The requirements we have from our design team are;
   - Determine if the user needs to be prompted for permission.
   - If the user needs to be prompted for permission, show a biometric prompt. This will also trigger the
     permissions prompt in cases where permission is required.
-  - If the user allows Face ID to be used, setting the vault type to `DeviceSecurity`.
+  - If the user allows Face ID to be used, set the vault type to `DeviceSecurity`.
   - If the user denies permission to use Face ID, set the vault type to `InMemory`.
 
 <CH.Scrollycoding>
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.ts focus=96:104
+```typescript src/app/core/session-vault.service.ts focus=96:104
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1321,7 +1321,7 @@ Add a private method called `provisionBiometrics()`. Display the biometric promp
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.ts focus=80,91:97
+```typescript src/app/core/session-vault.service.ts focus=80,91:97
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1413,7 +1413,7 @@ export class SessionVaultService {
   }
 
   private async getVaultType(mode: UnlockMode): Promise<VaultType> {
-    return 'BiometricsWithPasscode'
+    return mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
         ? VaultType.InMemory
@@ -1453,7 +1453,7 @@ its own method.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.ts focus=92:96
+```typescript src/app/core/session-vault.service.ts focus=92:96
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1584,7 +1584,7 @@ Biometrics will be special, so let's give it its own section.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.ts focus=93,115
+```typescript src/app/core/session-vault.service.ts focus=93
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1716,7 +1716,7 @@ Provision the Biometrics.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.ts focus=94:97
+```typescript src/app/core/session-vault.service.ts focus=94:97
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2746,7 +2746,7 @@ export class LoginPage {
 
 </CH.Code>
 
-The login method currently logs the user is and navigates to the main page.
+The login method currently logs the user in and navigates to the main page.
 
 ---
 
