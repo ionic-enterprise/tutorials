@@ -6,7 +6,7 @@ sidebar_position: 4
 
 import Admonition from '@theme/Admonition';
 
-Android relies on a security provider for secure network communications. However, from time to time, vulnerabilities are found in the default security provider. To protect against these vulnerabilities, Google Play services provides a way to automatically update a device's security provider to protect against known exploits. By calling Google Play services methods, you can help ensure that your app is running on a device that has the latest updates to protect against known exploits.
+Android relies on a [security provider](https://x.com/emergetools/status/1658885804276449309?s=20) for secure network communications. However, from time to time, vulnerabilities are found in the default security provider. To protect against these vulnerabilities, Google Play services provides a way to automatically update a device's security provider to protect against known exploits. By calling Google Play services methods, you can help ensure that your app is running on a device that has the latest updates to protect against known exploits.
 
 For example, a vulnerability was discovered in OpenSSL (CVE-2014-0224) that can leave apps open to an on-path attack that decrypts secure traffic without either side knowing. Google Play services version 5.0 offers a fix, but apps must check that this fix is installed. By using the Google Play services methods, you can help ensure that your app is running on a device that's secured against that attack.
 
@@ -25,7 +25,7 @@ In the startup of your application you should check if an update to the security
 import { CapacitorSecurityProvider, SecurityProviderStatus } from '@capacitor-community/security-provider';
 ...
 const result = await CapacitorSecurityProvider.installIfNeeded();
-if (result.status !== SecurityProviderStatus.Success && result.status != SecurityProviderStatus.NotImplemented) {
+if (result.status !== SecurityProviderStatus.Success && result.status !== SecurityProviderStatus.NotImplemented) {
     // Do not proceed. The Android Security Provider failed to verify / install.
 }
 ```
@@ -38,5 +38,5 @@ Additional information about the Android security provider and the calls this pl
 
 ## Summary
 
-Ensuring that your App verifies that you are using the latest secure version of Play Services is an additional step in ensuring the security of your Capacitor application.
+Ensuring that your App verifies that you are using the latest secure version of Play Services is an additional step in maintaining the security of your Capacitor application.
 
