@@ -7,7 +7,7 @@ pagination_next: null
 
 import Admonition from '@theme/Admonition';
 
-<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing any Capacitor plugin to be used.
+<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing Capacitor plugins to be used.
 
 In this step, you will author a Capacitor plugin to log analytics.
 
@@ -117,7 +117,7 @@ Everything works when the plugin runs on a mobile platform, but if you navigate 
 "Analytics" plugin is not implemented on web
 ```
 
-As a web developer, your responsibility includes implementing a Capacitor plugin for the web. In the following section, you will write the web implementation of the analytics plugin to meet the requirements outlined at the beginning of this step.
+As a web developer, your responsibility is to author the web implementation of a Capacitor plugin. In the following section, you will write the web implementation of the analytics plugin to meet the requirements outlined at the beginning of this step.
 
 ## Web implementation
 

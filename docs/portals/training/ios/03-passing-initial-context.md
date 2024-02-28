@@ -16,7 +16,7 @@ When the Jobsync superapp is first opened, the current user is requested to sign
 
 Web apps being presented through a Portal are unaware of the fact that the current user has signed in from the native app. You could ask the user to sign in a second time, but that isn't an ideal user experience.
 
-The Portals library allows you to pass data that is immediately available to the presenting web app as part of Portals configuration. In the case of the Jobsync app, the `accessToken` and `refreshToken` returned after a user signs in can be passed to web apps and used to determine the current user. 
+The Portals library allows you to pass data that is immediately available to the presenting web app as part of Portals configuration. In the case of the Jobsync app, the `accessToken` and `refreshToken` returned after a user signs in can be passed to web apps and used to authenticate requests. 
 
 ## Formatting for initial context
 
@@ -45,7 +45,6 @@ struct Credentials: Decodable {
     }
 }
 ```
-
 
 ## Configuring initial context
 
@@ -77,12 +76,8 @@ struct WebAppView: View {
 }
 ```
 
-Build and run the Jobsync app and navigate to one of the features in the dashboard view. The sample web app loads the 'Initial Context' tab, but now in addition to the `name` of the Portal configured, you will now see a `value` property printed out, containing the `accessToken` and `refreshToken` web apps need to determine the current user. 
-
-<Admonition type="info" title="Best Practice">
-Depending on your authentication configuration, it is possible that a session becomes stale after a user signs in but before they launch a Portal. It's recommended to pass web apps information needed to refresh a session.   
-</Admonition>
+Build and run the Jobsync app and navigate to one of the features in the dashboard view. The sample web app loads the 'Initial Context' tab, but now in addition to the `name` of the Portal configured, you will now see a `value` property printed out, containing the `accessToken` and `refreshToken` web apps need to authenticate requests. 
 
 ## What's next
 
-You established communication through a Portal using initial context to share session information to web apps being presented through a Portal. Initial context is uni-directional communication, from mobile native code to web code. In the next step in this module, you will learn about Portals' pub/sub mechanism to subscribe to messages sent from web code to native mobile code.
+You established communication through a Portal using initial context to share session information to web apps being presented through a Portal. Initial context is uni-directional communication, from mobile native code to web code. In the next step in this module, you will learn about Portals' *pub/sub* mechanism to subscribe to messages sent from web code to native mobile code.

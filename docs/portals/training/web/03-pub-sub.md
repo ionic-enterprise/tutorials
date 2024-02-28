@@ -92,12 +92,12 @@ Replace the existing implementation in `web/shared/portals/index.ts` and point t
 
 </CH.Scrollycoding>
 
-Save the code and press the back button. Observe that the view containing the Expenses web app has popped from the native navigation stack. 
+Save the code and press the back button. Observe that the native view containing the Expenses web app has popped from the native navigation stack. This behavior was implemented in the native mobile, firing when a message is sent to the `navigate:back` topic. 
 
 If you navigate to `http://localhost:5173` and press the back button, nothing will happen. The expenses list view is the root of the Expenses web app, and has no navigation to go back to. For the purposes of this training, leaving the back button in when the web app runs within a web browser is suitable.
 
 <Admonition type="info">
-The back button is still visible when you visit `http://localhost:5173` on a web browser. That's OK for the purposes of this training, but in a production scenario you may want to use platform detection to hide visual elements depending on the platform the web app runs on, such as hiding the back button when the Expenses web app is running on a browser.
+The back button is still visible when you visit `http://localhost:5173` on a web browser. That's OK for the purposes of this training, but in a production scenario you may want to use <a href="https://capacitorjs.com/docs/basics/utilities#capacitorgetplatform" target="_blank">platform-detection</a> to hide visual elements depending on the platform the web app runs on, such as hiding the back button when the Expenses web app is running on a browser.
 </Admonition>
 
 ## What's next
