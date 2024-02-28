@@ -20,7 +20,7 @@ npm install @capacitor-community/security-provider
 npx cap sync
 ```
 
-In the startup of your application you should check if an update to the security provider is needed by adding the following code:
+In your application's startup code, check if an update to the security provider is needed by adding the following code:
 ```typescript
 import { CapacitorSecurityProvider, SecurityProviderStatus } from '@capacitor-community/security-provider';
 ...
