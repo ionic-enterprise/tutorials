@@ -16,7 +16,7 @@ Launch the Jobsync app on a device or simulator, and sign in using the preset cr
 
 Once complete, the Jobsync app will dynamically load the appropriate web app into a Portal configured within this detail view. 
 
-A good first step is to configure and display a Portal, loading a sample web app to ensure the configuration works. In the next section, you will utilize the Portals CLI to generate a sample web app and sync it with the iOS project.
+A good first step is to configure and display a Portal, loading a sample web app to ensure the configuration works. In the next section, you will utilize the Portals CLI to download a sample web app and sync it with the iOS project.
 
 ## Syncing the sample web app
 
@@ -46,6 +46,8 @@ sync:
   - file-path: ../portals-debug-app
     directory-name: portals/debug
 ```
+
+The `file-path` is the bundled web app directory in relation to the root of the iOS project, while the `directory-name` is the target location the command will move the bundle to.
 
 Next, navigate to the main project view in Xcode and select the 'Jobsync' target:
 
@@ -93,7 +95,7 @@ struct WebAppView: View {
 
 Build and run the Jobsync app and navigate to the dashboard view. Select a feature from the list, and the sample web app will load within the `PortalView` in the detail view. Nice!
 
-Make note of the three tabs in the sample web app: 'Initial Context', 'Publish/Subscribe', and 'Capacitor Plugins'. Each tab maps to a way you can communicate through a Portal, and in the case of the latter two tabs, allows you to test the mechanism. Notice that the 'Initial Context' tab prints out `{ "name": "debug" }`. This is the `name` property set when initializing a `Portal` object, and is accessible to web apps as part of initial context, which you will learn about next.
+Make note of the three tabs in the sample web app: 'Initial Context', 'Publish/Subscribe', and 'Capacitor Plugins'. Each tab maps to a way you can communicate through a Portal, and in the case of the latter two tabs, allows you to test the mechanism. Notice that the 'Initial Context' tab prints out `{ "name": "debug" }`. This is the `name` property set when initializing a `Portal` object, and is accessible to web apps as part of *initial context*, which you will learn about next.
 
 ## What's next
 

@@ -6,7 +6,7 @@ sidebar_position: 1
 
 import Admonition from '@theme/Admonition';
 
-iOS developers configure Portals that present web apps mobile applications. Communication through a Portal can be achieved, allowing native iOS code to interact with web code, and vice versa.
+iOS developers configure Portals that present web experiences within mobile applications and use the Portals iOS library to allow native iOS code to interact with web code, and vice versa. 
 
 In this training module, you will take an existing iOS app and learn how to:
 
@@ -58,7 +58,6 @@ Instructions on installing the Portals iOS library as a Cocoapod are available <
 ## Registering your Portals key
 
 Portals is licensed software and requires a valid <a href="https://ionic.io/docs/portals/getting-started#using-your-product-key" target="_blank">Portals product key</a> for use. 
-
 
 Your Portals product key must be registered before any Portals are displayed in the UI. Register your key within the app initializer in `JobsyncApp.swift`:
 

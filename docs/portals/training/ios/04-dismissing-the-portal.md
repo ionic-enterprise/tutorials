@@ -12,15 +12,45 @@ In this step, you will subscribe to messages sent from the web to dismiss the cu
 
 ## Exploring the problem
 
-Look at the view code in `Portals/WebAppView.swift`, and observe that the `PortalView` occupies the entire viewport. While the method to dismiss the view is defined, there is no place to call it.
+After you navigate to one of of the features in the Jobsync app, you'll notice a peculiar problem: there is no backwards navigation. In fact, this is by design as indicated by `Portals/WebAppView.swift`:
 
-This is intentional; all web apps consolidated into the Jobsync superapp are designed with a back button in their header that should dismiss `WebAppView` (you'll see the actual web apps in a later step). When the back button is pressed, web apps use the Portals web library to send a message to the `navigate:back` topic. 
+<CH.Code rows={3}>
 
-In the section below, you will use the Portals iOS library to subscribe to the topic and dismiss the view.
+```swift Portals/WebAppView.swift focus=16
+import SwiftUI
+import IonicPortals
+
+struct WebAppView: View {
+    @EnvironmentObject var credentialsManager: CredentialsManager
+    @Environment(\.dismiss) var dismiss
+    let metadata: WebAppMetadata
+    
+    var body: some View {
+        PortalView(portal: .init(
+            name: "debug",
+            startDir: "portals/debug",
+            initialContext: credentialsManager.credentials!.toJSObject()
+        ))
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden()
+    }
+}
+
+#Preview {
+    WebAppView(metadata: WebApps.metadata[0])
+        .environmentObject(CredentialsManager.preview)
+}
+```
+
+</CH.Code>
+
+Web apps consolidated into the Jobsync superapp may consist of multiple views, and therefore need to manage navigation within their scope. Each web app designed for this training contain a header with a back button and when the web app has exhausted its navigation stack, it uses the Portals web library to communicate with iOS code by sending a message to the `navigate:back` topic. 
+
+In the section below, you will use the Portals iOS library to subscribe to the `navigate:back` topic and dismiss the view when a message is received.
 
 ## Creating a subscriber
 
-The pub/sub mechanism included in the Portals iOS library relies on two parts that work together: `PortalsPubSub` and `PortalsPlugin`. `PortalsPlugin` is a Capacitor plugin (you will learn about those in the next step) added to a Portal by default that allows web apps to send messages. `PortalsPubSub` is the class that manages the message bus to subscribe to.
+The pub/sub mechanism included in the Portals iOS library relies on two parts that work together: `PortalsPubSub` and `PortalsPlugin`. `PortalsPlugin` is a Capacitor plugin (you will learn about those in the next step) added to a Portal by default that allows web apps to send messages. `PortalsPubSub` is the class that manages an internal message bus to subscribe to.
 
 <Admonition type="info">
 Pub/sub is bi-directional; messages can be sent from native mobile code to web code as well.

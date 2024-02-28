@@ -6,7 +6,7 @@ sidebar_position: 2
 
 import Admonition from '@theme/Admonition';
 
-The Portals library provides a way to set <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> data for web apps within a Portal that is immediately available before rendering.
+The Portals library provides a way to set <a href="https://ionic.io/docs/portals/choosing-a-communication#initial-context" target="_blank">initial context</a> data that can be accessed by the presenting web app.  
 
 In this step, you will use initial context to obtain session information to filter the list of Expenses.
 

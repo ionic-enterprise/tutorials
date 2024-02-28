@@ -6,7 +6,7 @@ sidebar_position: 5
 
 import Admonition from '@theme/Admonition';
 
-<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing any Capacitor plugin to be used.
+<a href="https://ionic.io/docs/portals/choosing-a-communication#capacitor-plugins" target="_blank">Capacitor plugins</a> provide a practical approach to structured communication through a Portal. The <a href="https://capacitorjs.com/" target="_blank">Capacitor bridge</a> is used under the hood in Portals, allowing Capacitor plugins to be used.
 
 In this step, you will author a Capacitor plugin to log analytics.
 

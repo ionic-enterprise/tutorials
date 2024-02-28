@@ -44,12 +44,13 @@ Source code for this training is available <a href="https://github.com/ionic-ent
 git clone https://github.com/ionic-enterprise/tutorials-and-training-portals.git
 ```
 
-Each individual training module contains further instructions on where to start within the monorepo.
+For demo and training purposes, all native mobile and web projects reside within this monorepo. <a href="https://pnpm.io" target="_blank">pnpm</a> is required to build and serve web projects contained within.
 
-<a href="https://pnpm.io" target="_blank">pnpm</a> is required to build and serve the web apps contained within the monorepo.
+<Admonition type="info">
+The decision to use a monorepo and any tools or choices made to support it are strictly for the purposes of the training and are not requirements of Portals.
+</Admonition>
 
 Lastly, you will need the <a href="https://ionic.io/docs/portals/cli/overview" target="_blank">Portals CLI</a>. 
-
 
 <Admonition type="note">
 Web developers will need either <a href="https://developer.apple.com/xcode/" target="_blank">Xcode</a> or <a href="https://developer.android.com/studio" target="_blank">Android Studio</a> to make use of the Portals CLI commands used in the web training module.

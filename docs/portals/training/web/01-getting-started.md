@@ -59,6 +59,10 @@ One key consideration when Portals was developed was to ensure web developers co
 
 The Portals CLI solves for this limitation, allowing web developers to slot local web servers where Portals are designated in native binaries. In doing so, web developers can debug and test interactions between web and native code.
 
+<Admonition type="info">
+In a production setting, native mobile development teams should supply you with debug iOS and/or Android binaries to develop, debug, and test with.
+</Admonition>
+
 Serving a web app within a native binary using the Portals CLI is a two-step process. As you follow the steps below, ensure that any terminals start at the `/web` subdirectory.
 
 First, you will need to serve the Expenses web app on a local web server:
