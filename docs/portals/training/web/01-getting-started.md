@@ -93,7 +93,7 @@ Next, in a separate terminal, run the Portals CLI's `serve` command. The command
     
     ```bash terminal
     export DEVICECTL_CHILD_PORTALS_KEY=YOUR_KEY
-    portals serve ios simulator --application ./artifacts/Jobsync.app --dev-server http://localhost:5173
+    portals serve ios device --application ./artifacts/Jobsync.app --dev-server http://localhost:5173
     ```
 
     </TabItem>
