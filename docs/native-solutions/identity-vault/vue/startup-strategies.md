@@ -78,13 +78,7 @@ Create basic shells for these pages.
 </template>
 
 <script setup lang="ts">
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 </script>
 ```
 
@@ -575,7 +569,7 @@ if it is locked. Update the `useSessionVault` composable to provide `unlockSessi
 
 <CH.Code rows={40}>
 
-```typescript src/composables/session-vault.ts focus=51:63,84,86
+```typescript src/composables/session-vault.ts focus=57:69,90,92
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -587,22 +581,24 @@ import {
 } from '@ionic-enterprise/identity-vault';
 import { ref } from 'vue';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 2000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 2000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('SecureStorage');
+  }
 
   vault.onLock(() => (session.value = null));
 };
@@ -649,8 +645,8 @@ const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
     mode === 'BiometricsWithPasscode'
       ? VaultType.DeviceSecurity
       : mode === 'InMemory'
-      ? VaultType.InMemory
-      : VaultType.SecureStorage;
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
   await vault.updateConfig({
     ...(vault.config as IdentityVaultConfig),
     type,
@@ -693,16 +689,12 @@ This may _seem_ like an odd place to start, but it is the only requirement that 
       <ion-list v-if="showUnlock">
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="performUnlockFlow"
-              >Unlock</ion-button
-            >
+            <ion-button expand="block" @click="performUnlockFlow">Unlock</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" @click="redoLogin"
-              >Redo Login</ion-button
-            >
+            <ion-button expand="block" @click="redoLogin">Redo Login</ion-button>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -712,14 +704,7 @@ This may _seem_ like an odd place to start, but it is the only requirement that 
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-} from '@ionic/vue';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage } from '@ionic/vue';
 
 const showUnlock = ref(false);
 
@@ -744,15 +729,7 @@ code for simplicity.
 ```vue src/views/StartPage.vue focus=10,16,17,22,24,26:28
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-  onIonViewDidEnter,
-} from '@ionic/vue';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
 
 const showUnlock = ref(false);
 
@@ -786,15 +763,7 @@ Perform this flow automatically after the user navigates to this page as well as
 ```vue src/views/StartPage.vue focus=12,15,27:33
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-  onIonViewDidEnter,
-} from '@ionic/vue';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
 import { useSessionVault } from '@/composables/session-vault';
 
 const showUnlock = ref(false);
@@ -837,15 +806,7 @@ set the "show" flag so the user can try again or give up and go back to the logi
 ```vue src/views/StartPage.vue focus=12,13,17,19,29:35
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-  onIonViewDidEnter,
-} from '@ionic/vue';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
 import { useRouter } from 'vue-router';
 import { useAuthentication } from '@/composables/authentication';
 import { useSessionVault } from '@/composables/session-vault';
@@ -900,15 +861,7 @@ based on the current authentication status.
 ```vue src/views/StartPage.vue focus=17[24:31],27:28
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPage,
-  onIonViewDidEnter,
-} from '@ionic/vue';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
 import { useRouter } from 'vue-router';
 import { useAuthentication } from '@/composables/authentication';
 import { useSessionVault } from '@/composables/session-vault';
@@ -1028,37 +981,26 @@ Cleaning this all up is left as an exercise to the reader but we provide the com
       <ion-list>
         <ion-item>
           <ion-label>
-            <ion-button expand="block" color="danger" @click="logoutClicked"
-              >Logout</ion-button
-            >
+            <ion-button expand="block" color="danger" @click="logoutClicked">Logout</ion-button>
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('BiometricsWithPasscode')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('BiometricsWithPasscode')"
               >Use Biometrics</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('InMemory')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('InMemory')"
               >Use In Memory</ion-button
             >
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <ion-button
-              expand="block"
-              color="secondary"
-              @click="updateUnlockMode('SecureStorage')"
+            <ion-button expand="block" color="secondary" @click="updateUnlockMode('SecureStorage')"
               >Use Secure Storage</ion-button
             >
           </ion-label>

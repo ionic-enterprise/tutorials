@@ -254,7 +254,7 @@ Create the vault using our factory function.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=1[22:41,49:59],7:13,15[46:60]
+```typescript src/composables/session-vault.ts focus=1[22:41,49:59],7:17,19[46:60]
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 
@@ -262,11 +262,15 @@ const { createVault } = useVaultFactory();
 const vault: Vault | BrowserVault = createVault();
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 export const useSessionVault = (): any => ({ initializeVault });
@@ -274,9 +278,10 @@ export const useSessionVault = (): any => ({ initializeVault });
 
 </CH.Code>
 
-Create an `initializeVault()` function from which we will perform all vault initialization. At this time, the only thing
-we need to do is pass a configuration object to our vault. The meaning of the configuration properties will be
-explained later.
+Create an `initializeVault()` function from which we will perform all vault initialization. Pass a configuration object to our vault.
+The meaning of the configuration properties will be explained later.
+
+If the `initialize()` fails the best thing to do is simply clear it.
 
 ---
 
@@ -401,7 +406,7 @@ item with the key of `session`. The vault has a `setValue()` method that is used
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=8,9,13,23:26,30,31
+```typescript src/composables/session-vault.ts focus=3,4,8,22:25,29,30
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
@@ -412,11 +417,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -722,7 +731,7 @@ that we don't try to unlock a vault that may be locked but empty, which can happ
 
 <CH.Code rows={12}>
 
-```typescript src/composables/session-vault.ts focus=28:34,37
+```typescript src/composables/session-vault.ts focus=27:33,36
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
@@ -733,11 +742,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -868,7 +881,7 @@ method to clear the session.
 
 <CH.Code rows={8}>
 
-```typescript src/composables/session-vault.ts focus=36:39,42
+```typescript src/composables/session-vault.ts focus=35:38,41
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
@@ -879,11 +892,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1018,11 +1035,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1060,7 +1081,7 @@ Here is the `src/composables/session-vault.ts` that we have created thus far.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=11:14
+```typescript src/composables/session-vault.ts focus=6
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
@@ -1073,11 +1094,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1115,7 +1140,7 @@ The `UnlockMode` specifies the logical combinations of settings we wish to suppo
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=46,54
+```typescript src/composables/session-vault.ts focus=42,50
 import { BrowserVault, DeviceSecurityType, Vault, VaultType } from '@ionic-enterprise/identity-vault';
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
@@ -1128,11 +1153,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1173,7 +1202,7 @@ Add an `updateUnlockMode()` function. Take a single argument for the mode.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=4,48:50
+```typescript src/composables/session-vault.ts focus=4,49:51
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -1192,11 +1221,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1242,7 +1275,7 @@ to `IdentityVaultConfig` to signify that we know the value is not `undefined` at
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=48:53,56
+```typescript src/composables/session-vault.ts focus=49:54,57
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -1261,11 +1294,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1317,7 +1354,7 @@ Update the `type` based on the specified `mode`.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=54:57,61
+```typescript src/composables/session-vault.ts focus=55,59
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -1336,11 +1373,15 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1390,6 +1431,90 @@ export const useSessionVault = (): any => ({
 
 Update the `deviceSecurityType` based on the value of the `type`.
 
+---
+
+<CH.Code>
+
+```typescript src/composables/session-vault.ts focus=27
+import {
+  BrowserVault,
+  DeviceSecurityType,
+  IdentityVaultConfig,
+  Vault,
+  VaultType,
+} from '@ionic-enterprise/identity-vault';
+import { useVaultFactory } from '@/composables/vault-factory';
+import { Session } from '@/models/session';
+import { ref } from 'vue';
+
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
+
+const { createVault } = useVaultFactory();
+const vault: Vault | BrowserVault = createVault();
+const session = ref<Session | null>(null);
+
+const initializeVault = async (): Promise<void> => {
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('SecureStorage');
+  }
+};
+
+const storeSession = async (s: Session): Promise<void> => {
+  vault.setValue('session', s);
+  session.value = s;
+};
+
+const getSession = async (): Promise<void> => {
+  if (await vault.isEmpty()) {
+    session.value = null;
+  } else {
+    session.value = await vault.getValue<Session>('session');
+  }
+};
+
+const clearSession = async (): Promise<void> => {
+  await vault.clear();
+  session.value = null;
+};
+
+const updateUnlockMode = async (mode: UnlockMode): Promise<void> => {
+  const type =
+    mode === 'BiometricsWithPasscode'
+      ? VaultType.DeviceSecurity
+      : mode === 'InMemory'
+        ? VaultType.InMemory
+        : VaultType.SecureStorage;
+  const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
+  await vault.updateConfig({
+    ...(vault.config as IdentityVaultConfig),
+    type,
+    deviceSecurityType,
+  });
+};
+
+export const useSessionVault = (): any => ({
+  clearSession,
+  getSession,
+  initializeVault,
+  session,
+  storeSession,
+  updateUnlockMode,
+});
+```
+
+</CH.Code>
+
+If the `vault.initialize()` fails it is likely due to biometrics having been removed from the device while a "biometrics only" vault is
+in effect. That is not _actually_ possible with our configuration, but to be safe use the new `updateUnlockMode()` to reset the
+vault's configuration to `SecureStorage` in the case of a failure.
+
 </CH.Scrollycoding>
 
 #### Why the `UnlockMode`?
@@ -1430,7 +1555,7 @@ We can now add some buttons to the `Tab1Page` in order to try out the different 
 
 <CH.Code rows={70}>
 
-```vue src/views/Tab1Page.vue focus=28:57,85[47:64]
+```vue src/views/Tab1Page.vue focus=26:46,74[47:64]
 <template>
   <ion-page>
     <ion-header>
@@ -1627,7 +1752,7 @@ In `src/composables/session-vault.ts`, wrap the vault's `lock()` method so we ca
 
 <CH.Code rows={30}>
 
-```typescript src/composables/session-vault.ts focus=47:50,74
+```typescript src/composables/session-vault.ts focus=49:52,76
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -1646,11 +1771,16 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('SecureStorage');
+  }
 };
 
 const storeSession = async (s: Session): Promise<void> => {
@@ -1708,7 +1838,7 @@ Add a lock button in `src/views/Tab1Page.vue`.
 
 <CH.Code rows={68}>
 
-```vue src/views/Tab1Page.vue focus=58:64,95
+```vue src/views/Tab1Page.vue focus=47:51,79[35:46]
 <template>
   <ion-page>
     <ion-header>

@@ -647,7 +647,7 @@ force the user to log in each time.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=20:23
+```typescript src/composables/session-vault.ts focus=21:24
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -666,12 +666,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 2000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 2000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('SecureStorage');
+  }
 
   vault.onLock(() => (session.value = null));
 };
@@ -747,7 +752,7 @@ Our app is written to start with a Secure Storage type vault.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=5,22,24
+```typescript src/composables/session-vault.ts focus=5,23,25,29
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -767,12 +772,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   vault.onLock(() => (session.value = null));
 };
@@ -850,7 +860,7 @@ Change the `type` to be `InMemory` and increase the background lock time from 2 
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=27,32:36
+```typescript src/composables/session-vault.ts focus=32,37:41
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -870,12 +880,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -961,7 +976,7 @@ Enhance the vault as part of the initialization process.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=37:41
+```typescript src/composables/session-vault.ts focus=42:46
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -981,12 +996,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1076,7 +1096,7 @@ Use the proper vault type based on whether or not a system passcode is set.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=89,94
+```typescript src/composables/session-vault.ts focus=94,99
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1096,12 +1116,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1266,12 +1291,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1363,7 +1393,7 @@ Add `BiometricPermissionState` to the items being imported from the Identity Vau
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=99:107
+```typescript src/composables/session-vault.ts focus=104:112
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1384,12 +1414,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1491,7 +1526,7 @@ Add a `provisionBiometrics()` function but do not export it. Display the biometr
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=83,94:100
+```typescript src/composables/session-vault.ts focus=88,99:105
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1512,12 +1547,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1623,7 +1663,7 @@ its own method.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=95:99
+```typescript src/composables/session-vault.ts focus=100:104
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1644,12 +1684,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1754,7 +1799,7 @@ Biometrics will be special, so let's give it its own section.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=96
+```typescript src/composables/session-vault.ts focus=101
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1775,12 +1820,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -1886,7 +1936,7 @@ Provision the Biometrics.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=97:100
+```typescript src/composables/session-vault.ts focus=102:105
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -1907,12 +1957,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -2036,7 +2091,7 @@ the enhancement of the vault until after login.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=118
+```typescript src/composables/session-vault.ts focus=123
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -2057,12 +2112,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -2227,7 +2287,7 @@ Export the `enhanceVault()` function.
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=34:36
+```typescript src/composables/session-vault.ts focus=39:41
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -2248,12 +2308,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -2363,7 +2428,7 @@ export const useSessionVault = (): any => ({
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=34:38
+```typescript src/composables/session-vault.ts focus=39:43
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -2384,12 +2449,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -2495,7 +2565,7 @@ Preventing this is no longer necessary. Remove the `isEmpty()` check leaving the
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=28
+```typescript src/composables/session-vault.ts focus=33
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -2516,12 +2586,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   await enhanceVault();
 
@@ -2627,7 +2702,7 @@ export const useSessionVault = (): any => ({
 
 <CH.Code>
 
-```typescript src/composables/session-vault.ts focus=20:29
+```typescript src/composables/session-vault.ts focus=20:34
 import { useVaultFactory } from '@/composables/vault-factory';
 import { Session } from '@/models/session';
 import {
@@ -2648,12 +2723,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.InMemory,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 30000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.InMemory,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 30000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('InMemory');
+  }
 
   vault.onLock(() => (session.value = null));
 };
