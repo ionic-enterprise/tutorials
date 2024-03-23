@@ -598,7 +598,7 @@ force the user to log in each time.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=32:37
+```typescript src/app/core/session-vault.service.ts focus=33:38
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -630,12 +630,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.SecureStorage,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 2000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.SecureStorage,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 2000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('SecureStorage');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));
@@ -698,7 +703,7 @@ Our app is written to start with a Secure Storage type vault.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=4,35,37
+```typescript src/app/core/session-vault.service.ts focus=4,36,38,42[36:43]
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -731,12 +736,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));
@@ -801,7 +811,7 @@ Change the `type` to be `InMemory` and increase the background lock time from 2 
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=91:95
+```typescript src/app/core/session-vault.service.ts focus=96:100
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -834,12 +844,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));
@@ -909,7 +924,7 @@ already in use.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=84,89,98:102
+```typescript src/app/core/session-vault.service.ts focus=89,94,103:107
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -942,12 +957,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));
@@ -1024,7 +1044,7 @@ Use the proper vault type based on whether or not a system passcode is set. Adju
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=40
+```typescript src/app/core/session-vault.service.ts focus=45
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -1057,12 +1077,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1193,7 +1218,7 @@ The requirements we have from our design team are;
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=96:104
+```typescript src/app/core/session-vault.service.ts focus=101:109
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1227,12 +1252,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1321,7 +1351,7 @@ Add a private method called `provisionBiometrics()`. Display the biometric promp
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=80,91:97
+```typescript src/app/core/session-vault.service.ts focus=85,96:102
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1355,12 +1385,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1453,7 +1488,7 @@ its own method.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=92:96
+```typescript src/app/core/session-vault.service.ts focus=97:101
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1487,12 +1522,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1584,7 +1624,7 @@ Biometrics will be special, so let's give it its own section.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=93
+```typescript src/app/core/session-vault.service.ts focus=98
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1618,12 +1658,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1716,7 +1761,7 @@ Provision the Biometrics.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=94:97
+```typescript src/app/core/session-vault.service.ts focus=99:102
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1750,12 +1795,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -1866,7 +1916,7 @@ the enhancement of the vault until after login.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=113:123
+```typescript src/app/core/session-vault.service.ts focus=118:128
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -1900,12 +1950,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -2040,7 +2095,7 @@ The `enhanceVault()` method is currently `private`.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=113
+```typescript src/app/core/session-vault.service.ts focus=118
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2074,12 +2129,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -2175,7 +2235,7 @@ Make it public.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=114:116
+```typescript src/app/core/session-vault.service.ts focus=119:121
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2209,12 +2269,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -2310,7 +2375,7 @@ The method does not enhance a vault that is in use.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=113:119
+```typescript src/app/core/session-vault.service.ts focus=118:124
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2344,12 +2409,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -2441,7 +2511,7 @@ Remove the `isEmpty()` check leaving the rest of the code in place.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=41
+```typescript src/app/core/session-vault.service.ts focus=46
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2475,12 +2545,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     await this.enhanceVault();
 
@@ -2572,7 +2647,7 @@ The `enhanceVault()` method is currently called from the `initialize()` method.
 
 <CH.Code>
 
-```typescript src/app/core/session-vault.service.ts focus=33:43
+```typescript src/app/core/session-vault.service.ts focus=33:48
 import { Injectable } from '@angular/core';
 import {
   BiometricPermissionState,
@@ -2606,12 +2681,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.InMemory,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 30000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.InMemory,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 30000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('InMemory');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));

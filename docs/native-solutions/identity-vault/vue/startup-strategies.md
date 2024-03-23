@@ -726,7 +726,7 @@ code for simplicity.
 
 <CH.Code>
 
-```vue src/views/StartPage.vue focus=10,16,17,22,24,26:28
+```vue src/views/StartPage.vue focus=3[68:86],8,9,14,16,18:20
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
@@ -760,7 +760,7 @@ Perform this flow automatically after the user navigates to this page as well as
 
 <CH.Code>
 
-```vue src/views/StartPage.vue focus=12,15,27:33
+```vue src/views/StartPage.vue focus=4,7,18:26
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
@@ -803,7 +803,7 @@ set the "show" flag so the user can try again or give up and go back to the logi
 
 <CH.Code>
 
-```vue src/views/StartPage.vue focus=12,13,17,19,29:35
+```vue src/views/StartPage.vue focus=4,5,9,11,20:28
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';
@@ -858,7 +858,7 @@ based on the current authentication status.
 
 <CH.Code>
 
-```vue src/views/StartPage.vue focus=17[24:31],27:28
+```vue src/views/StartPage.vue focus=9[24:31],18:21
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, onIonViewDidEnter } from '@ionic/vue';

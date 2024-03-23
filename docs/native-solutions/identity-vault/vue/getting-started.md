@@ -936,7 +936,7 @@ Add a "Clear" button to the `Tab1Page`.
 
 <CH.Code rows={40}>
 
-```vue src/views/Tab1Page.vue focus=21:27,57[9:21]
+```vue src/views/Tab1Page.vue focus=21:25,55[9:21]
 <template>
   <ion-page>
     <ion-header>
@@ -1511,9 +1511,7 @@ export const useSessionVault = (): any => ({
 
 </CH.Code>
 
-If the `vault.initialize()` fails it is likely due to biometrics having been removed from the device while a "biometrics only" vault is
-in effect. That is not _actually_ possible with our configuration, but to be safe use the new `updateUnlockMode()` to reset the
-vault's configuration to `SecureStorage` in the case of a failure.
+If the `vault.initialize()` fails use the new `updateUnlockMode()` to reset the vault's configuration to `SecureStorage`.
 
 </CH.Scrollycoding>
 
@@ -1752,7 +1750,7 @@ In `src/composables/session-vault.ts`, wrap the vault's `lock()` method so we ca
 
 <CH.Code rows={30}>
 
-```typescript src/composables/session-vault.ts focus=49:52,76
+```typescript src/composables/session-vault.ts focus=49:52,73
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -1953,7 +1951,7 @@ Add the following code to `src/views/Tab1Page.vue`:
 
 <CH.Code rows={10}>
 
-```vue src/views/Tab1Page.vue focus=65:71
+```vue src/views/Tab1Page.vue focus=52:56
 <template>
   <ion-page>
     <ion-header>
@@ -2066,7 +2064,7 @@ We can manually lock our vault, but it would be nice if the vault locked for us 
 
 <CH.Code rows={14}>
 
-```typescript src/composables/session-vault.ts focus=26,29
+```typescript src/composables/session-vault.ts focus=24,31
 import {
   BrowserVault,
   DeviceSecurityType,
@@ -2085,12 +2083,17 @@ const vault: Vault | BrowserVault = createVault();
 const session = ref<Session | null>(null);
 
 const initializeVault = async (): Promise<void> => {
-  await vault.initialize({
-    key: 'io.ionic.gettingstartediv',
-    type: VaultType.SecureStorage,
-    deviceSecurityType: DeviceSecurityType.None,
-    lockAfterBackgrounded: 2000,
-  });
+  try {
+    await vault.initialize({
+      key: 'io.ionic.gettingstartediv',
+      type: VaultType.SecureStorage,
+      deviceSecurityType: DeviceSecurityType.None,
+      lockAfterBackgrounded: 2000,
+    });
+  } catch (e: unknown) {
+    await vault.clear();
+    await updateUnlockMode('SecureStorage');
+  }
 
   vault.onLock(() => (session.value = null));
 };
@@ -2179,14 +2182,12 @@ We will see various strategies for this in later tutorials. You can also refer t
 When we first initialize the vault we use the following configuration:
 
 ```typescript
-  async initialize(): Promise<void> {
-    await vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.SecureStorage,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 2000,
-    });
-  }
+await vault.initialize({
+  key: 'io.ionic.gettingstartediv',
+  type: VaultType.SecureStorage,
+  deviceSecurityType: DeviceSecurityType.None,
+  lockAfterBackgrounded: 2000,
+});
 ```
 
 It is important to note that this is an _initial_ configuration. Once a vault is created, it (and its current

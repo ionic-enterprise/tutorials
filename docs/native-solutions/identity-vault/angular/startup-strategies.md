@@ -127,18 +127,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'tab1',
-        loadComponent: () =>
-          import('../tab1/tab1.page').then((m) => m.Tab1Page),
+        loadComponent: () => import('../tab1/tab1.page').then((m) => m.Tab1Page),
       },
       {
         path: 'tab2',
-        loadComponent: () =>
-          import('../tab2/tab2.page').then((m) => m.Tab2Page),
+        loadComponent: () => import('../tab2/tab2.page').then((m) => m.Tab2Page),
       },
       {
         path: 'tab3',
-        loadComponent: () =>
-          import('../tab3/tab3.page').then((m) => m.Tab3Page),
+        loadComponent: () => import('../tab3/tab3.page').then((m) => m.Tab3Page),
       },
       {
         path: '',
@@ -378,21 +375,12 @@ import { AuthenticationService } from '../core/authentication.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonTitle,
-    IonToolbar,
-  ],
+  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar],
 })
 export class LoginPage {
   constructor(
     private navController: NavController,
-    private authentication: AuthenticationService
+    private authentication: AuthenticationService,
   ) {}
 
   async login() {
@@ -415,7 +403,7 @@ if it is locked. Update the `SessionVaultService` to provide `unlock()` and `isL
 
 <CH.Code rows={20}>
 
-```typescript src/app/code/session-vault.service.ts focus=65:76
+```typescript src/app/code/session-vault.service.ts focus=67:78
 import { Injectable } from '@angular/core';
 import {
   BrowserVault,
@@ -428,10 +416,7 @@ import { Session } from '../models/session';
 import { VaultFactory } from './vault.factory';
 import { Observable, Subject } from 'rxjs';
 
-export type UnlockMode =
-  | 'BiometricsWithPasscode'
-  | 'InMemory'
-  | 'SecureStorage';
+export type UnlockMode = 'BiometricsWithPasscode' | 'InMemory' | 'SecureStorage';
 
 @Injectable({
   providedIn: 'root',
@@ -450,12 +435,17 @@ export class SessionVaultService {
   }
 
   async initialize(): Promise<void> {
-    await this.vault.initialize({
-      key: 'io.ionic.gettingstartediv',
-      type: VaultType.SecureStorage,
-      deviceSecurityType: DeviceSecurityType.None,
-      lockAfterBackgrounded: 2000,
-    });
+    try {
+      await this.vault.initialize({
+        key: 'io.ionic.gettingstartediv',
+        type: VaultType.SecureStorage,
+        deviceSecurityType: DeviceSecurityType.None,
+        lockAfterBackgrounded: 2000,
+      });
+    } catch (e: unknown) {
+      await this.vault.clear();
+      await this.updateUnlockMode('SecureStorage');
+    }
 
     this.vault.onLock(() => this.lockedSubject.next(true));
     this.vault.onUnlock(() => this.lockedSubject.next(false));
@@ -498,12 +488,9 @@ export class SessionVaultService {
       mode === 'BiometricsWithPasscode'
         ? VaultType.DeviceSecurity
         : mode === 'InMemory'
-        ? VaultType.InMemory
-        : VaultType.SecureStorage;
-    const deviceSecurityType =
-      type === VaultType.DeviceSecurity
-        ? DeviceSecurityType.Both
-        : DeviceSecurityType.None;
+          ? VaultType.InMemory
+          : VaultType.SecureStorage;
+    const deviceSecurityType = type === VaultType.DeviceSecurity ? DeviceSecurityType.Both : DeviceSecurityType.None;
     await this.vault.updateConfig({
       ...(this.vault.config as IdentityVaultConfig),
       type,
@@ -534,9 +521,7 @@ page, so let's get that established first.
   <ion-list *ngIf="showUnlock">
     <ion-item>
       <ion-label>
-        <ion-button expand="block" (click)="performUnlockFlow()"
-          >Unlock</ion-button
-        >
+        <ion-button expand="block" (click)="performUnlockFlow()">Unlock</ion-button>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -559,13 +544,7 @@ Remove those components, add our new ones, and create empty methods for the boun
 ```typescript src/app/start/start.page.ts focus=1,3:9,16,19,25,27
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-} from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-start',
@@ -595,16 +574,10 @@ With the basics in place, let's implement the rest of the logic.
 
 <CH.Code>
 
-```typescript src/app/start/start.page.ts focus=24,28:29,34,36
+```typescript src/app/start/start.page.ts focus=18,22:23,28,30
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-} from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-start',
@@ -644,16 +617,10 @@ user navigates to this page.
 
 <CH.Code>
 
-```typescript src/app/start/start.page.ts focus=10,22[15:55],38:44
+```typescript src/app/start/start.page.ts focus=4,16[15:55],32:38
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-} from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
 import { SessionVaultService } from '../core/session-vault.service';
 
 @Component({
@@ -702,17 +669,10 @@ set the "show" flag so the user can try again or give up and go back to the logi
 
 <CH.Code>
 
-```typescript src/app/start/start.page.ts focus=9,11,25:27,42:48
+```typescript src/app/start/start.page.ts focus=3[59:73],4,18:20,35:41
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  NavController,
-} from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { AuthenticationService } from '../core/authentication.service';
 import { SessionVaultService } from '../core/session-vault.service';
 
@@ -729,7 +689,7 @@ export class StartPage implements OnInit {
   constructor(
     private authentication: AuthenticationService,
     private navController: NavController,
-    private sessionVault: SessionVaultService
+    private sessionVault: SessionVaultService,
   ) {}
 
   async ngOnInit() {
@@ -774,17 +734,10 @@ based on the current authentication status.
 
 <CH.Code>
 
-```typescript src/app/start/start.page.ts focus=40,41
+```typescript src/app/start/start.page.ts focus=33,34
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  NavController,
-} from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
 import { AuthenticationService } from '../core/authentication.service';
 import { SessionVaultService } from '../core/session-vault.service';
 
@@ -801,7 +754,7 @@ export class StartPage implements OnInit {
   constructor(
     private authentication: AuthenticationService,
     private navController: NavController,
-    private sessionVault: SessionVaultService
+    private sessionVault: SessionVaultService,
   ) {}
 
   async ngOnInit() {
@@ -856,13 +809,9 @@ method such that it can be called with a locked vault. Crafting the logout as su
 Update the `AppComponent` to subscribe to the `locked$` observable. When the vault locks, navigate to `/`. This will
 load the `StartPage` and execute an iteration of our unlock workflow.
 
-```typescript src/app/app.component.ts focus=5,7,8,16[27:46],19:29
+```typescript src/app/app.component.ts focus=2[33:47],3,4,12[27:46],15:25
 import { Component, OnDestroy } from '@angular/core';
-import {
-  IonApp,
-  IonRouterOutlet,
-  NavController,
-} from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet, NavController } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { SessionVaultService } from './core/session-vault.service';
 
@@ -924,46 +873,31 @@ Cleaning this all up is left as an exercise to the reader but we provide the com
   <ion-list>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="danger" (click)="logout()"
-          >Logout</ion-button
-        >
+        <ion-button expand="block" color="danger" (click)="logout()">Logout</ion-button>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button
-          expand="block"
-          color="secondary"
-          (click)="changeUnlockMode('BiometricsWithPasscode')"
+        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('BiometricsWithPasscode')"
           >Use Biometrics</ion-button
         >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button
-          expand="block"
-          color="secondary"
-          (click)="changeUnlockMode('InMemory')"
-          >Use In Memory</ion-button
-        >
+        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('InMemory')">Use In Memory</ion-button>
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button
-          expand="block"
-          color="secondary"
-          (click)="changeUnlockMode('SecureStorage')"
+        <ion-button expand="block" color="secondary" (click)="changeUnlockMode('SecureStorage')"
           >Use Secure Storage</ion-button
         >
       </ion-label>
     </ion-item>
     <ion-item>
       <ion-label>
-        <ion-button expand="block" color="warning" (click)="lock()"
-          >Lock</ion-button
-        >
+        <ion-button expand="block" color="warning" (click)="lock()">Lock</ion-button>
       </ion-label>
     </ion-item>
     <ion-item>
@@ -1000,17 +934,7 @@ import { AuthenticationService } from '../core/authentication.service';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonTitle,
-    IonToolbar,
-    IonTitle,
-  ],
+  imports: [IonButton, IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar, IonTitle],
 })
 export class Tab1Page implements OnInit {
   session: Session | null = null;
@@ -1018,7 +942,7 @@ export class Tab1Page implements OnInit {
   constructor(
     private authentication: AuthenticationService,
     private navController: NavController,
-    private sessionVault: SessionVaultService
+    private sessionVault: SessionVaultService,
   ) {}
 
   async ngOnInit() {
