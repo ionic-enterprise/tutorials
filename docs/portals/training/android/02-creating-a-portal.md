@@ -63,8 +63,8 @@ fun WebAppView(
 ) {
     val credentials = ApiClient.credentials
 
-    val portal = PortalBuilder(metadata.name)
-        .setStartDir("portals/${metadata.name}")
+    val portal = PortalBuilder("debug")
+        .setStartDir("portals/debug")
         .create();
 
     AndroidView(factory = {
