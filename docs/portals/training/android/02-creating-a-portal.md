@@ -44,7 +44,7 @@ sync:
 
 The `file-path` is the bundled web app directory in relation to the root of the Android project, while the `directory-name` is the target location the command will move the bundle to.
 
-Next, open `portals/WebAppView.kt` and make it return a: 
+Next, open `portals/WebAppView.kt` and make it return a `PortalView` instead of a `Button`: 
 
 ```kotlin portals/WebAppView.kt focus=17-23
 package io.ionic.cs.portals.Jobsync.portals
