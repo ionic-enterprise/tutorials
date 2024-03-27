@@ -193,9 +193,7 @@ class AnalyticsPlugin: Plugin() {
     fun logAction(call: PluginCall) {
         val action = call.getString("action")
         if (action != null) {
-            val params = call.getObject("params")?.let {
-                it.toString()
-            } ?: ""
+            val params = call.getObject("params")?.toString() ?: ""
 
             val input = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
             ApiClient.apiService.analytics(input).enqueue(object: Callback<AnalyticsResult> {
@@ -252,9 +250,7 @@ class AnalyticsPlugin: Plugin() {
     fun logAction(call: PluginCall) {
         val action = call.getString("action")
         if (action != null) {
-            val params = call.getObject("params")?.let {
-                it.toString()
-            } ?: ""
+            val params = call.getObject("params")?.toString() ?: ""
 
             val input = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
             logEvent(input) {
@@ -270,7 +266,7 @@ class AnalyticsPlugin: Plugin() {
     fun logScreen(call: PluginCall) {
         val screen = call.getString("screen")
         if (screen != null) {
-            val params = call.getObject("params", "")
+            val params = call.getObject("params")?.toString() ?: ""
 
             val input = AnalyticsBody(action = null, screen = screen, params = params, platform = "android")
             logEvent(input) {
