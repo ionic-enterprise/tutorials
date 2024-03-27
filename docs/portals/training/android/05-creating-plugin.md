@@ -124,7 +124,7 @@ fun WebAppView(
 
 Build and run the Jobsync app and navigate to one of the features in the dashboard view. Switch from the 'Initial Context' tab to the 'Capacitor Plugins' tab. 
 
-Look at the list of plugins. Each Portal registers a few Capacitor plugins by default, such as `Console` and `Portals` (which provides web access to pub/sub). You'll also see that the analytics plugin has been added as `Analytics`, after the value provided for `jsName`.
+Look at the list of plugins. Each Portal registers a few Capacitor plugins by default, such as `Console` and `Portals` (which provides web access to pub/sub). You'll also see that the analytics plugin has been added as `Analytics`, after the value provided in the `CapacitorPlugin` decorator.
 
 Expand `Analytics` tap and tap `logAction`. You'll be taken to a detail view for the method where you can provide input as a JSON string in the 'Argument' field and a button allowing you to execute the method. Click 'Execute logAction' and the method will run, logging to Android Studio's logcat. 
 
@@ -147,10 +147,11 @@ Since input data is available as part of the call, you can guard against bad inp
 ```kotlin portals/AnalyticsPlugin.kt
 @PluginMethod()
 fun logAction(call: PluginCall) {
-    call.getString("action")?.let { action ->
+    val action = call.getString("action")
+    if (action != null) {
         println("AnalyticsPlugin: logAction")
         call.resolve()
-    } ?: {
+    } else {
         call.reject("Input option 'action' must be provided.")
     }
 }
@@ -172,42 +173,6 @@ Modify `portals/AnalyticsPlugin.kt` and use `NetworkManager` to complete the imp
 
 <CH.Code>
 
-```kotlin portals/AnalyticsPlugin.kt focus=12:16
-package io.ionic.cs.portals.Jobsync.portals
-
-import com.getcapacitor.Plugin
-import com.getcapacitor.PluginCall
-import com.getcapacitor.PluginMethod
-import com.getcapacitor.annotation.CapacitorPlugin
-
-@CapacitorPlugin(name="Analytics")
-class AnalyticsPlugin: Plugin() {
-    @PluginMethod()
-    fun logAction(call: PluginCall) {
-        call.getString("action")?.let { action ->
-            val params = call.getObject("params")?.let {
-                it.toString()
-            } ?: ""
-        }
-        call.resolve()
-    }
-
-    @PluginMethod()
-    fun logScreen(call: PluginCall) {
-        println("AnalyticsPlugin: logScreen")
-        call.resolve()
-    }
-}
-```
-
-</CH.Code>
-
-Additional parameters are optional and untyped. They can be stringified and added to the request should they exist. 
-
----
-
-<CH.Code>
-
 ```kotlin portals/AnalyticsPlugin.kt focus=17:34
 package io.ionic.cs.portals.Jobsync.portals
 
@@ -215,12 +180,19 @@ import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
+import io.ionic.cs.portals.Jobsync.network.AnalyticsResult
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @CapacitorPlugin(name="Analytics")
 class AnalyticsPlugin: Plugin() {
     @PluginMethod()
     fun logAction(call: PluginCall) {
-        call.getString("action")?.let {action ->
+        val action = call.getString("action")
+        if (action != null) {
             val params = call.getObject("params")?.let {
                 it.toString()
             } ?: ""
@@ -242,7 +214,7 @@ class AnalyticsPlugin: Plugin() {
                     call.reject("Failed to connect to the analytics endpoint.")
                 }
             })
-        } ?: call.reject("Input option 'action' must be provided.")
+        } else call.reject("Input option 'action' must be provided.")
     }
 
     @PluginMethod()
@@ -278,7 +250,8 @@ import retrofit2.Response
 class AnalyticsPlugin: Plugin() {
     @PluginMethod()
     fun logAction(call: PluginCall) {
-        call.getString("action")?.let {action ->
+        val action = call.getString("action")
+        if (action != null) {
             val params = call.getObject("params")?.let {
                 it.toString()
             } ?: ""
@@ -289,16 +262,15 @@ class AnalyticsPlugin: Plugin() {
                 else call.reject("Something went wrong")
             }
 
-        } ?: call.reject("Input option 'action' must be provided.")
+        } else call.reject("Input option 'action' must be provided.")
 
     }
 
     @PluginMethod()
     fun logScreen(call: PluginCall) {
-        call.getString("screen")?.let {screen ->
-            val params = call.getObject("params")?.let {
-                it.toString()
-            } ?: ""
+        val screen = call.getString("screen")
+        if (screen != null) {
+            val params = call.getObject("params", "")
 
             val input = AnalyticsBody(action = null, screen = screen, params = params, platform = "android")
             logEvent(input) {
@@ -306,7 +278,7 @@ class AnalyticsPlugin: Plugin() {
                 else call.reject("Something went wrong")
             }
 
-        } ?: call.reject("Input option 'action' must be provided.")
+        } else call.reject("Input option 'action' must be provided.")
     }
 
     private fun logEvent(input: AnalyticsBody, completion: (Boolean) -> Unit) {

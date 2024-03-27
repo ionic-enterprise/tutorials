@@ -12,15 +12,13 @@ In this step, you will subscribe to messages sent from the web to dismiss the cu
 
 ## Exploring the problem
 
-After you navigate to one of of the features in the Jobsync app, you'll notice a peculiar problem: the back buttons inside of the web apps do not function, while the back button on the physical devices do. These web apps include a back button because they might also be accessed on iOS devices, not just Android ones.
-
-Web apps consolidated into the Jobsync superapp may consist of multiple views, and therefore need to manage navigation within their scope. Each web app designed for this training contain a header with a back button and when the web app has exhausted its navigation stack, it uses the Portals web library to communicate with Android code by sending a message to the `navigate:back` topic. 
+Web apps consolidated into the Jobsync superapp may consist of multiple views, and therefore need to manage navigation within their scope. Each web app designed for this training contains a header with a back button and when the web app has exhausted its navigation stack, it uses the Portals web library to communicate with Android code by sending a message to the `navigate:back` topic. 
 
 In the section below, you will use the Portals Android library to subscribe to the `navigate:back` topic and dismiss the view when a message is received.
 
 ## Creating a subscriber
 
-The pub/sub mechanism included in the Portals Android library relies on two parts that work together: `PortalsPubSub` and `PortalsPlugin`. `PortalsPlugin` is a Capacitor plugin (you will learn about those in the next step) added to a Portal by default that allows web apps to send messages. `PortalsPubSub` is the class that manages an internal message bus to subscribe to.
+The pub/sub mechanism included in the Portals Android library relies on two parts that work together: `PortalsPubSub` and `PortalsPlugin`. `PortalsPlugin` is a Capacitor plugin (you will learn about those in the next step) added to a Portal by default that allows web apps to communicate with the native layer and vice-versa. `PortalsPubSub` is the class that manages an internal message bus.
 
 <Admonition type="info">
 Pub/sub is bi-directional; messages can be sent from native mobile code to web code as well.
@@ -76,7 +74,7 @@ fun WebAppView(
 
 We have to use Kotlin Coroutines to properly close the webapp on the correct thread. Once we close the webapp, we need to make sure to clean up our subscribers and unsubscribe from the `navigate:back` topic.
 
-Create a `PortalsPlugin` instance and then add it to the Portal configuration to begin listening on this Portal. 
+Add the `pubsub` object you just created to a `PortalsPlugin` instance and then add it to the Portal configuration to begin listening on this Portal. 
 
 ---
 

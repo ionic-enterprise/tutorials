@@ -69,7 +69,7 @@ class Jobsync: Application() {
 }
 ```
 
-You aren't required to register Portals during app initialization, but it is recommended to register as early into the app lifecycle as possible. Should you try to render a Portal before registering your key, a warning message will be displayed in your app. 
+You aren't required to register Portals during app initialization, but it is recommended to register as early into the app lifecycle as possible. Should you try to render a Portal before registering your key, a warning message will be displayed in all Portals in your app.
 
 ## What's next?
 

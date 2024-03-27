@@ -35,11 +35,11 @@ Update `/android/.portals.yaml` to match the following code:
 
 ```yaml android/.portals.yaml
 sync:
-  - file-path: ../web/apps/expenses
+  - file-path: ../web/apps/expenses/dist
     directory-name: app/src/main/assets/portals/expenses
-  - file-path: ../web/apps/tasks
+  - file-path: ../web/apps/tasks/dist
     directory-name: app/src/main/assets/portals/tasks
-  - file-path: ../web/apps/time-tracking
+  - file-path: ../web/apps/time-tracking/dist
     directory-name: app/src/main/assets/portals/time_tracking
 ``` 
 
