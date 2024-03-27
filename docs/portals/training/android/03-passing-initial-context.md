@@ -20,7 +20,7 @@ The Portals library allows you to pass data that is immediately available to the
 
 ## Formatting for initial context
 
-After the current user signs in, the `accessToken` and `refreshToken` are stored in an instance of `CredentialsManager` passed around the application code as an environment object. Credentials are converted to the correct key-value-pairs to be sent through the initial context.
+After the current user signs in, the `accessToken` and `refreshToken` are stored in an instance of the custom class `CredentialsManager` passed around the application code as an environment object. Credentials are converted to the correct key-value-pairs to be sent through the initial context.
 
 ```kotlin portals/WebAppView.kt focus=16
 package io.ionic.cs.portals.Jobsync.portals
@@ -87,4 +87,4 @@ Build and run the Jobsync app and navigate to one of the features in the dashboa
 
 ## What's next
 
-You established communication through a Portal using initial context to share session information to web apps being presented through a Portal. Initial context is uni-directional communication, from mobile native code to web code. In the next step in this module, you will learn about Portals' *pub/sub* mechanism to subscribe to messages sent from web code to native mobile code.
+You established communication through a Portal using initial context to share session information to web apps being presented through a Portal. Initial context is uni-directional communication, from native code to web code. In the next step in this module, you will learn about Portals *pub/sub* mechanism to subscribe to messages sent from web code to native code.
