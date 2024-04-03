@@ -107,9 +107,16 @@ Next, in a separate terminal, run the Portals CLI's `serve` command. The command
 
   </TabItem>
   <TabItem label="Android" value="android">
-    <Admonition type="info">
-      Android instructions coming soon!   
-    </Admonition>
+
+  ```bash terminal
+  portals serve android --application ./artifacts/Jobsync.apk --dev-server http://localhost:5173
+  ```
+
+  <Admonition type="note">
+  If the local web server fails to load within the Android device/emulator, follow the Portals CLI's <a href="https://ionic.io/docs/portals/cli/commands/serve-android#emulator-network-troubleshooting" target="_blank">network troubleshooting steps</a>. 
+  </Admonition>
+
+
   </TabItem>
 </Tabs>
 
