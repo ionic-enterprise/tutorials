@@ -11,10 +11,10 @@ request it [via email](mailto:support@ionic.io) or our [Enterprise Support Porta
 In addition to the tutorials that we have here, we also maintain tutorials for the following solutions:
 
 - **Auth Connect**
-  - [Angular](https://ionic.io/docs/identity-vault/angular/getting-started)
-  - [React](https://ionic.io/docs/identity-vault/react/getting-started)
-  - [Vue](https://ionic.io/docs/identity-vault/vue/getting-started)
-- **Identity Vault**
   - [Angular](https://ionic.io/docs/auth-connect/tutorials/angular/getting-started)
   - [React](https://ionic.io/docs/auth-connect/tutorials/react/getting-started)
   - [Vue](https://ionic.io/docs/auth-connect/tutorials/vue/getting-started)
+- **Identity Vault**
+  - [Angular](https://ionic.io/docs/identity-vault/angular/getting-started)
+  - [React](https://ionic.io/docs/identity-vault/react/getting-started)
+  - [Vue](https://ionic.io/docs/identity-vault/vue/getting-started)
