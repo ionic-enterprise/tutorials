@@ -22,7 +22,7 @@ A good first step is to configure and display a Portal, loading a sample web app
 
 The Portals CLI offers the <a href="https://ionic.io/docs/portals/cli/commands/poc" target="_blank">`poc` command</a>, which will download a prebuilt example web app that can be used to test communication through a Portal. 
 
-Run the following command in the terminal at the repository root:
+Navigate to the root directory of the downloaded repository in your terminal, then execute:
 
 ```bash terminal
 portals poc

@@ -48,7 +48,7 @@ struct Credentials: Decodable {
 
 ## Configuring initial context
 
-Once the conversion method has been created, you can update the Portal configuration in `Portals/WebAppView.swift` to include the current user's credentials as initial context:
+Once the conversion method has been created, update the Portal configuration in `Portals/WebAppView.swift` to include the current user's credentials as initial context:
 
 ```swift WebAppView.swift focus=10:14
 import SwiftUI

@@ -22,7 +22,7 @@ A good first step is to configure and display a Portal, loading a sample web app
 
 The Portals CLI offers the <a href="https://ionic.io/docs/portals/cli/commands/poc" target="_blank">`poc` command</a>, which will download a prebuilt example web app that can be used to test communication through a Portal. 
 
-Run the following command in the terminal at the *repository root*:
+Navigate to the root directory of the downloaded repository in your terminal, then execute:
 
 ```bash terminal
 portals poc
@@ -34,26 +34,39 @@ The sample web app downloads to `/portals-debug-app`. To sync the web app with y
 Using the Portals CLI to pull web apps into an Android project is recommended. This approach can be scaled and configured with Live Updates.
 </Admonition>
 
-Create a new file `.portals.yaml` within the `/android` folder:
+Create a new file `.portals.yaml` within the `/android/app` folder:
 
-```yaml android/.portals.yaml
+```yaml android/app/.portals.yaml
 sync:
-  - file-path: ../portals-debug-app
-    directory-name: app/src/main/assets/portals/debug
+  - file-path: ../../portals-debug-app
+    directory-name: src/main/assets/portals/debug
 ```
+
+<Admonition type="note">
+On Windows, set `directory-name` to `src\\main\\assets\\portals\\debug`.
+</Admonition>
 
 The `file-path` is the bundled web app directory in relation to the root of the Android project, while the `directory-name` is the target location the command will move the bundle to.
 
-Open your terminal again and run the following:
-```bash terminal
-cd ./android
-portals sync
+Next, place the following script at the bottom of the `build.gradle (:app)`:
+
+```groovy android/app/build.gradle
+preBuild.dependsOn 'syncPortals'
+
+tasks.register('syncPortals') {
+    doLast {
+        project.exec {
+            commandLine 'portals', 'sync'
+        }
+    }
+}
 ```
 
+Finally, open `portals/WebAppView.kt` and make it return a `PortalView` instead of a `Button`: 
 
-Next, open `portals/WebAppView.kt` and make it return a `PortalView` instead of a `Button`: 
+<CH.Code rows={20}>
 
-```kotlin portals/WebAppView.kt focus=17:23
+```kotlin portals/WebAppView.kt focus=7:8,17:21
 package io.ionic.cs.portals.Jobsync.portals
 
 import androidx.compose.runtime.Composable
@@ -74,11 +87,12 @@ fun WebAppView(
         .setStartDir("portals/debug")
         .create();
 
-    AndroidView(factory = {
-        PortalView(it, portal)
-    })
+    AndroidView(factory = { PortalView(it, portal) })
+
 }
 ```
+
+</CH.Code>
 
 Build and run the Jobsync app and navigate to the dashboard view. Select a feature from the list, and the sample web app will load within the `PortalView` in the detail view. Nice!
 
