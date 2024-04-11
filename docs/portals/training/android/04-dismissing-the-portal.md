@@ -24,12 +24,13 @@ The pub/sub mechanism included in the Portals Android library relies on two part
 Pub/sub is bi-directional; messages can be sent from native mobile code to web code as well.
 </Admonition>
 
-Modify `portals/WebAppView.kt` to create a `PortalsPubSub` instance, and add a subscriber for the `navigate:back` topic:
+Modify `portals/WebAppView.kt` to a subscribe for the `navigate:back` topic:
 
 <CH.Scrollycoding>
+
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=22:28
+```kotlin portals/WebAppView.kt focus=9,25
 package io.ionic.cs.portals.Jobsync.portals
 
 import androidx.compose.runtime.Composable
@@ -39,10 +40,6 @@ import io.ionic.cs.portals.Jobsync.network.ApiClient
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
-import io.ionic.portals.PortalsPubSub
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun WebAppView(
@@ -50,37 +47,72 @@ fun WebAppView(
     metadata: WebAppMetadata
 ) {
     val credentials = ApiClient.credentials
-    val credentialsMap = mapOf("accessToken" to credentials?.access_token, "refreshToken" to credentials?.refresh_token)
-    val pubsub = PortalsPubSub()
-    pubsub.subscribe("navigate:back") {
-        CoroutineScope(Dispatchers.Main).launch {
-            navHostController.popBackStack()
-        }
-        pubsub.unsubscribe("navigate:back", it.subscriptionRef)
-    }
+    val initialContext = mapOf(
+        "accessToken" to credentials?.access_token,
+        "refreshToken" to credentials?.refresh_token
+    )
 
     val portal = PortalBuilder("debug")
         .setStartDir("portals/debug")
-        .setInitialContext(credentialsMap)
+        .setInitialContext(initialContext)
+        .addPluginInstance(PortalsPlugin())
         .create()
 
-    AndroidView(factory = {
-        PortalView(it, portal)
-    })
+    AndroidView(factory = { PortalView(it, portal) })
 }
 ```
 
 </CH.Code>
 
-We have to use Kotlin Coroutines to properly close the webapp on the correct thread. Once we close the webapp, we need to make sure to clean up our subscribers and unsubscribe from the `navigate:back` topic.
-
-Add the `pubsub` object you just created to a `PortalsPlugin` instance and then add it to the Portal configuration to begin listening on this Portal. 
+Add an instance of `PortalsPlugin` to the Portal.
 
 ---
 
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=33
+```kotlin portals/WebAppView.kt focus=10,22,27[42:54]
+package io.ionic.cs.portals.Jobsync.portals
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.portals.PortalBuilder
+import io.ionic.portals.PortalView
+import io.ionic.portals.PortalsPlugin
+import io.ionic.portals.PortalsPubSub
+
+@Composable
+fun WebAppView(
+    navHostController: NavHostController,
+    metadata: WebAppMetadata
+) {
+    val credentials = ApiClient.credentials
+    val initialContext = mapOf(
+        "accessToken" to credentials?.access_token,
+        "refreshToken" to credentials?.refresh_token
+    )
+    val portalsPubSub = PortalsPubSub()
+
+    val portal = PortalBuilder("debug")
+        .setStartDir("portals/debug")
+        .setInitialContext(initialContext)
+        .addPluginInstance(PortalsPlugin(portalsPubSub))
+        .create()
+
+    AndroidView(factory = { PortalView(it, portal) })
+}
+```
+
+</CH.Code>
+
+Create an instance of the `PortalsPubSub` class and pass it into the `PortalsPlugin` constructor. 
+
+---
+
+<CH.Code>
+
+```kotlin portals/WebAppView.kt focus=11:13,26:30
 package io.ionic.cs.portals.Jobsync.portals
 
 import androidx.compose.runtime.Composable
@@ -101,32 +133,90 @@ fun WebAppView(
     metadata: WebAppMetadata
 ) {
     val credentials = ApiClient.credentials
-    val credentialsMap = mapOf("accessToken" to credentials?.access_token, "refreshToken" to credentials?.refresh_token)
-    val pubsub = PortalsPubSub()
-    pubsub.subscribe("navigate:back") {
+    val initialContext = mapOf(
+        "accessToken" to credentials?.access_token,
+        "refreshToken" to credentials?.refresh_token
+    )
+    val portalsPubSub = PortalsPubSub()
+    portalsPubSub.subscribe("navigate:back") {
         CoroutineScope(Dispatchers.Main).launch {
             navHostController.popBackStack()
         }
-        pubsub.unsubscribe("navigate:back", it.subscriptionRef)
     }
 
     val portal = PortalBuilder("debug")
         .setStartDir("portals/debug")
-        .setInitialContext(credentialsMap)
-        .addPluginInstance(PortalsPlugin(pubsub))
+        .setInitialContext(initialContext)
+        .addPluginInstance(PortalsPlugin(portalsPubSub))
         .create()
 
-    AndroidView(factory = {
-        PortalView(it, portal)
-    })
+    AndroidView(factory = { PortalView(it, portal) })
 }
 ```
 
 </CH.Code>
 
+Subscribe to the `navigate:back` topic, and pop the nav stack when the topic receives a message. 
+
+---
+
+<CH.Code>
+
+```kotlin portals/WebAppView.kt focus=30:33
+package io.ionic.cs.portals.Jobsync.portals
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.portals.PortalBuilder
+import io.ionic.portals.PortalView
+import io.ionic.portals.PortalsPlugin
+import io.ionic.portals.PortalsPubSub
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+@Composable
+fun WebAppView(
+    navHostController: NavHostController,
+    metadata: WebAppMetadata
+) {
+    val credentials = ApiClient.credentials
+    val initialContext = mapOf(
+        "accessToken" to credentials?.access_token,
+        "refreshToken" to credentials?.refresh_token
+    )
+    val portalsPubSub = PortalsPubSub()
+    portalsPubSub.subscribe("navigate:back") {
+        CoroutineScope(Dispatchers.Main).launch {
+            navHostController.popBackStack()
+        }
+        portalsPubSub.unsubscribe(
+            "navigate:back", 
+            it.subscriptionRef
+        )
+    }
+
+    val portal = PortalBuilder("debug")
+        .setStartDir("portals/debug")
+        .setInitialContext(initialContext)
+        .addPluginInstance(PortalsPlugin(portalsPubSub))
+        .create()
+
+    AndroidView(factory = { PortalView(it, portal) })
+}
+```
+
+</CH.Code>
+
+Clean up the subscription once it's no longer needed by unsubscribing to the `navigate:back` topic.
+
 </CH.Scrollycoding>
 
-Once the view has navigated away, the subscriber is terminated along with `PortalView`. 
+<Admonition type="info">
+Additional ways to create subscribers can be found <a href="https://ionic.io/docs/portals/for-android/how-to/using-the-portals-plugin#communicating-via-pubsub" target="_blank"> at this link</a>.
+</Admonition>
 
 ## Testing the subscription
 
