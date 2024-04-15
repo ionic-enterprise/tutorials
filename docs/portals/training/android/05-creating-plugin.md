@@ -68,7 +68,7 @@ class AnalyticsPlugin: Plugin() {
 ```
 
 <Admonition type="info">
-Refer to <a href="" target="_blank">How To Define a Portal API</a> for detailed information on authoring a Capacitor plugin.
+Refer to <a href="https://ionic.io/docs/portals/for-android/how-to/define-api-in-typescript" target="_blank">How To Define a Portal API</a> for detailed information on authoring a Capacitor plugin.
 </Admonition>
 
 ## Adding the plugin to a Portal
@@ -114,9 +114,7 @@ fun WebAppView(
         .addPluginInstance(PortalsPlugin(pubsub))
         .create()
 
-    AndroidView(factory = {
-        PortalView(it, portal)
-    })
+    AndroidView(factory = { PortalView(it, portal) })
 }
 ```
 
