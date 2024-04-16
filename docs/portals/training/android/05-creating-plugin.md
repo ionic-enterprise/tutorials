@@ -145,13 +145,13 @@ Since input data is available as part of the call, you can guard against bad inp
 ```kotlin portals/AnalyticsPlugin.kt
 @PluginMethod()
 fun logAction(call: PluginCall) {
-    val action = call.getString("action")
-    if (action != null) {
-        println("AnalyticsPlugin: logAction")
-        call.resolve()
-    } else {
+    val action = call.getString("action");
+    if(action == null) {
         call.reject("Input option 'action' must be provided.")
+        return
     }
+    println("AnalyticsPlugin: logAction")
+    call.resolve()
 }
 ```
 
@@ -165,70 +165,56 @@ Test `logScreen` and once complete, head to the next section to complete the imp
 
 For the purpose of this training, logging analytic events consists of POSTing data to an HTTP endpoint.
 
-Modify `portals/AnalyticsPlugin.kt` and use `NetworkManager` to complete the implementation:
+Modify `portals/AnalyticsPlugin.kt` and use `ApiClient` to complete the implementation:
 
 <CH.Scrollycoding>
 
 <CH.Code>
 
-```kotlin portals/AnalyticsPlugin.kt focus=17:34
+```kotlin portals/AnalyticsPlugin.kt focus=18
 package io.ionic.cs.portals.Jobsync.portals
 
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
-import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
-import io.ionic.cs.portals.Jobsync.network.AnalyticsResult
-import io.ionic.cs.portals.Jobsync.network.ApiClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @CapacitorPlugin(name="Analytics")
 class AnalyticsPlugin: Plugin() {
-    @PluginMethod()
-    fun logAction(call: PluginCall) {
-        val action = call.getString("action")
-        if (action != null) {
-            val params = call.getObject("params")?.toString() ?: ""
 
-            val input = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
-            ApiClient.apiService.analytics(input).enqueue(object: Callback<AnalyticsResult> {
-                override fun onResponse(apiCall: Call<AnalyticsResult>, response: Response<AnalyticsResult>) {
-                    val body = response.body()
-                    body?.success?.let {
-                        if(it) {
-                            call.resolve()
-                            return
-                        }
-                    }
-                    call.reject("Logging the analytic event failed.")
-                }
-
-                override fun onFailure(apiCall: Call<AnalyticsResult>, t: Throwable) {
-                    call.reject("Failed to connect to the analytics endpoint.")
-                }
-            })
-        } else call.reject("Input option 'action' must be provided.")
+  @PluginMethod()
+  fun logAction(call: PluginCall) {
+    val action = call.getString("action");
+    if(action == null) {
+      call.reject("Input option 'action' must be provided.")
+      return
     }
+    val params = call.getObject("params")?.toString() ?: ""
+    call.resolve()
+  }
 
-    @PluginMethod()
-    fun logScreen(call: PluginCall) {
-        println("AnalyticsPlugin: logScreen")
+  @PluginMethod()
+  fun logScreen(call: PluginCall) {
+    val screen = call.getString("screen")
+    if(screen === null) {
+      call.reject("Input option 'screen' must be provided.")
+      return
     }
+    println("AnalyticsPlugin: logScreen")
+    call.resolve()
+  }
 }
 ```
 
 </CH.Code>
 
-Make the network request. If it succeeds, `call.resolve()` will resolve the call made from the web code, otherwise `call.reject()` will throw an error to be handled by the web code. 
+Additional parameters are optional and untyped. They can be stringified and added to the request should they exist.
 
 ---
 
 <CH.Code>
 
-```kotlin portals/AnalyticsPlugin.kt focus=32:61
+```kotlin portals/AnalyticsPlugin.kt focus=7:11,24:35
 package io.ionic.cs.portals.Jobsync.portals
 
 import com.getcapacitor.Plugin
@@ -236,7 +222,6 @@ import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
-import io.ionic.cs.portals.Jobsync.network.AnalyticsResult
 import io.ionic.cs.portals.Jobsync.network.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -244,59 +229,251 @@ import retrofit2.Response
 
 @CapacitorPlugin(name="Analytics")
 class AnalyticsPlugin: Plugin() {
-    @PluginMethod()
-    fun logAction(call: PluginCall) {
-        val action = call.getString("action")
-        if (action != null) {
-            val params = call.getObject("params")?.toString() ?: ""
 
-            val input = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
-            logEvent(input) {
-                if (it) call.resolve()
-                else call.reject("Something went wrong")
-            }
-
-        } else call.reject("Input option 'action' must be provided.")
-
+  @PluginMethod()
+  fun logAction(call: PluginCall) {
+    val action = call.getString("action");
+    if(action == null) {
+      call.reject("Input option 'action' must be provided.")
+      return
     }
+    val params = call.getObject("params")?.toString() ?: ""
+    val body = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
+    ApiClient.apiService.analytics(body)
+      .enqueue(object: Callback<AnalyticsResult> {
+        override fun onResponse(c: Call<AnalyticsResult>, res: Response<AnalyticsResult>) {
+          val success = res.body()?.success == true
+          if(success) { call.resolve() } else { call.reject("Logging the analytic event failed.") }
+        }
 
-    @PluginMethod()
-    fun logScreen(call: PluginCall) {
-        val screen = call.getString("screen")
-        if (screen != null) {
-            val params = call.getObject("params")?.toString() ?: ""
+        override fun onFailure(c: Call<AnalyticsResult>, t: Throwable) {
+          call.reject("Failed to connect to the analytics endpoint.")
+        }
+      })
+  }
 
-            val input = AnalyticsBody(action = null, screen = screen, params = params, platform = "android")
-            logEvent(input) {
-                if (it) call.resolve()
-                else call.reject("Something went wrong")
-            }
-
-        } else call.reject("Input option 'action' must be provided.")
+  @PluginMethod()
+  fun logScreen(call: PluginCall) {
+    val screen = call.getString("screen")
+    if(screen === null) {
+      call.reject("Input option 'screen' must be provided.")
+      return
     }
-
-    private fun logEvent(input: AnalyticsBody, completion: (Boolean) -> Unit) {
-        ApiClient.apiService.analytics(input).enqueue(object: Callback<AnalyticsResult> {
-            override fun onResponse(apiCall: Call<AnalyticsResult>, response: Response<AnalyticsResult>) {
-                val body = response.body()
-                body?.success?.let {
-                    completion(it)
-                } ?: completion(false)
-            }
-
-            override fun onFailure(apiCall: Call<AnalyticsResult>, t: Throwable) {
-                completion(false)
-            }
-        })
-    }
+    println("AnalyticsPlugin: logScreen")
+    call.resolve()
+  }
 }
 ```
 
 </CH.Code>
 
-`logScreen` also needs to stringify `params` and make the same network request. Refactor the code to add utility methods and update `logAction` to use the new utility methods.
+Make the network request. If it succeeds, `call.resolve()` will resolve the call made from the web code, otherwise `call.reject()` will thrown an error to be handled by the web code.
 
 ---
+
+<CH.Code>
+
+```kotlin portals/AnalyticsPlugin.kt focus=49:61
+package io.ionic.cs.portals.Jobsync.portals
+
+import com.getcapacitor.Plugin
+import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.CapacitorPlugin
+import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@CapacitorPlugin(name="Analytics")
+class AnalyticsPlugin: Plugin() {
+
+  @PluginMethod()
+  fun logAction(call: PluginCall) {
+    val action = call.getString("action");
+    if(action == null) {
+      call.reject("Input option 'action' must be provided.")
+      return
+    }
+    val params = call.getObject("params")?.toString() ?: ""
+    val body = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
+    ApiClient.apiService.analytics(body)
+      .enqueue(object: Callback<AnalyticsResult> {
+        override fun onResponse(c: Call<AnalyticsResult>, res: Response<AnalyticsResult>) {
+          val success = res.body()?.success == true
+          if(success) { call.resolve() } else { call.reject("Logging the analytic event failed.") }
+        }
+
+        override fun onFailure(c: Call<AnalyticsResult>, t: Throwable) {
+          call.reject("Failed to connect to the analytics endpoint.")
+        }
+      })
+  }
+
+  @PluginMethod()
+  fun logScreen(call: PluginCall) {
+    val screen = call.getString("screen")
+    if(screen === null) {
+      call.reject("Input option 'screen' must be provided.")
+      return
+    }
+    println("AnalyticsPlugin: logScreen")
+    call.resolve()
+  }
+
+  private fun logEvent(body: AnalyticsBody, completion: (Boolean) -> Unit) {
+    ApiClient.apiService.analytics(body)
+      .enqueue(object: Callback<AnalyticsResult> {
+        override fun onResponse(c: Call<AnalyticsResult>, res: Response<AnalyticsResult>) {
+          val success = res.body()?.success == true
+          if(success) { completion(true) } else { completion(false) }
+        }
+
+        override fun onFailure(c: Call<AnalyticsResult>, t: Throwable) {
+          completion(false)
+        }
+      })
+  }
+}
+```
+
+</CH.Code>
+
+`logScreen` needs to make the same network request. Refactor the code to add a utility method.
+
+---
+
+<CH.Code>
+
+```kotlin portals/AnalyticsPlugin.kt focus=16:28
+package io.ionic.cs.portals.Jobsync.portals
+
+import com.getcapacitor.Plugin
+import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.CapacitorPlugin
+import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@CapacitorPlugin(name="Analytics")
+class AnalyticsPlugin: Plugin() {
+
+  @PluginMethod()
+  fun logAction(call: PluginCall) {
+    val action = call.getString("action");
+    if(action == null) {
+      call.reject("Input option 'action' must be provided.")
+      return
+    }
+    val params = call.getObject("params")?.toString() ?: ""
+    val body = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
+    logEvent(body) {
+      if(it) { call.resolve() } else { call.reject("Something went wrong") }
+    }
+  }
+
+  @PluginMethod()
+  fun logScreen(call: PluginCall) {
+    val screen = call.getString("screen")
+    if(screen === null) {
+      call.reject("Input option 'screen' must be provided.")
+      return
+    }
+    println("AnalyticsPlugin: logScreen")
+    call.resolve()
+  }
+
+  private fun logEvent(body: AnalyticsBody, completion: (Boolean) -> Unit) {
+    ApiClient.apiService.analytics(body)
+      .enqueue(object: Callback<AnalyticsResult> {
+        override fun onResponse(c: Call<AnalyticsResult>, res: Response<AnalyticsResult>) {
+          val success = res.body()?.success == true
+          if(success) { completion(true) } else { completion(false) }
+        }
+
+        override fun onFailure(c: Call<AnalyticsResult>, t: Throwable) {
+          completion(false)
+        }
+      })
+  }
+}
+```
+
+</CH.Code>
+
+Update `logAction` to use the new utility method.
+
+---
+
+<CH.Code>
+
+```kotlin portals/AnalyticsPlugin.kt focus=30:42
+package io.ionic.cs.portals.Jobsync.portals
+
+import com.getcapacitor.Plugin
+import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.CapacitorPlugin
+import io.ionic.cs.portals.Jobsync.network.AnalyticsBody
+import io.ionic.cs.portals.Jobsync.network.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@CapacitorPlugin(name="Analytics")
+class AnalyticsPlugin: Plugin() {
+
+  @PluginMethod()
+  fun logAction(call: PluginCall) {
+    val action = call.getString("action");
+    if(action == null) {
+      call.reject("Input option 'action' must be provided.")
+      return
+    }
+    val params = call.getObject("params")?.toString() ?: ""
+    val body = AnalyticsBody(action = action, screen = null, params = params, platform = "android")
+    logEvent(body) {
+      if(it) { call.resolve() } else { call.reject("Something went wrong") }
+    }
+  }
+
+  @PluginMethod()
+  fun logScreen(call: PluginCall) {
+    val screen = call.getString("screen")
+    if(screen === null) {
+      call.reject("Input option 'screen' must be provided.")
+      return
+    }
+    val params = call.getObject("params")?.toString() ?: ""
+    val body = AnalyticsBody(action = null, screen = screen, params = params, platform = "android")
+    logEvent(body) {
+      if(it) { call.resolve() } else { call.reject("Something went wrong") }
+    }
+  }
+
+  private fun logEvent(body: AnalyticsBody, completion: (Boolean) -> Unit) {
+    ApiClient.apiService.analytics(body)
+      .enqueue(object: Callback<AnalyticsResult> {
+        override fun onResponse(c: Call<AnalyticsResult>, res: Response<AnalyticsResult>) {
+          val success = res.body()?.success == true
+          if(success) { completion(true) } else { completion(false) }
+        }
+
+        override fun onFailure(c: Call<AnalyticsResult>, t: Throwable) {
+          completion(false)
+        }
+      })
+  }
+}
+```
+
+</CH.Code>
+
+Finally, implement the `logScreen` plugin method. 
 
 </CH.Scrollycoding>
 
