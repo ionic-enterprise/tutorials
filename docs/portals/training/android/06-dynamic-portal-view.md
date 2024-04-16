@@ -31,16 +31,16 @@ Delete the sample web app downloaded from the Portals CLI, it is no longer neede
 rm -rf /portals-debug-app
 ```
 
-Update `/android/.portals.yaml` to match the following code:
+Update `/android/app/.portals.yaml` to match the following code:
 
-```yaml android/.portals.yaml
+```yaml android/app/.portals.yaml
 sync:
-  - file-path: ../web/apps/expenses/dist
-    directory-name: app/src/main/assets/portals/expenses
-  - file-path: ../web/apps/tasks/dist
-    directory-name: app/src/main/assets/portals/tasks
-  - file-path: ../web/apps/time-tracking/dist
-    directory-name: app/src/main/assets/portals/time_tracking
+  - file-path: ../../web/apps/expenses/dist
+    directory-name: src/main/assets/portals/expenses
+  - file-path: ../../web/apps/tasks/dist
+    directory-name: src/main/assets/portals/tasks
+  - file-path: ../../web/apps/time-tracking/dist
+    directory-name: src/main/assets/portals/time-tracking
 ``` 
 
 <Admonition type="note">
@@ -52,7 +52,7 @@ The monorepo contains the build outputs of all the web experiences to sync with 
 
 Open `portals/WebApps.kt` in Android Studio and note the following code:
 
-<CH.Code rows={7}>
+<CH.Code rows={6}>
 
 ```kotlin portals/WebApps.kt focus=11:15
 package io.ionic.cs.portals.Jobsync.portals
@@ -77,7 +77,9 @@ The list of features to display on the dashboard come from this list. When one o
 
 Make the following changes to `portals/WebAppView.kt`:
 
-```kotlin portals/WebAppView.kt focus=29,30
+<CH.Code rows={20}>
+
+```kotlin portals/WebAppView.kt focus=33:34
 package io.ionic.cs.portals.Jobsync.portals
 
 import androidx.compose.runtime.Composable
@@ -98,27 +100,30 @@ fun WebAppView(
     metadata: WebAppMetadata
 ) {
     val credentials = ApiClient.credentials
-    val credentialsMap = mapOf("accessToken" to credentials?.access_token, "refreshToken" to credentials?.refresh_token)
-    val pubsub = PortalsPubSub()
-    pubsub.subscribe("navigate:back") {
+    val initialContext = mapOf(
+        "accessToken" to credentials?.access_token,
+        "refreshToken" to credentials?.refresh_token
+    )
+    val portalsPubSub = PortalsPubSub()
+    portalsPubSub.subscribe("navigate:back") {
         CoroutineScope(Dispatchers.Main).launch {
             navHostController.popBackStack()
         }
-        pubsub.unsubscribe("navigate:back", it.subscriptionRef)
+        portalsPubSub.unsubscribe("navigate:back", it.subscriptionRef)
     }
 
     val portal = PortalBuilder(metadata.name)
         .setStartDir("portals/${metadata.name}")
-        .setInitialContext(credentialsMap)
+        .setInitialContext(initialContext)
         .addPlugin(AnalyticsPlugin::class.java)
-        .addPluginInstance(PortalsPlugin(pubsub))
+        .addPluginInstance(PortalsPlugin(portalsPubSub))
         .create()
 
-    AndroidView(factory = {
-        PortalView(it, portal)
-    })
+    AndroidView(factory = { PortalView(it, portal) })
 }
 ```
+
+</CH.Code>
 
 Build and run the Jobsync app and navigate to the dashboard view. Select a feature from the list, and the finalized web app will load within the `PortalView`. 
 
