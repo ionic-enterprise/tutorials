@@ -42,9 +42,6 @@ sync:
     directory-name: src/main/assets/portals/debug
 ```
 
-<Admonition type="note">
-On Windows, set `directory-name` to `src\\main\\assets\\portals\\debug`.
-</Admonition>
 
 The `file-path` is the bundled web app directory in relation to the root of the Android project, while the `directory-name` is the target location the command will move the bundle to.
 
@@ -61,6 +58,10 @@ tasks.register('syncPortals') {
     }
 }
 ```
+
+<Admonition type="note">
+Ensure the Portals CLI is registered as part of the `PATH` to run this command successfully.
+</Admonition>
 
 Finally, open `portals/WebAppView.kt` and make it return a `PortalView` instead of a `Button`: 
 
