@@ -33,9 +33,7 @@ git checkout start-android
 
 In this training module, you will be working with the Jobsync superapp Android project. The project utilizes Gradle for dependency management and Jetpack Compose as the UI framework.
 
-Launch the project located at `/android` and proceed to the next section to install the Portals library.
-
-Once you have loaded the project in Android Studio, proceed to the next section to install the Portals library.
+Launch the project located at `/android` in Android Studio, then proceed to the next section to install the Portals library.
 
 ## Installing the Portals library
 
