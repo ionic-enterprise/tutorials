@@ -23,7 +23,7 @@ The time it takes a Portal to render content depends on how long it takes your w
 
 Portals ships with a [Web Vitals plugin](https://ionic.io/docs/portals/for-web/web-vitals) that can measure your web app's performance.
 
-Focus on reducing the [First Contentful Paint](https://web.dev/articles/fcp) (FCP) to ensure the web app starts rendering quickly. This may mean the introduction of skeleton screens in the web app while data is being fetched from the network, etc. The Portals documentation has information on profile your web application [for iOS](https://ionic.io/docs/portals/for-web/ios-profiling) and [for Android](https://ionic.io/docs/portals/for-web/android-profiling).
+Focus on reducing the [First Contentful Paint](https://web.dev/articles/fcp) (FCP) to ensure the web app starts rendering quickly. This may mean the introduction of skeleton screens in the web app while data is being fetched from the network, etc. The Portals documentation has information on profiling your web application [for iOS](https://ionic.io/docs/portals/for-web/ios-profiling) and [for Android](https://ionic.io/docs/portals/for-web/android-profiling).
 
 ## Mask with a loading view
 
