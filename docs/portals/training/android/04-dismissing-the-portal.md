@@ -24,41 +24,51 @@ The pub/sub mechanism included in the Portals Android library relies on two part
 Pub/sub is bi-directional; messages can be sent from native mobile code to web code as well.
 </Admonition>
 
-Modify `portals/WebAppView.kt` to a subscribe for the `navigate:back` topic:
+Modify `portals/WebAppScreen.kt` to a subscribe for the `navigate:back` topic:
 
 <CH.Scrollycoding>
 
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=9,25
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=16,32
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .setInitialContext(initialContext)
-        .addPluginInstance(PortalsPlugin())
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .addPluginInstance(PortalsPlugin())
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
 
@@ -70,37 +80,48 @@ Add an instance of `PortalsPlugin` to the Portal.
 
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=10,22,27[42:54]
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=17,21,35[46:51]
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
 import io.ionic.portals.PortalsPubSub
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-    val portalsPubSub = PortalsPubSub()
-
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .setInitialContext(initialContext)
-        .addPluginInstance(PortalsPlugin(portalsPubSub))
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  val pubSub = PortalsPubSub()
+  
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .addPluginInstance(PortalsPlugin(pubSub))
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
 
@@ -112,13 +133,20 @@ Create an instance of the `PortalsPubSub` class and pass it into the `PortalsPlu
 
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=11:13,26:30
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=18:20,25:29
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
@@ -128,29 +156,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-    val portalsPubSub = PortalsPubSub()
-    portalsPubSub.subscribe("navigate:back") {
-        CoroutineScope(Dispatchers.Main).launch {
-            navHostController.popBackStack()
-        }
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  val pubSub = PortalsPubSub()
+  pubSub.subscribe("navigate:back") {
+    CoroutineScope(Dispatchers.Main).launch {
+      navController.popBackStack()
     }
+  }
 
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .setInitialContext(initialContext)
-        .addPluginInstance(PortalsPlugin(portalsPubSub))
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .addPluginInstance(PortalsPlugin(pubSub))
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
 
@@ -162,13 +194,20 @@ Subscribe to the `navigate:back` topic, and pop the nav stack when the topic rec
 
 <CH.Code>
 
-```kotlin portals/WebAppView.kt focus=30:33
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=29
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
@@ -178,33 +217,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-    val portalsPubSub = PortalsPubSub()
-    portalsPubSub.subscribe("navigate:back") {
-        CoroutineScope(Dispatchers.Main).launch {
-            navHostController.popBackStack()
-        }
-        portalsPubSub.unsubscribe(
-            "navigate:back", 
-            it.subscriptionRef
-        )
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  val pubSub = PortalsPubSub()
+  pubSub.subscribe("navigate:back") {
+    CoroutineScope(Dispatchers.Main).launch {
+      navController.popBackStack()
     }
+    pubSub.unsubscribe("navigate:back", it.subscriptionRef)
+  }
 
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .setInitialContext(initialContext)
-        .addPluginInstance(PortalsPlugin(portalsPubSub))
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .addPluginInstance(PortalsPlugin(pubSub))
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
 

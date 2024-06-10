@@ -21,14 +21,14 @@ In a real world scenario, you may be tasked to implement Portals and develop com
 Use the sample web app downloaded from the `poc` Portals CLI command to integrate and test Portals before syncing and testing web experiences provided by web developers.
 </Admonition>
 
-The last task remaining before the Jobsync superapp is complete is to sync the individual web apps and dynamically determine which one should be displayed within `WebAppView` at any given moment.
+The last task remaining before the Jobsync superapp is complete is to sync the individual web apps and dynamically determine which one should be displayed within `WebAppScreen` at any given moment.
 
 ## Syncing the web apps
 
 Delete the sample web app downloaded from the Portals CLI, it is no longer needed:
 
 ```bash terminal
-rm -rf /portals-debug-app
+rm -rf portals-debug-app
 ```
 
 Update `/android/app/.portals.yaml` to match the following code:
@@ -40,7 +40,7 @@ sync:
   - file-path: ../../web/apps/tasks/dist
     directory-name: src/main/assets/portals/tasks
   - file-path: ../../web/apps/time-tracking/dist
-    directory-name: src/main/assets/portals/time-tracking
+    directory-name: src/main/assets/portals/time_tracking
 ``` 
 
 <Admonition type="note">
@@ -54,38 +54,52 @@ Open `portals/WebApps.kt` in Android Studio and note the following code:
 
 <CH.Code rows={6}>
 
-```kotlin portals/WebApps.kt focus=11:15
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebApps.kt focus=15:19
+package io.ionic.cs.portals.jobsync.portals
 
+import android.media.Image
+import io.ionic.cs.portals.jobsync.R
 import java.util.Locale
 
-data class WebAppMetadata(val name: String, val description: String) {
-    val displayName get() = name.replace('_', ' ').split(" ").map {
-        it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-    }.joinToString(" ")
+data class WebAppMetadata(val name: String, val description: String, val imageResource: Int) {
+  val displayName get() = name.replace('_', ' ').split(" ").joinToString(" ") { name ->
+    name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+  }
 }
 
-val webApps: List<WebAppMetadata> = listOf(
-    WebAppMetadata("expenses", "Submit expenses for business purchases."),
-    WebAppMetadata("tasks", "Track tasks for transparent project updates."),
-    WebAppMetadata("time_tracking", "Stay on schedule by tracking time spent.")
-)
+class WebApps {
+  companion object {
+    val metadata: List<WebAppMetadata> = listOf(
+      WebAppMetadata("expenses", "Submit expenses for business purposes.", R.drawable.expenses),
+      WebAppMetadata("tasks", "Track tasks for transparent project updates.", R.drawable.tasks),
+      WebAppMetadata("time_tracking", "Stay on schedule by tracking time spent.", R.drawable.time_tracking)
+    )
+  }
+
+}
 ```
 </CH.Code>
 
-The list of features to display on the dashboard come from this list. When one of the features is selected, the `metadata` entry is passed to `WebAppView`, and the `name` property can be used to set the `name` property and compute the correct `startDir` when initializing the Portal.
+The list of features to display on the dashboard come from this list. When one of the features is selected, the `metadata` entry is passed to `WebAppScreen`, and the `name` property can be used to set the `name` property and compute the correct `startDir` when initializing the Portal.
 
-Make the following changes to `portals/WebAppView.kt`:
+Make the following changes to `portals/WebAppScreen.kt`:
 
-<CH.Code rows={20}>
+<CH.Code rows={10}>
 
-```kotlin portals/WebAppView.kt focus=33:34
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=41:42
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 import io.ionic.portals.PortalsPlugin
@@ -95,31 +109,35 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-    val portalsPubSub = PortalsPubSub()
-    portalsPubSub.subscribe("navigate:back") {
-        CoroutineScope(Dispatchers.Main).launch {
-            navHostController.popBackStack()
-        }
-        portalsPubSub.unsubscribe("navigate:back", it.subscriptionRef)
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  val pubSub = PortalsPubSub()
+  pubSub.subscribe("navigate:back") {
+    CoroutineScope(Dispatchers.Main).launch {
+      navController.popBackStack()
     }
+    pubSub.unsubscribe("navigate:back", it.subscriptionRef)
+  }
 
-    val portal = PortalBuilder(metadata.name)
-        .setStartDir("portals/${metadata.name}")
-        .setInitialContext(initialContext)
-        .addPlugin(AnalyticsPlugin::class.java)
-        .addPluginInstance(PortalsPlugin(portalsPubSub))
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder(metadata.name)
+            .setStartDir("portals/${metadata.name}")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .addPlugin(AnalyticsPlugin::class.java)
+            .addPluginInstance(PortalsPlugin(pubSub))
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
 

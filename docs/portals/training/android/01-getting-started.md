@@ -51,9 +51,9 @@ implementation 'io.ionic:portals:[0.0,1.0)'
 
 Portals is licensed software and requires a valid <a href="https://ionic.io/docs/portals/getting-started#using-your-product-key" target="_blank">Portals product key</a> for use. 
 
-Your Portals product key must be registered before any Portals are displayed in the UI. Register your key within the app initializer in `JobsyncApp.kt`:
+Your Portals product key must be registered before any Portals are displayed in the UI. Register your key within the app initializer in `Jobsync.kt`:
 
-```kotlin JobsyncApp.kt focus=4,9
+```kotlin Jobsync.kt focus=4,9
 package io.ionic.cs.portals.Jobsync
 
 import android.app.Application
