@@ -20,75 +20,116 @@ The Portals library allows you to pass data that is immediately available to the
 
 ## Formatting for initial context
 
-After the current user signs in, the `accessToken` and `refreshToken` are stored within the `ApiClient.credentials` property. The network request returns the property names using snake case, and they need to be converted to camel case for the web application.   
+After the current user signs in, the `accessToken` and `refreshToken` are stored within the `CredentialsManager.credentials` property. The network request returns the property names using snake case, and they need to be converted to camel case for the web application.   
 
 Map the credential values to set the correct key-value-pairs using the code below: 
 
-<CH.Code rows={15}>
+<CH.Code rows={18}>
 
-```kotlin portals/WebAppView.kt focus=16:20
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin util/CredentialsManager.kt focus=10,14:26
+package io.ionic.cs.portals.jobsync.util
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
-import io.ionic.portals.PortalBuilder
-import io.ionic.portals.PortalView
+import androidx.annotation.Keep
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.http.Body
+import retrofit2.http.POST
+import com.google.gson.annotations.SerializedName
 
-@Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
+@Keep
+data class LoginBody(val username: String, val password: String)
+@Keep
+data class Credentials(
+  @SerializedName("access_token") val accessToken: String,
+  @SerializedName("refresh_token") val refreshToken: String
 ) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token, 
-        "refreshToken" to credentials?.refresh_token
+  fun toMap(): Map<String, String> {
+    return mapOf(
+      "accessToken" to accessToken,
+      "refreshToken" to refreshToken
     )
+  }
+}
 
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .create();
+interface CredentialsAPIService {
+  @POST("auth")
+  suspend fun login(@Body loginBody: LoginBody): Credentials
+}
 
-    AndroidView(factory = { PortalView(it, portal) })
+object CredentialsManager {
+  private val http: CredentialsAPIService by lazy {
+    NetworkManager.instance.create(CredentialsAPIService::class.java)
+  }
+  private var _credentials: Credentials? = null
+
+  val credentials: Credentials?
+    get() = _credentials
+
+  fun login(username: String, password: String, callback: () -> Unit) {
+    CoroutineScope(Dispatchers.IO).launch {
+      val result = runCatching { http.login(LoginBody(username, password)) }
+      result.onSuccess { _credentials = it }
+        .onFailure { _credentials = getDefaultCredentials() }
+      withContext(Dispatchers.Main) { callback() }
+    }
+  }
+
+  private fun getDefaultCredentials(): Credentials {
+    return Credentials("8f633ea6-de27-4110-96cf-bc10fa3a0b86", "da5ca0ea-5831-4373-a298-879dfa5a6fcb")
+  }
 }
 ```
 </CH.Code>
 
 ## Configuring initial context
 
-Once the mapping has been performed, update the Portal configuration in `portals/WebAppView.kt` to include the current user's credentials as initial context:
+Once the mapping has been performed, update the Portal configuration in `portals/WebAppScreen.kt` to include the current user's credentials as initial context:
 
-```kotlin portals/WebAppView.kt focus=21:24
-package io.ionic.cs.portals.Jobsync.portals
+<CH.Code rows={5}>
 
+```kotlin portals/WebAppScreen.kt focus=30
+package io.ionic.cs.portals.jobsync.portals
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import io.ionic.cs.portals.jobsync.util.CredentialsManager
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-    val initialContext = mapOf(
-        "accessToken" to credentials?.access_token,
-        "refreshToken" to credentials?.refresh_token
-    )
-
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .setInitialContext(initialContext)
-        .create()
-
-    AndroidView(factory = { PortalView(it, portal) })
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .setInitialContext(CredentialsManager.credentials!!.toMap())
+            .create()
+          PortalView(context, portal)
+        }
+      )
+    }
+  }
 }
 ```
+
+</CH.Code>
 
 Build and run the Jobsync app and navigate to one of the features in the dashboard view. The sample web app loads the 'Initial Context' tab, but now in addition to the `name` of the Portal configured, you will now see a `value` property printed out, containing the `accessToken` and `refreshToken` web apps need to authenticate requests. 
 

@@ -47,15 +47,17 @@ The `file-path` is the bundled web app directory in relation to the root of the 
 
 Next, place the following script at the bottom of the `build.gradle (:app)`:
 
-```groovy android/app/build.gradle
-preBuild.dependsOn 'syncPortals'
+```kotlin android/app/build.gradle.kts
+tasks.preBuild {
+  dependsOn("syncPortals")
+}
 
-tasks.register('syncPortals') {
-    doLast {
-        project.exec {
-            commandLine 'portals', 'sync'
-        }
+tasks.register("syncPortals") {
+  doLast {
+    project.exec {
+      commandLine("portals", "sync")
     }
+  }
 }
 ```
 
@@ -63,33 +65,44 @@ tasks.register('syncPortals') {
 Ensure the Portals CLI is registered as part of the `PATH` to run this command successfully.
 </Admonition>
 
-Finally, open `portals/WebAppView.kt` and make it return a `PortalView` instead of a `Button`: 
+Finally, open `portals/WebAppScreen.kt` and make it return a `PortalView` instead of a `Button`: 
 
-<CH.Code rows={20}>
+<CH.Code rows={25}>
 
-```kotlin portals/WebAppView.kt focus=7:8,17:21
-package io.ionic.cs.portals.Jobsync.portals
+```kotlin portals/WebAppScreen.kt focus=12:14,24:31
+package io.ionic.cs.portals.jobsync.portals
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import io.ionic.cs.portals.Jobsync.network.ApiClient
+import androidx.compose.ui.viewinterop.AndroidView
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 
 @Composable
-fun WebAppView(
-    navHostController: NavHostController,
-    metadata: WebAppMetadata
-) {
-    val credentials = ApiClient.credentials
-
-    val portal = PortalBuilder("debug")
-        .setStartDir("portals/debug")
-        .create();
-
-    AndroidView(factory = { PortalView(it, portal) })
-
+fun WebAppScreen(navController: NavHostController, metadata: WebAppMetadata) {
+  Scaffold { innerPadding ->
+    Column(
+      Modifier.fillMaxSize().padding(innerPadding),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+          val portal = PortalBuilder("debug")
+            .setStartDir("portals/debug")
+            .create()
+          PortalView(context, portal)
+        })
+    }
+  }
 }
 ```
 
