@@ -40,11 +40,11 @@ Launch the project located at `/android` in Android Studio, then proceed to the 
 To add the Portals Android library into the Jobsync project in Android Studio, follow these steps:
 
 1. Navigate to the project navigator and expand the Gradle Scripts folder.
-2. Open the file labeled `build.gradle` that has a `Module :app` notation next to it.
+2. Open the file labeled `build.gradle.kts` that has a `Module :app` notation next to it.
 3. In the file editor, navigate down to the bottom, and inside the `dependencies` object, add the following
 
-```kotlin build.gradle
-implementation 'io.ionic:portals:[0.0,1.0)'
+```kotlin build.gradle.kts
+implementation("io.ionic:portals:[0.0,1.0)")
 ```
 
 ## Registering your Portals key

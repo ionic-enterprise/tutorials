@@ -69,7 +69,7 @@ Finally, open `portals/WebAppScreen.kt` and make it return a `PortalView` instea
 
 <CH.Code rows={25}>
 
-```kotlin portals/WebAppScreen.kt focus=13:14,24:31
+```kotlin portals/WebAppScreen.kt focus=12:14,24:31
 package io.ionic.cs.portals.jobsync.portals
 
 import androidx.compose.foundation.layout.Arrangement
@@ -80,8 +80,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import androidx.compose.ui.viewinterop.AndroidView
 import io.ionic.portals.PortalBuilder
 import io.ionic.portals.PortalView
 

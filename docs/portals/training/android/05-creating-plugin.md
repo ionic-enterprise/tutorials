@@ -367,7 +367,7 @@ Additional parameters are optional and untyped. They can be stringified and adde
 
 <CH.Code>
 
-```kotlin portals/AnalyticsPlugin.kt focus=44:57
+```kotlin portals/AnalyticsPlugin.kt focus=45:57
 package io.ionic.cs.portals.jobsync.portals
 
 import com.getcapacitor.Plugin
