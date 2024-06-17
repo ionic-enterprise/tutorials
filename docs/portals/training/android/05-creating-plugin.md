@@ -44,7 +44,7 @@ Notice that the interface doesn't address the requirement of tracking the runnin
 In Android Studio, create a new Kotlin file in the `portals` folder named `AnalyticsPlugin.kt` and populate the file with the following code:
 
 ```kotlin portals/AnalyticsPlugin.kt
-package io.ionic.cs.portals.Jobsync.portals
+package io.ionic.cs.portals.jobsync.portals
 
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
