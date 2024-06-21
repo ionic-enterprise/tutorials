@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@code-hike/mdx": "~0.9.0",
-    "@docusaurus/core": "~3.1.0",
-    "@ionic-docs/preset-classic": "~1.1.1",
+    "@docusaurus/core": "~3.4.0",
+    "@ionic-docs/preset-classic": "~1.2.7",
     "@mdx-js/react": "^3.0.1",
     "clsx": "^2.0.0",
     "docusaurus-plugin-image-zoom": "^2.0.0",
