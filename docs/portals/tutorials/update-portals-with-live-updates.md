@@ -8,35 +8,60 @@ import Admonition from '@theme/Admonition';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-[Live Updates](https://ionic.io/docs/portals/what-are-live-updates) are versioned web artifacts registered with Ionic Appflow, allowing web teams to deploy updates independently on their own release cycles. Tooling provided by Ionic allows native teams to sync Portals with the latest Live Updates at build-time and run-time, using fully compliant over-the-air updating. 
 
-In this tutorial, you will take an existing native app and learn how to:
+Ionic Appflow's [Live Update](https://ionic.io/docs/portals/what-are-live-updates) feature allows web teams to deploy updated web assets independently on their own release cycle. Live Updates can be used in conjunction with Portals to ensure the latest version of web assets are available in Portals projects.
 
-- Seed a Portal at build-time with Live Updates using the Portals CLI.
-- Update a Portal over-the-air using the Live Updates SDK.
+Tooling provided by Ionic allows native teams to synchronize Portals with Live Updates at build-time and run-time, utilizing fully compliant over-the-air updating for a seamless content delivery experience.
+
+In this tutorial, you will learn how to leverage Live Updates to synchronize the latest web assets within a Portals project. You will also learn how to use the Live Updates SDK to deliver updated web assets to end users over-the-air.
 
 <Admonition type="danger" title="">
 This tutorial is specifically designed for **iOS and Android developers**.
 </Admonition>
 
+## Overview
+
+In this tutorial, you will extend the Jobsync superapp built as part of the [Portals training](../training/introduction). Jobsync is an intranet-themed superapp that provides typical employee functions such as expense management. Web teams build employee functions as web apps that Jobsync presents through Portals. 
+
+Currently, web assets are synchronized with Jobsync by copying local resources into native iOS/Android projects at build-time. This scenario is not ideal for two reasons:
+
+1. Native developers must be able to access local paths to the web assets at build-time.
+2. Web teams cannot update their web assets without the new release of the native app.
+
+A new function, a contact directory, is to be added to Jobsync. The contact directory has been registered with Appflow; by using Appflow's Live Update feature both concerns can be addressed.
+
+## Appflow Terminology
+
+Appflow is primarily focused towards web teams; however, it is beneficial to understand certain Appflow terms before using Live Updates with Portals:
+
+- **App:** Web applications registered within Appflow, each with a unique identifier (**App ID**).
+- **Channel:** A channel serves as a deployment lane for an Appflow app. Native apps and the Portals CLI can subscribe to these channels to receive updates.
+- **Build:** Individual web asset builds for an Appflow app are stored and can be assigned to that app's channels.
+- **Live Update:** The specific build referenced by a channel, capable of delivery to native apps and the Portals CLI.
+
+<Admonition type="note">
+A deeper-dive of Appflow for native developers can be found in the <a href="https://ionic.io/docs/portals/appflow/native/getting-started" target="_blank">Getting Started</a> guide.
+</Admonition>
+
+
 ## Setting up the project
 
-This tutorial utilizes the same repository used for the [Portals training](../training/introduction), working from a branch that represents the completed output of that training in order to build upon it. 
+This tutorial utilizes the same repository used for the [Portals training](../training/introduction). 
 
 <Admonition type="info" title="">
 Make sure that you have followed the instructions in the "What you will need" section of the [training introduction](../training/introduction#what-you-will-need) before proceeding.
 </Admonition>
 
-Once the repository has been cloned, check out the `start-using-liveupdates` branch, which corresponds to this tutorial:
+The repository contains branches for different trainings and tutorials, the `start-using-liveupdates` branch corresponds to this tutorial:
 
 ```bash terminal
 cd ./tutorials-and-trainings-portals
 git checkout start-using-liveupdates
 ```
 
-Launch either the iOS or Android project. Relative to the repository root, the Xcode project can be found in `/ios/Jobsync.xcodeproj` and the Android Studio project directory is `/android`. 
+Open either the Xcode project (`/ios/Jobsync.xcodeproj`) or the Android studio project (`/android`) depending on which platform you are developing for.
 
-Open `JobsyncApp.swift` in Xcode or `Jobsync.kt` in Android Studio and register your Portals key:
+Before building or running the project, you will need to register your Portals key:
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
@@ -88,9 +113,18 @@ Open `JobsyncApp.swift` in Xcode or `Jobsync.kt` in Android Studio and register 
   </TabItem>
 </Tabs>
 
-Once complete, build and run the application and familiarize yourself with the Jobsync application. Jobsync is an intranet-themed superapp, a thin native application presenting multiple web-based micro frontends using Portals.  
+## Synchronizing Portals at build-time
+
+
+
+
+
 
 ## Seeding the Portal at build-time
+
+>"Seed a Portal at build-time with Live Updates using the Portals CLI" likely means that during the build process of the native app, you use the Portals Command Line Interface (CLI) to integrate or embed the initial version of the web content into the Portal. This initial integration sets up the Portal with the necessary web assets provided by Live Updates, ensuring that the latest content is included when the app is built and first installed on a user's device.
+
+
 
 Both iOS and Android projects contain a build step that uses the <a href="https://ionic.io/docs/portals/cli/overview" target="_blank">Portals CLI</a> to copy web artifacts into the correct project location so they can be presented within Portals. This process is referred to "seeding" Portals.
 
