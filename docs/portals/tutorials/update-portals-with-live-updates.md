@@ -43,7 +43,6 @@ Appflow is primarily focused towards web teams; however, it is beneficial to und
 A deeper-dive of Appflow for native developers can be found in the <a href="https://ionic.io/docs/portals/appflow/native/getting-started" target="_blank">Getting Started</a> guide.
 </Admonition>
 
-
 ## Setting up the project
 
 This tutorial utilizes the same repository used for the [Portals training](../training/introduction). 
@@ -113,26 +112,10 @@ Before building or running the project, you will need to register your Portals k
   </TabItem>
 </Tabs>
 
-## Synchronizing Portals at build-time
+## Seed a Portal at build-time
 
+The Jobsync project uses the <a href="https://ionic.io/docs/portals/cli/commands/sync" target="_blank">Portals CLI's `sync` command</a> to bundle the web assets that will be presented through Portals. Currently, all web assets to be bundled are synchronized from relative paths within the repository:
 
-
-
-
-
-## Seeding the Portal at build-time
-
->"Seed a Portal at build-time with Live Updates using the Portals CLI" likely means that during the build process of the native app, you use the Portals Command Line Interface (CLI) to integrate or embed the initial version of the web content into the Portal. This initial integration sets up the Portal with the necessary web assets provided by Live Updates, ensuring that the latest content is included when the app is built and first installed on a user's device.
-
-
-
-Both iOS and Android projects contain a build step that uses the <a href="https://ionic.io/docs/portals/cli/overview" target="_blank">Portals CLI</a> to copy web artifacts into the correct project location so they can be presented within Portals. This process is referred to "seeding" Portals.
-
-<Admonition type="info">
-Explore how the build step is setup for [Android](../training/android/creating-a-portal) and for [iOS](../training/ios/creating-a-portal).
-</Admonition>
-
-Currently, all Portals are seeded by copying local web artifacts that exist within the repository:  
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
@@ -159,9 +142,9 @@ Currently, all Portals are seeded by copying local web artifacts that exist with
   </TabItem>
 </Tabs>
 
-In a real-world scenario, web, iOS, and Android teams typically work in separate repositories. When web teams register artifacts with Appflow, the Portals CLI can be configured to synchronize those Live Updates, seeding the Portals accordingly.
+The `sync` command can be configured to pull down the latest Live Update available to any given Appflow app; also referred to as "seeding a Portal". Doing so is good practice as it ensures the native release ships with the latest web assets.
 
-For the purpose of this tutorial, a new micro frontend has been created to be added to the Jobsync app, and has been registered with Ionic Appflow to produce Live Updates. Update the `.portals.yaml` file to include it:
+Update `.portals.yaml` to include an entry for the contact directory function which has been registered with Appflow:
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
@@ -200,9 +183,15 @@ For the purpose of this tutorial, a new micro frontend has been created to be ad
   </TabItem>
 </Tabs>
 
-At build-time, the Portals CLI will pull down the latest Live Update web artifact registered to the `initial` channel of Appflow app `b5e647f7`, using the `token` to authorize the request. It places the web artifact in the proper directory in the native project.
+Now at build-time, Jobsync will pull down and bundle the latest version of the contact directory feature (provisioned in Appflow with the App ID `b5e647f7`) available on the `initial` Live Update channel within the designated directory.
 
-Adjust the list of web apps to be displayed within Jobsync's dashboard page:
+<Admonition type="note">
+An <a href="" target="_blank">Appflow Personal Access Token</a> is required for the Portals CLI to authorize with Appflow.
+</Admonition>
+
+The Jobsync app displays a list of available employee functions by iterating through a static array. Before the contact directory can be accessed at run-time, an entry for it must be added. 
+
+Add an entry to the list for the contact directory function:
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
@@ -266,9 +255,16 @@ Adjust the list of web apps to be displayed within Jobsync's dashboard page:
   </TabItem>
 </Tabs>
 
-Build and run the Jobsync app and navigate to the dashboard view. Select the "Contacts" feature from the list, and the synchronized Live Update web artifact will load within the Portal.  
+Build and run the Jobsync app and navigate to the dashboard view. Select the "Contacts" feature from the list, and the seeded Live Update will load within the Portal.  
 
 ## Update a Portal over-the-air
+
+ 
+
+---
+
+
+
 
 Web teams can publish new web artifacts that end users can download over-the-air. This can be achieved using the Live Updates SDK.
 
