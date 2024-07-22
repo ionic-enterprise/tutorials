@@ -43,6 +43,14 @@ Appflow is primarily focused towards web teams; however, it is beneficial to und
 A deeper-dive of Appflow for native developers can be found in the <a href="https://ionic.io/docs/portals/appflow/native/getting-started" target="_blank">Getting Started</a> guide.
 </Admonition>
 
+<Admonition type="danger" title="Disclaimer">
+In this tutorial, two Live Update channels are used for both the Portals CLI and Live Updates SDK configuration: `initial` and `production`. This is to ensure that a Live Update is available to download
+over-the-air. 
+
+In a real world scenario, the same Live Update channel would be used in both the Portals CLI and Live Updates SDK configuration for any given deployment lane. 
+
+</Admonition>
+
 ## Setting up the project
 
 This tutorial utilizes the same repository used for the [Portals training](../training/introduction). 
@@ -183,10 +191,10 @@ Update `.portals.yaml` to include an entry for the contact directory function wh
   </TabItem>
 </Tabs>
 
-Now at build-time, Jobsync will pull down and bundle the latest version of the contact directory feature (provisioned in Appflow with the App ID `b5e647f7`) available on the `initial` Live Update channel within the designated directory.
+Now at build-time, Jobsync will pull down and bundle the latest version of the contact directory feature (provisioned in Appflow with the App ID `b5e647f7`) available on the `initial` channel within the designated directory.
 
 <Admonition type="note">
-An <a href="" target="_blank">Appflow Personal Access Token</a> is required for the Portals CLI to authorize with Appflow.
+An <a href="https://ionic.io/docs/appflow/personal-access-tokens" target="_blank">Appflow Personal Access Token</a> is required for the Portals CLI to authorize with Appflow.
 </Admonition>
 
 The Jobsync app displays a list of available employee functions by iterating through a static array. Before the contact directory can be accessed at run-time, an entry for it must be added. 
@@ -255,26 +263,22 @@ Add an entry to the list for the contact directory function:
   </TabItem>
 </Tabs>
 
-Build and run the Jobsync app and navigate to the dashboard view. Select the "Contacts" feature from the list, and the seeded Live Update will load within the Portal.  
+Build and run the Jobsync app and navigate to the dashboard view. Select the "Contacts" feature from the list, and the seeded Live Update will load within the Portal.
 
 ## Update a Portal over-the-air
 
- 
-
----
+When working with multiple feature teams, coordinating a single release cycle is difficult. Luckily, Live Updates can be used to deliver web asset updates over-the-air, allowing web teams to update their Portals independent of other teams. The Live Updates SDK is used to programmatically tie a Portal with a corresponding Appflow app and channel. At run-time, the Live Updates SDK will download and apply the latest Live Update if available. 
 
 
-
-
-Web teams can publish new web artifacts that end users can download over-the-air. This can be achieved using the Live Updates SDK.
-
-The SDK is bundled within the `IonicPortals` dependency for iOS, but must be explicitly added on Android. Adjust the app level `build.gradle.kts` file to add it:
+The Live Updates SDK comes bundled with the iOS `IonicPortals` dependency, but must be explicitly added on Android. If needed, add the Live Updates SDK to the app level `build.gradle.kts` file:
 
 ```kotlin build.gradle.kts
 implementation("io.ionic:liveupdates:[0.0,1.0)")
 ```
 
-Adjust the `WebAppMetadata` type to include an optional property where we can place live update configuration:
+Live Updates must be configured as part of the Portal creation process, by passing in a `LiveUpdate` object into the `liveUpdateConfig` property. 
+
+Since Jobsync dynamically creates Portals based on a static array of `WebAppMetadata`, the first step is to adjust the data type to include an optional property where Live Update configuration data can be set: 
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
@@ -348,13 +352,13 @@ Adjust the `WebAppMetadata` type to include an optional property where we can pl
   </TabItem>
 </Tabs>
 
-Now update where the Portal is rendered:
+Then, the view that displays Portals within the app needs to be updated to conditionally add Live Update configuration, if available: 
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
-    <CH.Code>
+    <CH.Code rows={30}>
 
-    ```swift Portals/WebAppView.swift
+    ```swift Portals/WebAppView.swift focus=11,23:36
     import SwiftUI
     import IonicPortals
 
@@ -402,9 +406,9 @@ Now update where the Portal is rendered:
     </CH.Code>
   </TabItem>
   <TabItem value="android" label="Android">
-    <CH.Code>
+    <CH.Code rows={15}>
 
-    ```kotlin portals/WebAppScreen.kt
+    ```kotlin portals/WebAppScreen.kt focus=41:51
     package io.ionic.cs.portals.jobsync.portals
 
     import androidx.compose.foundation.layout.Arrangement
@@ -467,4 +471,18 @@ Now update where the Portal is rendered:
   </TabItem>
 </Tabs>
 
-Run the app and open Contacts. At first, it's the same. Now press back, and re-enter. We can now see a search bar! It updated!
+Re-build and run the Jobsync app and navigate to the dashboard view. Select the "Contacts" feature from the list, then press the back button. Re-selecting the "Contacts" feature will load a new version of the contact directory function, containing a search bar that filters the contacts from the list. 
+
+Thanks to the Live Updates configuration added for this Portal, the latest version of the contact directory was downloaded and applied the next time the Portal was loaded.
+
+Behind-the-scenes, the Live Updates SDK performs the following actions by default:
+
+1. The first time a Portal is created, it will check to see if an update is available.
+2. If so, the update is downloaded to the device and setup with the Portal.
+3. The next time the Portal is loaded, the update will be applied.
+
+Developers can also manually apply Live Updates, see "Syncing with Live Updates" (<a href="https://ionic.io/docs/portals/for-ios/how-to/sync-with-live-updates" target="_blank">iOS</a> or <a href="https://ionic.io/docs/portals/for-android/how-to/sync-with-live-updates" target="_blank">Android</a>) for more information.
+
+## Conclusion
+
+In this tutorial, you combined Live Updates with Portals to ensure the Jobsync application delivers the latest contact directory experience. Using Live Updates with the Portals CLI ensures the latest web assets are bundled with native applications at build-time, and using the Live Updates SDK provides the ability to update web assets presented through Portals over-the-air. Live Updates allow web teams contributing to your Portals projects to deploy updated experiences without directly impacting native development.
