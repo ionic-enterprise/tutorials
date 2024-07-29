@@ -7,6 +7,7 @@ sidebar_position: 1
 import Admonition from '@theme/Admonition';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
 
 
 Ionic Appflow's [Live Update](https://ionic.io/docs/portals/what-are-live-updates) feature allows web teams to deploy updated web assets independently on their own release cycle. Live Updates can be used in conjunction with Portals to ensure the latest version of web assets are available in Portals projects.
@@ -156,38 +157,43 @@ Update `.portals.yaml` to include an entry for the contact directory function wh
 
 <Tabs groupId="platform">
   <TabItem value="ios" label="iOS">
-    <CH.Code rows={5}>
-    ```yaml ios/.portals.yaml focus=8:11
-    sync:
-      - file-path: ../web/apps/expenses/dist
-        directory-name: portals/expenses
-      - file-path: ../web/apps/tasks/dist
-        directory-name: portals/tasks
-      - file-path: ../web/apps/time-tracking/dist
-        directory-name: portals/time-tracking
-      - app-id: b5e647f7
-        channel: initial
-        directory-name: portals/contacts
-    token: ion_iZtdsDl9mOxcVSXEaRiWb8GU45Ld8aSotFii25crF0
-    ```
-    </CH.Code>
+<CodeBlock className="language-yaml" title="ios/.portals.yaml">
+{
+  `
+sync:
+  - file-path: ../../web/apps/expenses/dist
+    directory-name: src/main/assets/portals/expenses
+  - file-path: ../../web/apps/tasks/dist
+    directory-name: src/main/assets/portals/tasks
+  - file-path: ../../web/apps/time-tracking/dist
+    directory-name: src/main/assets/portals/time_tracking
+  - app-id: b5e647f7
+    channel: initial
+    directory-name: src/main/assets/portals/contacts
+token: ${'ion_'}${'JKrBJgyBVJlA4o3FknCviCtzS6to2hGX2pjQ2T6nbt'}
+  `.trim()
+}
+</CodeBlock>
+
   </TabItem>
   <TabItem value="android" label="Android">
-    <CH.Code rows={5}>
-    ```yaml android/app/.portals.yaml focus=8:11
-    sync:
-      - file-path: ../../web/apps/expenses/dist
-        directory-name: src/main/assets/portals/expenses
-      - file-path: ../../web/apps/tasks/dist
-        directory-name: src/main/assets/portals/tasks
-      - file-path: ../../web/apps/time-tracking/dist
-        directory-name: src/main/assets/portals/time_tracking
-      - app-id: b5e647f7
-        channel: initial
-        directory-name: src/main/assets/portals/contacts
-    token: ion_iZtdsDl9mOxcVSXEaRiWb8GU45Ld8aSotFii25crF0
-    ```
-    </CH.Code>
+  <CodeBlock className="language-yaml" title="android/app/.portals.yaml">
+{
+  `
+sync:
+  - file-path: ../../web/apps/expenses/dist
+    directory-name: src/main/assets/portals/expenses
+  - file-path: ../../web/apps/tasks/dist
+    directory-name: src/main/assets/portals/tasks
+  - file-path: ../../web/apps/time-tracking/dist
+    directory-name: src/main/assets/portals/time_tracking
+  - app-id: b5e647f7
+    channel: initial
+    directory-name: src/main/assets/portals/contacts
+token: ${'ion_'}${'JKrBJgyBVJlA4o3FknCviCtzS6to2hGX2pjQ2T6nbt'}
+  `.trim()
+}
+</CodeBlock>
   </TabItem>
 </Tabs>
 
